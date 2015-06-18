@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- MEX XML configuration for MinGW
+by Jonathan Chappelow (chappjc)
+http://stackoverflow.com/a/28490382/2778484
+Targeted MinGW version: x86_64-4.9.2-release-posix-seh-rt_v3-rev1.7z (from http://sourceforge.net/projects/mingw-w64)
+LocationFinder is used at setup time *and* compile time to get $MINGWROOT
+from the MINGWROOT environment variable.
+To specify static or dynamic C/C++/pthread runtime library linkage, adjust
+the LINKTYPE setting in the <vars> tag. For example, with MinGW-w64, to remove
+LIBGCC_S_SEH-1.DLL and LIBSTDC++-6.DLL dependencies (and maybe libwinpthread-1.dll):
+LINKTYPE="-shared -static-libgcc -static-libstdc++ -Wl,-Bstatic -lpthread -Wl,-Bdynamic "
+-->
+<config
+Name="MinGW-w64 GCC 4.9.2 posixthreads seh"
+ShortName="MINGW64"
+Manufacturer="GNU"
+Version="4.9.2"
+Language="C++"
+Priority="B"
+Location="$MINGWROOT\" >
+<Details
+CompilerExecutable="$COMPILER"
+CompilerDefines="$COMPDEFINES"
+CompilerFlags="$COMPFLAGS"
+OptimizationFlags="$OPTIMFLAGS"
+DebugFlags="$DEBUGFLAGS"
+IncludeFlags="$INCLUDE"
+LinkerExecutable="$LINKER"
+LinkerFlags="$LINKFLAGS"
+LinkerLibraries="$LINKLIBS"
+LinkerDebugFlags="$LINKDEBUGFLAGS"
+LinkerOptimizationFlags="$LINKOPTIMFLAGS"
+CommandLineShell="$MINGWROOT\mingw-w64_vars.bat "
+CommandLineShellArg=""
+CompilerDefineFormatter="-D%s"
+LinkerLibrarySwitchFormatter="lib%s.lib;%s.lib"
+LinkerPathFormatter="-L%s"
+LibrarySearchPath="$$LIB;$$LIBPATH;$$PATH;$$INCLUDE;$MATLABROOT\extern\lib\$ARCH\microsoft"
+/>
+<!-- GCC compiler and linker options:
+https://gcc.gnu.org/onlinedocs/gcc/Invoking-GCC.html
+https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
+https://gcc.gnu.org/onlinedocs/gcc/i386-and-x86-64-Windows-Options.html
+https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html -->
+<!-- NOTE about LINKEXPORT: passing export-all-symbols to linker may NOT be necessary -->
+<vars
+CMDLINE100="$COMPILER -c $COMPFLAGS $OPTIM $COMPDEFINES $INCLUDE $SRC $LINKLIBS -o$OBJ"
+CMDLINE200="$LINKER $LINKFLAGS $LINKTYPE $LINKOPTIM $LINKEXPORT $OBJS $LINKLIBS -o$EXE"
+CMDLINE250=""
+CMDLINE300="del $OBJ"
+COMPILER="x86_64-w64-mingw32-g++"
+COMPFLAGS="-m64 -mwin32 -mdll -Wall -Wno-sign-compare "
+COMPDEFINES=" $MATLABMEX"
+MATLABMEX=" -DMATLAB_MEX_FILE"
+OPTIMFLAGS="-DNDEBUG -O3"
+INCLUDE="-I&quot;$MATLABROOT\extern\include&quot; -I&quot;$MATLABROOT\simulink\include&quot;"
+DEBUGFLAGS="-g"
+LINKER="x86_64-w64-mingw32-g++"
+LINKFLAGS=" "
+LINKTYPE="-shared "
+LINKEXPORT="-Wl,--export-all-symbols "
+LINKLIBS="-L&quot;$MATLABROOT\extern\lib\$ARCH\microsoft&quot; -L&quot;$MATLABROOT\bin\win64&quot; -lmex -lmx -leng -lmat -lmwlapack -lmwblas -fopenmp -larmadillo -lgomp "
+LINKDEBUGFLAGS="-g"
+LINKOPTIMFLAGS="-O3"
+OBJEXT=".obj"
+LDEXT=".mexw64"
+SETENV="set COMPILER=$COMPILER
+set COMPFLAGS=-c $COMPFLAGS $COMPDEFINES $MATLABMEX
+set OPTIMFLAGS=$OPTIMFLAGS
+set DEBUGFLAGS=$DEBUGFLAGS
+set LINKER=$LINKER
+set LINKFLAGS=$LINKFLAGS $LINKTYPE $LINKLIBS $LINKEXPORT
+set LINKDEBUGFLAGS=-g
+set NAME_OUTPUT=-o &quot;%OUTDIR%%MEX_NAME%%MEX_EXT%&quot;"
+/>
+<client/>
+<locationFinder>
+<MINGWROOT>
+<envVarExists name="MINGWROOT" />
+</MINGWROOT>
+</locationFinder>
+<!-- NOTE 1: The following env tag is evaluated right BEFORE compile and AFTER setup
+(the search for the compiler). So, you can't hard-code the path below.
+NOTE 2: This occurs EVERY TIME you run `mex` to build a MEX file.
+NOTE 3: It is not clear if g++ from the MinGW distributions needs anything
+explicitly added to INCLUDE or LIB. The compiler seems to know the relative
+paths to its own headers and libraries. For example, g++ with MinGW-w64
+knows to look in ..\x86_64-w64-mingw32\include\c++ from it's location for
+the C++ Standard Library headers, g++ with TDM-GCC-64 knows to look in
+..\lib\gcc\x86_64-w64-mingw32\4.9.2\include\c++, etc.
+NOTE 4: LIBPATH is redundant with LIB (see LibrarySearchPath), -->
+<env
+PATH="$MINGWROOT\bin"
+INCLUDE=""
+LIB="$MATLABROOT\lib\$ARCH"
+LIBPATH=""
+/>
+</config>

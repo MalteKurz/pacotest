@@ -1,0 +1,4 @@
+useDynLib(SAtest)
+import(RcppArmadillo)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
