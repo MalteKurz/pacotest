@@ -955,8 +955,11 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int gro
     double h1 = 1/sqrt((double)n1);
     double h2 = 1/sqrt((double)n2);
     
-    arma::mat Xi = arma::randn(N,n1);
-    arma::mat Eta = arma::randn(N,n2);
+    arma::mat Xi(N,n1);
+    arma::mat Eta(N,n2);
+    
+    NormalRand(Xi);
+    NormalRand(Eta);
     
     for (k=0;k<N;k++)
     {

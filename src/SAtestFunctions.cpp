@@ -24,7 +24,7 @@ Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
         forward_exception_to_r( __ex__ );
     }
     catch(...) {
-        ::Rf_error( "c++ exception (unknown reason)" );
+        ::Rf_error( "c++ exception" );
     }
 }
 
@@ -65,7 +65,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
         forward_exception_to_r( __ex__ );
     }
     catch(...) {
-        ::Rf_error( "c++ exception (unknown reason)" );
+        ::Rf_error( "c++ exception" );
     }
 }
 
@@ -95,7 +95,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
         forward_exception_to_r( __ex__ );
     }
     catch(...) {
-        ::Rf_error( "c++ exception (unknown reason)" );
+        ::Rf_error( "c++ exception" );
     }
 }
 

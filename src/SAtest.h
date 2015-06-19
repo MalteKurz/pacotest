@@ -1,4 +1,7 @@
 
+double NormalCDF(double Z);
+void NormalRand(arma::mat &X);
+
 void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double *TestStat, double *pValue, arma::mat &S);
 
 void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int Grouping, double *TestStat, double *pValue);
