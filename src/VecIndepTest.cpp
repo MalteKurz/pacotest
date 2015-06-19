@@ -129,7 +129,8 @@ void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double 
     
     R = (V1dotdot - repmat(V1dot,n,1) - repmat(V1dot.t(),1,n) + V1) % (V2dotdot - repmat(V2dot,n,1) - repmat(V2dot.t(),1,n) + V2);
     
-    arma::mat xi = arma::randn(n,N);
+    arma::mat xi(n,N);
+    NormalRand(xi);
     
     for (i=0;i<N;i++)
     {
