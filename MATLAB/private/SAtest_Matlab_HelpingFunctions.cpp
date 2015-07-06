@@ -46,3 +46,29 @@ void NormalRand(arma::mat &X)
   mxDestroyArray(size);
   mxDestroyArray(Out);
 }
+
+void RandPerm(arma::uvec &X)
+{
+  mxArray *size, *Out;
+  double *PtrSize, *PtrOut;
+  size = mxCreateDoubleMatrix(1,1,mxREAL);
+  PtrSize = mxGetPr(size);
+  PtrSize[0] = (double) X.n_elem;
+  Out = mxCreateDoubleMatrix(PtrSize[0],1,mxREAL);
+  
+  mexCallMATLAB( 1, &Out, 1, &size, "randperm" );
+  
+  PtrOut = mxGetPr(Out);
+  
+  int i;
+  int N = X.n_elem;
+  
+  for (i=0;i<N;i++)
+  {
+      X(i) = PtrOut[i]-1;
+  }
+  
+  mxDestroyArray(size);
+  mxDestroyArray(Out);
+}
+

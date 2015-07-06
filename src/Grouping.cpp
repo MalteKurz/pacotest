@@ -100,6 +100,8 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 
 void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int TestType)
 {
+    unsigned int MinSampleSize = 50;
+    
     unsigned int m;
     if (Wdata.n_cols>1)
     {
@@ -128,8 +130,18 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         Data.cols(2,m+1) = Wdata;
     }
     
+    
 // Split the dataset randomly into two pices
-    Data1 = arma::shuffle(Data,0);
+    //Data1 = arma::shuffle(Data,0);
+    arma::uvec C(2+m);
+    
+    for (i=0;i<m+2;i++)
+    {
+        C(i) = i;
+    }
+    arma::uvec R(n);
+    RandPerm(R);
+    Data1 = Data.submat(R,C);
     
     
     unsigned int n0 = floor(n/2);
@@ -183,7 +195,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
     
     for (j=0;j<m;j++)
     {
-        if (n>=400) // Use the 0.25 and 0.75 quantile only for more than 400 observations
+        if (n>=MinSampleSize*8) // Use the 0.25 and 0.75 quantile only for more than 8*MinSampleSize observations
         {
             for (i=0;i<3;i++)
             {
@@ -234,7 +246,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
     Cols(1) =1;
     
     
-    if ((m>1) && (n>=400)) //If the dimension of the conditioning set is larger than two, a second split is performed
+    if ((m>1) && (n>=MinSampleSize*8)) //If the dimension of the conditioning set is larger than two, a second split is performed
     {
         unsigned int n1 = J(l+1,0)+1;
         unsigned int n2 = n0 - J(l+1,0)-1;
@@ -261,10 +273,10 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         arma::umat J1;
         
         // Prepare the (left) data sets for the second split
-        if (!(l==0 && n<800))
+        if (!(l==0 && n<MinSampleSize*16))
         {
             unsigned int N1;
-            if ((l==0 && n<1600) || (l==1 && n<800) || (l==2 && n<534))
+            if ((l==0 && n<MinSampleSize*32) || (l==1 && n<MinSampleSize*16) || (l==2 && ((double) n< (double) MinSampleSize*32/3)))
             {
                 N1 = 1;
                 J1.set_size(2,1);
@@ -344,11 +356,11 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         arma::umat J2;
         
         // Prepare the (right) data sets for the second split
-        if (!(l==2 && n<800))
+        if (!(l==2 && n<MinSampleSize*16))
         {
             
             unsigned int N2;
-            if ((l==2 && n<1600) || (l==1 && n<800) || (l==0 && n<534))
+            if ((l==2 && n<MinSampleSize*32) || (l==1 && n<MinSampleSize*16) || (l==0 && ((double) n<(double) MinSampleSize*32/3)))
             {
                 N2 = 1;
                 J2.set_size(2,1);
@@ -417,7 +429,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         }
         
         // Final comparison
-        if (!(l==0 && n<800) && !(l==2 && n<800))
+        if (!(l==0 && n<MinSampleSize*16) && !(l==2 && n<MinSampleSize*16))
         {
             arma::mat b(6,1);
             if (TestType == 0)
