@@ -589,7 +589,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
                         
                         break;
                     }
-                    case 5:
+                    case 2:
                     {
                         b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
                         b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
@@ -607,14 +607,14 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
                 if (TestType == 0)
                 {
                     b(0,0) = EqualRankCorrTestStat(U1_1_1,U1_1_2);
-                    b(3,0) = EqualRankCorrTestStat(U1_1_2,U1_2);
-                    b(4,0) = EqualRankCorrTestStat(U1_1_2,U1_2);
+                    b(1,0) = EqualRankCorrTestStat(U1_1_2,U1_2);
+                    b(2,0) = EqualRankCorrTestStat(U1_1_2,U1_2);
                 }
                 else
                 {
                     b(0,0) = EqualCopTestStat(U1_1_1.begin(),U1_1_2.begin(),U1_1_1.n_rows,U1_1_2.n_rows);
-                    b(3,0) = EqualCopTestStat(U1_1_2.begin(),U1_2.begin(),U1_1_2.n_rows,U1_2.n_rows);
-                    b(4,0) = EqualCopTestStat(U1_1_2.begin(),U1_2.begin(),U1_1_2.n_rows,U1_2.n_rows);
+                    b(1,0) = EqualCopTestStat(U1_1_2.begin(),U1_2.begin(),U1_1_2.n_rows,U1_2.n_rows);
+                    b(2,0) = EqualCopTestStat(U1_1_2.begin(),U1_2.begin(),U1_1_2.n_rows,U1_2.n_rows);
                 }
                 
                 
@@ -638,7 +638,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
                         
                         break;
                     }
-                    case 3:
+                    case 1:
                     {
                         b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
                         b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
@@ -651,7 +651,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
                         
                         break;
                     }
-                    case 4:
+                    case 2:
                     {
                         b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
                         b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
