@@ -2,7 +2,12 @@
 
 void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
 {
-    Grouping(Udata, Wdata, Xdata, Ydata, grouping);
+    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, Xdata, Ydata, 50, 0.5);
+}
+
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double MinSampleSize, double TrainingDataPercentage)
+{
+    Grouping(Udata, Wdata, Xdata, Ydata, grouping, MinSampleSize, TrainingDataPercentage);
     
     *TestStat = EqualRankCorrTestStat(Xdata, Ydata);
     
@@ -14,13 +19,23 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int group
 
 void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue)
 {
+    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, 50, 0.5);
+}
+
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue, double MinSampleSize, double TrainingDataPercentage)
+{
     arma::mat Xdata;
     arma::mat Ydata;
     
-    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, Xdata, Ydata);
+    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, Xdata, Ydata, MinSampleSize, TrainingDataPercentage);
 }
 
 void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep)
+{
+     EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep, 50, 0.5);
+}
+
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double MinSampleSize, double TrainingDataPercentage)
 {
     arma::mat Xdata;
     arma::mat Ydata;
@@ -31,7 +46,7 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
         
     for (i=0;i<AggPvalsNumbRep;i++)
     {
-        Grouping(Udata, Wdata, Xdata, Ydata, 1);
+        Grouping(Udata, Wdata, Xdata, Ydata, 1, MinSampleSize, TrainingDataPercentage);
         
         S = EqualRankCorrTestStat(Xdata, Ydata);
         

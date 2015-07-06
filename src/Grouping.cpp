@@ -1,6 +1,5 @@
 #include "SAtest_header.h"
-
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int Grouping)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int Grouping, double MinSampleSize, double TrainingDataPercentage)
 {
     arma::uvec Cols(2);
     
@@ -10,14 +9,25 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
     switch(Grouping){
         case 1: // TreeERC
         {
-            TreeGrouping(Udata, Wdata, Xdata, Ydata, 0);
+            TreeGrouping(Udata, Wdata, Xdata, Ydata, 0, MinSampleSize, TrainingDataPercentage);
             break;
         }
         case 2: // TreeEC
         {
-            TreeGrouping(Udata, Wdata, Xdata, Ydata, 1);
+            TreeGrouping(Udata, Wdata, Xdata, Ydata, 1, MinSampleSize, TrainingDataPercentage);
             break;
         }
+    }
+}
+
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int Grouping)
+{
+    arma::uvec Cols(2);
+    
+    Cols(0) =0;
+    Cols(1) =1;
+    
+    switch(Grouping){
         case 3: // SumMedian
         {
             arma::mat Wsum = sum(Wdata,1);
@@ -98,11 +108,9 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 
 
 
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int TestType)
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int TestType, double MinSampleSize, double TrainingDataPercentage)
 {
-    double MinSampleSize = 50;
-    double TrainigDataPercentage = 0.5;
-    double EvaluationDataPercentage = 1-TrainigDataPercentage;
+    double EvaluationDataPercentage = 1-TrainingDataPercentage;
     
     unsigned int m;
     if (Wdata.n_cols>1)
@@ -147,7 +155,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
     Data1 = Data.submat(R,C);
     
     
-    unsigned int n0 = floor(n*TrainigDataPercentage);
+    unsigned int n0 = floor(n*TrainingDataPercentage);
     arma::mat W1(n0,m);
     arma::mat U1(n0,2);
     
