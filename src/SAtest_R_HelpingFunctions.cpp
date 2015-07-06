@@ -1,5 +1,5 @@
 #include "SAtest_header.h"
-#include <Rcpp.h>
+#include <RcppArmadilloExtensions/sample.h>
 
 double NormalCDF(double Z)
 {
@@ -21,4 +21,10 @@ void NormalRand(arma::mat &X)
     }
   }
 }
-    
+ 
+ void RandPerm(arma::uvec &X)
+ {
+   int N = X.n_elem;
+   X = arma::linspace<arma::uvec>(0,N,N);
+   X = Rcpp::RcppArmadillo::sample(X,N,FALSE);
+ }
