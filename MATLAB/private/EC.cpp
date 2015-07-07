@@ -7,7 +7,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     try
     {
         // Check the number of input arguments.
-        if (nrhs != 4)
+        if (nrhs != 6)
             mexErrMsgTxt("Incorrect number of input arguments.");
         
         // Associate inputs
@@ -17,6 +17,26 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         int N = (int) *NumbBoot;
         double *grouping = mxGetPr(prhs[3]);
         int Group = (int) *grouping;
+        double ExpMinSampleSize;
+        double TrainingDataFraction;
+        if (!mxIsEmpty(prhs[4]))
+        {
+            double *expMinSampleSize = mxGetPr(prhs[4]);
+            ExpMinSampleSize = *expMinSampleSize;
+        }
+        else
+        {
+            ExpMinSampleSize = 50;
+        }
+        if (!mxIsEmpty(prhs[5]))
+        {
+            double *trainingDataFraction = mxGetPr(prhs[5]);
+            TrainingDataFraction = *trainingDataFraction;
+        }
+        else
+        {
+            TrainingDataFraction = 0.5;
+        }
         
         // Check type of input.
         if ( (mxGetClassID(prhs[0]) != mxDOUBLE_CLASS) || (mxGetClassID(prhs[1]) != mxDOUBLE_CLASS) || Udata.n_rows != Wdata.n_rows)
@@ -43,7 +63,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             arma::mat Xdata(1,2);
             arma::mat Ydata(1,2);
             
-            EqualCopTest(Udata, Wdata, N, Group, TestStat, pValue, S, Xdata, Ydata);
+            EqualCopTest(Udata, Wdata, N, Group, TestStat, pValue, S, Xdata, Ydata, ExpMinSampleSize,TrainingDataFraction);
             plhs[3] = armaCreateMxMatrix(Xdata.n_rows, 2);
             armaSetPr(plhs[3], Xdata);
             plhs[4] = armaCreateMxMatrix(Ydata.n_rows, 2);
@@ -51,7 +71,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         }
         else
         {
-            EqualCopTest(Udata, Wdata, N, Group, TestStat, pValue, S);
+            EqualCopTest(Udata, Wdata, N, Group, TestStat, pValue, S, ExpMinSampleSize,TrainingDataFraction);
         }
         
     }

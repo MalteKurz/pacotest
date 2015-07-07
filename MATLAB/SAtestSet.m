@@ -48,6 +48,17 @@ function SAtestOptions = SAtestSet(varargin)
 %                             ProdMedian | ProdThirdsI | ProdThirdsII
 %       GroupedScatterplots = A logical whether grouped scatterplots should
 %                             be produced.
+%       ExpMinSampleSize    = The minimum number of observations which are
+%                             allocated to a group in the decision tree
+%                             learning process. Under the i.i.d. assumption
+%                             for the data generating process it is also
+%                             the minimum expected number of observations
+%                             allocated to a specific group in the
+%                             evaluation data set.
+%                             The default value is 50
+%       TrainingDataFraction= The fraction of data which is used to train
+%                             the decision tree.
+%                             The default value is 0.5
 %   OPTIONS for TestType = EqualRankCorr | ERC
 %       Grouping            = The grouping method which is used to form to
 %                             heterogenuous groups using the information
@@ -62,6 +73,17 @@ function SAtestOptions = SAtestSet(varargin)
 %       GroupedScatterplots = A logical whether grouped scatter plots should
 %                             be produced. This option can not be enabled
 %                             if AggPvalsNumbRep is larger than one.
+%       ExpMinSampleSize    = The minimum number of observations which are
+%                             allocated to a group in the decision tree
+%                             learning process. Under the i.i.d. assumption
+%                             for the data generating process it is also
+%                             the minimum expected number of observations
+%                             allocated to a specific group in the
+%                             evaluation data set.
+%                             The default value is 50
+%       TrainingDataFraction= The fraction of data which is used to train
+%                             the decision tree.
+%                             The default value is 0.5
 %   OPTIONS for TestType = VecIndep | VI
 %       NumbBoot            = The number of bootstrap replications for
 %                             computing p-values using the multiplier
@@ -84,10 +106,14 @@ if (nargin == 0)
     fprintf('                   NumbBoot: [ positive scalar ]\n');
     fprintf('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n');
     fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n\n')
+    fprintf('           ExpMinSampleSize: [ positive scalar ]\n');
+    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n');
     fprintf(' Options for TestType = [ EqualRankCorr | ERC ]:\n');
     fprintf('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n');
     fprintf('            AggPvalsNumbRep: [ positive scalar ]\n');
     fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n\n\')
+    fprintf('           ExpMinSampleSize: [ positive scalar ]\n');
+    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n');
     fprintf(' Options for TestType = [ VecIndep | VI ]:\n');
     fprintf('                   NumbBoot: [ positive scalar ]\n\n');
     
@@ -107,15 +133,15 @@ if nargin == 1 && ischar(varargin{1})
     
     switch TestType
         case {'EC'}
-            DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots'};
-            DefaultOptions = {'EC',1000,'SumMedian',false};
+            DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','ExpMinSampleSize','TrainingDataFraction'};
+            DefaultOptions = {'EC',1000,'SumMedian',false,[],[]};
             structinput = cell(2,length(DefaultFieldNames));
             structinput(1,:) = DefaultFieldNames';
             structinput(2,:) = DefaultOptions';
             SAtestOptions = struct(structinput{:});
         case {'ERC'}
-            DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots'};
-            DefaultOptions = {'ERC','TreeERC',100,false};
+            DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','ExpMinSampleSize','TrainingDataFraction'};
+            DefaultOptions = {'ERC','TreeERC',100,false,50,0.5};
             structinput = cell(2,length(DefaultFieldNames));
             structinput(1,:) = DefaultFieldNames';
             structinput(2,:) = DefaultOptions';
@@ -176,15 +202,15 @@ elseif isstruct(varargin{1})
         
         switch SAtestOptions.TestType
             case {'EC'}
-                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots'};
-                DefaultOptions = {'EC',1000,'SumMedian',false};
+                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','ExpMinSampleSize','TrainingDataFraction'};
+                DefaultOptions = {'EC',1000,'SumMedian',false,[],[]};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
                 SAtestOptions = struct(structinput{:});
             case {'ERC'}
-                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots'};
-                DefaultOptions = {'ERC','TreeERC',100,false};
+                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','ExpMinSampleSize','TrainingDataFraction'};
+                DefaultOptions = {'ERC','TreeERC',100,false,50,0.5};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
@@ -211,6 +237,10 @@ elseif isstruct(varargin{1})
                         SAtestOptions.Grouping = CheckGrouping(FieldValues{i},FieldNames{i});
                     case {'GroupedScatterplots'}
                         SAtestOptions.GroupedScatterplots = CheckLogical(FieldValues{i},FieldNames{i});
+                    case {'ExpMinSampleSize'}
+                        SAtestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
+                    case {'TrainingDataFraction'}
+                        SAtestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -224,6 +254,10 @@ elseif isstruct(varargin{1})
                         SAtestOptions.AggPvalsNumbRep = CheckPosScalar(FieldValues{i},FieldNames{i});
                     case {'GroupedScatterplots'}
                         SAtestOptions.GroupedScatterplots = CheckLogical(FieldValues{i},FieldNames{i});
+                    case {'ExpMinSampleSize'}
+                        SAtestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
+                    case {'TrainingDataFraction'}
+                        SAtestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -276,15 +310,15 @@ else
         
         switch SAtestOptions.TestType
             case {'EC'}
-                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots'};
-                DefaultOptions = {'EC',1000,'SumMedian',false};
+                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','ExpMinSampleSize','TrainingDataFraction'};
+                DefaultOptions = {'EC',1000,'SumMedian',false,[],[]};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
                 SAtestOptions = struct(structinput{:});
             case {'ERC'}
-                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots'};
-                DefaultOptions = {'ERC','TreeERC',100,false};
+                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','ExpMinSampleSize','TrainingDataFraction'};
+                DefaultOptions = {'ERC','TreeERC',100,false,50,0.5};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
@@ -313,6 +347,10 @@ else
                         SAtestOptions.Grouping = CheckGrouping(FieldValues{i},FieldNames{i});
                     case {'GroupedScatterplots'}
                         SAtestOptions.GroupedScatterplots = CheckLogical(FieldValues{i},FieldNames{i});
+                    case {'ExpMinSampleSize'}
+                        SAtestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
+                    case {'TrainingDataFraction'}
+                        SAtestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -326,6 +364,10 @@ else
                         SAtestOptions.AggPvalsNumbRep = CheckPosScalar(FieldValues{i},FieldNames{i});
                     case {'GroupedScatterplots'}
                         SAtestOptions.GroupedScatterplots = CheckLogical(FieldValues{i},FieldNames{i});
+                    case {'ExpMinSampleSize'}
+                        SAtestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
+                    case {'TrainingDataFraction'}
+                        SAtestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -373,6 +415,16 @@ end
 
 end
 
+function Res = CheckFraction(FieldValue,FieldName)
+
+if not(isnumeric(FieldValue)) || (FieldValue <= 0 && FieldValue >= 1)
+    error(['The field ' FieldName ' must be a numeric between 0 and 1.'])
+else
+    Res = FieldValue;
+end
+
+end
+
 function Res = CheckLogical(FieldValue,FieldName)
 
 if not(islogical(FieldValue) || FieldValue == 0 || FieldValue == 1)
@@ -413,7 +465,21 @@ switch SAtestOptions.TestType
                 case {'Grouping'}
                     CheckGrouping(SAtestOptions.(FieldNames{i}),FieldNames{i});
                 case {'GroupedScatterplots'}
-                    SAtestOptions.GroupedScatterplots = CheckLogical(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                    CheckLogical(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                case {'ExpMinSampleSize'}
+                    if strcmp(SAtestOptions.Grouping,'TreeERC') || strcmp(SAtestOptions.Grouping,'TreeEC')
+                        CheckPosScalar(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                    else
+                        SAtestOptions.ExpMinSampleSize = [];
+                        warning('The field ExpMinSampleSize is set to []')
+                    end
+                case {'TrainingDataFraction'}
+                    if strcmp(SAtestOptions.Grouping,'TreeERC') || strcmp(SAtestOptions.Grouping,'TreeEC')
+                        CheckFraction(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                    else
+                        SAtestOptions.TrainingDataFraction = [];
+                        warning('The field TrainingDataFraction is set to []')
+                    end
                 otherwise
                     error([FieldNames{i} ' is no valid field name'])
             end
@@ -435,10 +501,24 @@ switch SAtestOptions.TestType
                         warning('The field AggPvalsNumbRep is set to []')
                     end
                 case {'GroupedScatterplots'}
-                    SAtestOptions.GroupedScatterplots = CheckLogical(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                    CheckLogical(SAtestOptions.(FieldNames{i}),FieldNames{i});
                     if SAtestOptions.GroupedScatterplots && strcmp(SAtestOptions.Grouping,'TreeERC') && SAtestOptions.AggPvalsNumbRep > 1
                         SAtestOptions.GroupedScatterplots = false;
                         warning('GroupedScatterplots is set to FALSE as AggPvalsNumbRep is larger than one')
+                    end
+                case {'ExpMinSampleSize'}
+                    if strcmp(SAtestOptions.Grouping,'TreeERC') || strcmp(SAtestOptions.Grouping,'TreeEC')
+                        CheckPosScalar(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                    else
+                        SAtestOptions.ExpMinSampleSize = [];
+                        warning('The field ExpMinSampleSize is set to []')
+                    end
+                case {'TrainingDataFraction'}
+                    if strcmp(SAtestOptions.Grouping,'TreeERC') || strcmp(SAtestOptions.Grouping,'TreeEC')
+                        CheckFraction(SAtestOptions.(FieldNames{i}),FieldNames{i});
+                    else
+                        SAtestOptions.TrainingDataFraction = [];
+                        warning('The field TrainingDataFraction is set to []')
                     end
                 otherwise
                     error([FieldNames{i} ' is no valid field name'])

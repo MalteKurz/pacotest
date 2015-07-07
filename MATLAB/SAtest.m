@@ -65,14 +65,14 @@ switch SAtestOptions.TestType
         if strcmp(SAtestOptions.Grouping,'TreeERC') && SAtestOptions.AggPvalsNumbRep >1
             % varargout are the p-values that have been aggregated.
             Grouping = 0;
-            [pVal,varargout{1}] = ERC(U,W,Grouping,SAtestOptions.AggPvalsNumbRep);
+            [pVal,varargout{1}] = ERC(U,W,Grouping,SAtestOptions.AggPvalsNumbRep,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
         else
             Grouping = find(strcmp(SAtestOptions.Grouping,{'TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'}));
             if SAtestOptions.GroupedScatterplots
-                [pVal,varargout{1},Xdata,Ydata] = ERC(U,W,Grouping,0);
+                [pVal,varargout{1},Xdata,Ydata] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
                 GroupedScatterplot(Xdata,Ydata);
             else
-                [pVal,varargout{1}] = ERC(U,W,Grouping,0);
+                [pVal,varargout{1}] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
             end
         end
         
@@ -82,10 +82,10 @@ switch SAtestOptions.TestType
     case {'EC'}
         Grouping = find(strcmp(SAtestOptions.Grouping,{'TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'}));
         if SAtestOptions.GroupedScatterplots
-            [pVal,varargout{1},varargout{2},Xdata,Ydata] = EC(U,W,SAtestOptions.NumbBoot,Grouping);
+            [pVal,varargout{1},varargout{2},Xdata,Ydata] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
             GroupedScatterplot(Xdata,Ydata);
         else
-            [pVal,varargout{1},varargout{2}] = EC(U,W,SAtestOptions.NumbBoot,Grouping);
+            [pVal,varargout{1},varargout{2}] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
         end
         
     otherwise

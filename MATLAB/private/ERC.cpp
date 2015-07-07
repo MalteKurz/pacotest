@@ -7,7 +7,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     try
     {
         // Check the number of input arguments.
-        if (nrhs != 4)
+        if (nrhs != 6)
             mexErrMsgTxt("Incorrect number of input arguments.");
         
         // Associate inputs
@@ -17,6 +17,26 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         int Grouping = (int) *grouping;
         double *aggPvalsNumbRep = mxGetPr(prhs[3]);
         int AggPvalsNumbRep = (int) *aggPvalsNumbRep;
+        double ExpMinSampleSize;
+        double TrainingDataFraction;
+        if (!mxIsEmpty(prhs[4]))
+        {
+            double *expMinSampleSize = mxGetPr(prhs[4]);
+            ExpMinSampleSize = *expMinSampleSize;
+        }
+        else
+        {
+            ExpMinSampleSize = 50;
+        }
+        if (!mxIsEmpty(prhs[5]))
+        {
+            double *trainingDataFraction = mxGetPr(prhs[5]);
+            TrainingDataFraction = *trainingDataFraction;
+        }
+        else
+        {
+            TrainingDataFraction = 0.5;
+        }
         
         // Check type of input.
         if ( (mxGetClassID(prhs[0]) != mxDOUBLE_CLASS) || (mxGetClassID(prhs[1]) != mxDOUBLE_CLASS) || Udata.n_rows != Wdata.n_rows || Udata.n_cols != 2 )
@@ -51,14 +71,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             }
             else
             {
-                EqualRankCorrTest(Udata, Wdata, Grouping, TestStat, pValue);
+                EqualRankCorrTest(Udata, Wdata, Grouping, TestStat, pValue, ExpMinSampleSize,TrainingDataFraction);
             }
         }
         else
         {
             arma::mat pValues(AggPvalsNumbRep,1);
             
-            EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep);
+            EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep, ExpMinSampleSize,TrainingDataFraction);
             
             
             plhs[1] = armaCreateMxMatrix(AggPvalsNumbRep, 1);
