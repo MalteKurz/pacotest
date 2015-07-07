@@ -1,13 +1,13 @@
 #include "SAtest_header.h"
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
 {
-    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, Xdata, Ydata, 50, 0.5);
+    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, Xdata, Ydata, 50, 0.5);
 }
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double MinSampleSize, double TrainingDataPercentage)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double MinSampleSize, double TrainingDataPercentage)
 {
-    Grouping(Udata, Wdata, Xdata, Ydata, grouping, MinSampleSize, TrainingDataPercentage);
+    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, MinSampleSize, TrainingDataPercentage);
     
     *TestStat = EqualRankCorrTestStat(Xdata, Ydata);
     
@@ -17,17 +17,17 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int group
     *pValue = 2*(1-NormalCDF(std::abs(*TestStat)));
 }
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue)
 {
-    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, 50, 0.5);
+    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, 50, 0.5);
 }
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int grouping, double *TestStat, double *pValue, double MinSampleSize, double TrainingDataPercentage)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double MinSampleSize, double TrainingDataPercentage)
 {
     arma::mat Xdata;
     arma::mat Ydata;
     
-    EqualRankCorrTest(Udata, Wdata, grouping, TestStat, pValue, Xdata, Ydata, MinSampleSize, TrainingDataPercentage);
+    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, Xdata, Ydata, MinSampleSize, TrainingDataPercentage);
 }
 
 void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep)

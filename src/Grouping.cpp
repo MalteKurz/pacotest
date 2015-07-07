@@ -1,12 +1,12 @@
 #include "SAtest_header.h"
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int Grouping, double MinSampleSize, double TrainingDataPercentage)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double MinSampleSize, double TrainingDataPercentage)
 {
     arma::uvec Cols(2);
     
     Cols(0) =0;
     Cols(1) =1;
     
-    switch(Grouping){
+    switch(GroupingMethod){
         case 1: // TreeERC
         {
             TreeGrouping(Udata, Wdata, Xdata, Ydata, 0, MinSampleSize, TrainingDataPercentage);
@@ -17,17 +17,23 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
             TreeGrouping(Udata, Wdata, Xdata, Ydata, 1, MinSampleSize, TrainingDataPercentage);
             break;
         }
+        default:
+        {
+            Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod);
+            break;
+        }
+            
     }
 }
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int Grouping)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod)
 {
     arma::uvec Cols(2);
     
     Cols(0) =0;
     Cols(1) =1;
     
-    switch(Grouping){
+    switch(GroupingMethod){
         case 3: // SumMedian
         {
             arma::mat Wsum = sum(Wdata,1);

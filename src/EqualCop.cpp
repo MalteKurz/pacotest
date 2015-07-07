@@ -936,12 +936,12 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
     return hh*(A/hh1-2.0*B/hh3+C/hh2);
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int grouping, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata)
 {
-    EqualCopTest(Udata, Wdata, N, grouping, TestStat, pValue, S, Xdata, Ydata, 50, 0.5);
+    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, 50, 0.5);
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int grouping, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata, double MinSampleSize, double TrainingDataPercentage)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata, double MinSampleSize, double TrainingDataPercentage)
 {
     int n1, n2, k;
     
@@ -950,7 +950,7 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int gro
     vector<double> DD(N);
     vector<double> CD(N);
     
-    Grouping(Udata, Wdata, Xdata, Ydata, grouping, MinSampleSize, TrainingDataPercentage);
+    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, MinSampleSize, TrainingDataPercentage);
     
     // Figure out dimensions
     n1 = (int) Xdata.n_rows;
@@ -986,17 +986,17 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int gro
     
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int grouping, double *TestStat, double *pValue, arma::mat &S)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S)
 {
-    EqualCopTest(Udata, Wdata, N, grouping, TestStat, pValue, S, 50, 0.5);
+    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, 50, 0.5);
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int grouping, double *TestStat, double *pValue, arma::mat &S, double MinSampleSize, double TrainingDataPercentage)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, double MinSampleSize, double TrainingDataPercentage)
 {
     arma::mat Xdata;
     arma::mat Ydata;
     
-    EqualCopTest(Udata, Wdata, N, grouping, TestStat, pValue, S, Xdata, Ydata, MinSampleSize, TrainingDataPercentage);
+    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, MinSampleSize, TrainingDataPercentage);
     
 }
 
