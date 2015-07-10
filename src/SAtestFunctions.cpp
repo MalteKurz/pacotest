@@ -29,12 +29,13 @@ Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep=0) {
+Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double EvaluationDataFraction = 0.5) {
     try
     {
         
         int grouping = (int) Grouping;
         int aggPvalsNumbRep = (int) AggPvalsNumbRep;
+        
         
         // Associate outputs
         double pValue;
@@ -45,7 +46,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
             double TestStat;
             arma::mat Xdata(1,2);
             arma::mat Ydata(1,2);
-            EqualRankCorrTest(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata);
+            EqualRankCorrTest(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, EvaluationDataFraction);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata);
         }
@@ -54,7 +55,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
             arma::mat pValues(AggPvalsNumbRep,1);
             arma::mat Xdata(1,2);
             arma::mat Ydata(1,2);
-            EqualRankCorrTest(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep);
+            EqualRankCorrTest(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, EvaluationDataFraction);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues);
         }
@@ -70,7 +71,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
 }
 
 // [[Rcpp::export]]
-Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping) {
+Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double ExpMinSampleSize = 50, double EvaluationDataFraction = 0.5) {
     try
     {
         
@@ -86,7 +87,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
         arma::mat Ydata(1,2);
         Rcpp::List out;
         
-        EqualCopTest(Udata, Wdata, N, grouping, &TestStat, &pValue, S, Xdata, Ydata);
+        EqualCopTest(Udata, Wdata, N, grouping, &TestStat, &pValue, S, Xdata, Ydata, ExpMinSampleSize, EvaluationDataFraction);
         
         out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("S")=S,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata);
         return out;

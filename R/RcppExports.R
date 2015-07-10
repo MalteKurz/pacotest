@@ -5,11 +5,11 @@ VI <- function(Udata, Wdata, NumbBoot) {
     .Call('SAtest_VI', PACKAGE = 'SAtest', Udata, Wdata, NumbBoot)
 }
 
-ERC <- function(Udata, Wdata, Grouping, AggPvalsNumbRep = 0) {
-    .Call('SAtest_ERC', PACKAGE = 'SAtest', Udata, Wdata, Grouping, AggPvalsNumbRep)
+ERC <- function(Udata, Wdata, Grouping, AggPvalsNumbRep = 0, ExpMinSampleSize = 50, EvaluationDataFraction = 0.5) {
+    .Call('SAtest_ERC', PACKAGE = 'SAtest', Udata, Wdata, Grouping, AggPvalsNumbRep, ExpMinSampleSize, EvaluationDataFraction)
 }
 
-EC <- function(Udata, Wdata, NumbBoot, Grouping) {
-    .Call('SAtest_EC', PACKAGE = 'SAtest', Udata, Wdata, NumbBoot, Grouping)
+EC <- function(Udata, Wdata, NumbBoot, Grouping, ExpMinSampleSize = 50, EvaluationDataFraction = 0.5) {
+    .Call('SAtest_EC', PACKAGE = 'SAtest', Udata, Wdata, NumbBoot, Grouping, ExpMinSampleSize, EvaluationDataFraction)
 }
 

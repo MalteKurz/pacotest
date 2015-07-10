@@ -10,12 +10,12 @@ SAtest = function(Udata,W,SAtestOptions){
     {
       # third list element are the p-values that have been aggregated.
       Grouping = 0
-      out = ERC(Udata,W,Grouping,SAtestOptions$AggPvalsNumbRep)
+      out = ERC(Udata,W,Grouping,SAtestOptions$AggPvalsNumbRep,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
     }
     else
     {
       Grouping = which(SAtestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-      out = ERC(Udata,W,Grouping)
+      out = ERC(Udata,W,Grouping,0,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
       if (SAtestOptions$GroupedScatterplots)
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
@@ -25,7 +25,7 @@ SAtest = function(Udata,W,SAtestOptions){
   else if (SAtestOptions$TestType=="EC")
   {
     Grouping = which(SAtestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-    out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping)
+    out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
     if (SAtestOptions$GroupedScatterplots)
     {
       GroupedScatterplot(out$Xdata,out$Ydata)

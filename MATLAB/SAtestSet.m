@@ -105,15 +105,15 @@ if (nargin == 0)
     fprintf(' Options for TestType = [ EqualCop | EC ]:\n');
     fprintf('                   NumbBoot: [ positive scalar ]\n');
     fprintf('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n');
-    fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n\n')
+    fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n')
     fprintf('           ExpMinSampleSize: [ positive scalar ]\n');
-    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n');
+    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n');
     fprintf(' Options for TestType = [ EqualRankCorr | ERC ]:\n');
     fprintf('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n');
     fprintf('            AggPvalsNumbRep: [ positive scalar ]\n');
-    fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n\n\')
+    fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n')
     fprintf('           ExpMinSampleSize: [ positive scalar ]\n');
-    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n');
+    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n');
     fprintf(' Options for TestType = [ VecIndep | VI ]:\n');
     fprintf('                   NumbBoot: [ positive scalar ]\n\n');
     
@@ -417,7 +417,7 @@ end
 
 function Res = CheckFraction(FieldValue,FieldName)
 
-if not(isnumeric(FieldValue)) || (FieldValue <= 0 && FieldValue >= 1)
+if not(isnumeric(FieldValue)) || (FieldValue <= 0 || FieldValue >= 1)
     error(['The field ' FieldName ' must be a numeric between 0 and 1.'])
 else
     Res = FieldValue;

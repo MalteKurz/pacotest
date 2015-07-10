@@ -33,11 +33,10 @@ van de Wiel, M. A., J. Berkhof, and W. N. van Wieringen (2009), "Testing the pre
 Development for \pkg{SAtest} can be followed via the GitHub repository at \url{http://github.com/MalteKurz/SAtest}.
 }
 \examples{
-\dontrun{
 #####################
 # Generate an option file, e.g., the equal rank correlation (ERC)
 # test with default options
-SAtestOptions=SAtestSet(TestType='ERC',AggPvalsNumbRep = 1,GroupedScatterplots=T)
+SAtestOptions=SAtestSet(TestType='ERC',AggPvalsNumbRep = 1,GroupedScatterplots=TRUE)
 
 #####################
 # Use the specified options to test for the simplifying assumption
@@ -90,5 +89,4 @@ U[,2] = (X[,1]^theta*(X[,3]^(-theta)-1)+1)^(-(1+theta)/theta);
 Result = SAtest(U,X[,1],SAtestOptions)
 Result$pValue
 
-}
 }

@@ -5,7 +5,7 @@
 
 \description{ The function can be used to test the simplifying assumption for a bivariate conditional copula using different tests. Three different test types, the Equal Copula (EC) test, the Equal Rank Correlation (ERC) test and the Vectorial Independence (VI) test are implemeted. For all tests different options can be set by generating a SAtestOptions struct using the \code{\link{SAtestSet}} function.}
 
-\usage{
+\details{
 ## Applying a test with default options (cf. SAtestSet).
            out = SAtest(U,W,'EC')
            out = SAtest(U,W,'ERC')

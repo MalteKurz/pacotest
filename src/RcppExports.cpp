@@ -20,8 +20,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ERC
-Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep);
-RcppExport SEXP SAtest_ERC(SEXP UdataSEXP, SEXP WdataSEXP, SEXP GroupingSEXP, SEXP AggPvalsNumbRepSEXP) {
+Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep, double ExpMinSampleSize, double EvaluationDataFraction);
+RcppExport SEXP SAtest_ERC(SEXP UdataSEXP, SEXP WdataSEXP, SEXP GroupingSEXP, SEXP AggPvalsNumbRepSEXP, SEXP ExpMinSampleSizeSEXP, SEXP EvaluationDataFractionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -29,13 +29,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type Wdata(WdataSEXP);
     Rcpp::traits::input_parameter< double >::type Grouping(GroupingSEXP);
     Rcpp::traits::input_parameter< double >::type AggPvalsNumbRep(AggPvalsNumbRepSEXP);
-    __result = Rcpp::wrap(ERC(Udata, Wdata, Grouping, AggPvalsNumbRep));
+    Rcpp::traits::input_parameter< double >::type ExpMinSampleSize(ExpMinSampleSizeSEXP);
+    Rcpp::traits::input_parameter< double >::type EvaluationDataFraction(EvaluationDataFractionSEXP);
+    __result = Rcpp::wrap(ERC(Udata, Wdata, Grouping, AggPvalsNumbRep, ExpMinSampleSize, EvaluationDataFraction));
     return __result;
 END_RCPP
 }
 // EC
-Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping);
-RcppExport SEXP SAtest_EC(SEXP UdataSEXP, SEXP WdataSEXP, SEXP NumbBootSEXP, SEXP GroupingSEXP) {
+Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double ExpMinSampleSize, double EvaluationDataFraction);
+RcppExport SEXP SAtest_EC(SEXP UdataSEXP, SEXP WdataSEXP, SEXP NumbBootSEXP, SEXP GroupingSEXP, SEXP ExpMinSampleSizeSEXP, SEXP EvaluationDataFractionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -43,7 +45,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type Wdata(WdataSEXP);
     Rcpp::traits::input_parameter< double >::type NumbBoot(NumbBootSEXP);
     Rcpp::traits::input_parameter< double >::type Grouping(GroupingSEXP);
-    __result = Rcpp::wrap(EC(Udata, Wdata, NumbBoot, Grouping));
+    Rcpp::traits::input_parameter< double >::type ExpMinSampleSize(ExpMinSampleSizeSEXP);
+    Rcpp::traits::input_parameter< double >::type EvaluationDataFraction(EvaluationDataFractionSEXP);
+    __result = Rcpp::wrap(EC(Udata, Wdata, NumbBoot, Grouping, ExpMinSampleSize, EvaluationDataFraction));
     return __result;
 END_RCPP
 }
