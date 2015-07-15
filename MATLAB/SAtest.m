@@ -76,11 +76,11 @@ switch SAtestOptions.TestType
             end
         end
         
-        if strcmp(SAtestOptions.Grouping,'TreeERC') ||  strcmp(SAtestOptions.Grouping,'TreeEC')
+        if Grouping <= 2
             CondSetDim = size(W,2);
             varargout{2} = ExtractDecisionTree(CondSetDim, SplitVariable, SplitQuantile, SplitThreshold);
             if SAtestOptions.DecisionTreePlot
-                DecisionTreePlot(varargout{2},W);
+                DecisionTreePlot(varargout{2});
             end
         end
         
@@ -96,11 +96,11 @@ switch SAtestOptions.TestType
             [pVal,varargout{1},varargout{2}, SplitVariable, SplitQuantile, SplitThreshold] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
         end
         
-        if strcmp(SAtestOptions.Grouping,'TreeERC') ||  strcmp(SAtestOptions.Grouping,'TreeEC')
+        if Grouping <= 2
             CondSetDim = size(W,2);
             varargout{2} = ExtractDecisionTree(CondSetDim, SplitVariable, SplitQuantile, SplitThreshold);
             if SAtestOptions.DecisionTreePlot
-                DecisionTreePlot(varargout{2},W);
+                DecisionTreePlot(varargout{2});
             end
         end
         
@@ -323,7 +323,7 @@ end
 end
 
 
-function DecisionTreePlot(DecisionTree,W)
+function DecisionTreePlot(DecisionTree)
 %DECISIONTREEPLOT
 % PURPOSE:
 %         The function is internally used to obtain 

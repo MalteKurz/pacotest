@@ -20,7 +20,17 @@ SAtest = function(Udata,W,SAtestOptions){
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
       }
+      if (Grouping<=2)
+      {
+        CondSetDim = ncol(W);
+        out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+        if (SAtestOptions$DecisionTreePlot)
+        {
+        DecisionTreePlot(out$DecisionTree)
+        }
+      }
     }
+    out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
   else if (SAtestOptions$TestType=='EC')
   {
@@ -30,6 +40,16 @@ SAtest = function(Udata,W,SAtestOptions){
     {
       GroupedScatterplot(out$Xdata,out$Ydata)
     }
+    if (Grouping<=2)
+    {
+      CondSetDim = ncol(W);
+      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+      if (SAtestOptions$DecisionTreePlot)
+      {
+        DecisionTreePlot(out$DecisionTree)
+      }
+    }
+    out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
   else if (SAtestOptions$TestType=='VI')
   {
@@ -52,7 +72,7 @@ GroupedScatterplot = function(Xdata,Ydata)
 }
 
 
-ExtractDecisionTree = function(CondSetDim,SplitVariable, SplitQuantile, SplitThreshold)
+ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitThreshold)
 {
   
   Node = list(Variable=NULL,Quantile=NULL,Threshold=NULL)
@@ -154,3 +174,176 @@ ExtractDecisionTree = function(CondSetDim,SplitVariable, SplitQuantile, SplitThr
   return(DecisionTree)
 }
 
+
+DecisionTreePlot = function(DecisionTree)
+{
+  plot.new()
+  par(mfrow=c(1,1))
+  
+  PossibleLeaves = c('LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R')
+  
+  textbox(c(0.45,0.55), 0.85, DecisionTree$CentralNode$Variable,col="blue",lwd=2)
+  
+  textbox(c(0.275,0.325), 0.775, paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE)
+  
+  textbox(c(0.575,0.625), 0.775, paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE)
+  
+  
+  if (!is.null(DecisionTree$LeftNode))
+  {
+    if (!grepl('LL',DecisionTree$LeavesForFinalComparison) || !grepl('LR',DecisionTree$LeavesForFinalComparison))
+    {
+      textbox(c(0.25,0.35), 0.6, DecisionTree$LeftNode$Variable,col="blue",lwd=2)
+      lines(c(0.5,0.3),c(0.8,0.6),lwd=2)
+    }
+    else
+    {
+      textbox(c(0.25,0.35), 0.6, DecisionTree$LeftNode$Variable)
+      lines(c(0.5,0.3),c(0.8,0.6))
+    }
+    
+    textbox(c(0.125,0.175), 0.5, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE)
+    
+    textbox(c(0.325,0.375), 0.5, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE)
+    
+    if (!grepl('LL',DecisionTree$LeavesForFinalComparison))
+    {
+      textbox(c(0.15,0.25), 0.35, 'Group1',col="blue",lwd=2)
+      lines(c(0.3,0.2),c(0.55,0.35),lwd=2)
+    }
+    else
+    {
+      textbox(c(0.15,0.25), 0.35, 'Group1')
+      lines(c(0.3,0.2),c(0.55,0.35))
+    }
+    
+    if (!grepl('LR',DecisionTree$LeavesForFinalComparison))
+    {
+      textbox(c(0.35,0.45), 0.35, 'Group2',col="blue",lwd=2)
+      lines(c(0.3,0.4),c(0.55,0.35),lwd=2)
+    }
+    else
+    {
+      textbox(c(0.35,0.45), 0.35, 'Group2')
+      lines(c(0.3,0.4),c(0.55,0.35))
+    }
+  }
+  else
+  {
+    if (!grepl('L',DecisionTree$LeavesForFinalComparison))
+    {
+      textbox(c(0.25,0.35), 0.6, 'Group1',col="blue",lwd=2)
+      lines(c(0.5,0.3),c(0.8,0.6),lwd=2)
+    }
+    else
+    {
+      textbox(c(0.25,0.35), 0.6, 'Group1')
+      lines(c(0.5,0.3),c(0.8,0.6))
+    }
+  }
+  
+  if (!is.null(DecisionTree$RightNode))
+  {
+    if (!grepl('RL',DecisionTree$LeavesForFinalComparison) || !grepl('RR',DecisionTree$LeavesForFinalComparison))
+    {
+      textbox(c(0.65,0.75), 0.6, DecisionTree$RightNode$Variable,col="blue",lwd=2)
+      lines(c(0.5,0.7),c(0.8,0.6),lwd=2)
+    }
+    else
+    {
+      textbox(c(0.65,0.75), 0.6, DecisionTree$RightNode$Variable)
+      lines(c(0.5,0.7),c(0.8,0.6))
+    }
+    
+    textbox(c(0.475,0.525), 0.5, paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE)
+    
+    textbox(c(0.725,0.775), 0.5, paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE)
+    
+    if (!is.null(DecisionTree$RightNode))
+    {
+      if (!grepl('RL',DecisionTree$LeavesForFinalComparison))
+      {
+        textbox(c(0.75,0.85), 0.35, 'Group3',col="blue",lwd=2)
+        lines(c(0.7,0.8),c(0.55,0.35),lwd=2)
+      }
+      else
+      {
+        textbox(c(0.75,0.85), 0.35, 'Group3')
+        lines(c(0.7,0.8),c(0.55,0.35))
+      }
+      
+      if (!grepl('RR',DecisionTree$LeavesForFinalComparison))
+      {
+        textbox(c(0.55,0.65), 0.35, 'Group4',col="blue",lwd=2)
+        lines(c(0.7,0.6),c(0.55,0.35),lwd=2)
+      }
+      else
+      {
+        textbox(c(0.55,0.65), 0.35, 'Group4')
+        lines(c(0.7,0.6),c(0.55,0.35))
+      }
+    }
+    else
+    {
+      if (!grepl('RL',DecisionTree$LeavesForFinalComparison))
+      {
+        textbox(c(0.75,0.85), 0.35, 'Group2',col="blue",lwd=2)
+        lines(c(0.7,0.8),c(0.55,0.35),lwd=2)
+      }
+      else
+      {
+        textbox(c(0.75,0.85), 0.35, 'Group2')
+        lines(c(0.7,0.8),c(0.55,0.35))
+      }
+      
+      if (!grepl('RR',DecisionTree$LeavesForFinalComparison))
+      {
+        textbox(c(0.55,0.65), 0.35, 'Group3',col="blue",lwd=2)
+        lines(c(0.7,0.6),c(0.55,0.35),lwd=2)
+      }
+      else
+      {
+        textbox(c(0.55,0.65), 0.35, 'Group3')
+        lines(c(0.7,0.6),c(0.55,0.35))
+      }
+    }
+  }
+  
+  else
+  {
+    if (!is.null(DecisionTree$LeftNode))
+    {
+      if (!grepl('R',DecisionTree$LeavesForFinalComparison))
+      {
+        textbox(c(0.65,0.75), 0.6, 'Group3',col="blue",lwd=2)
+        lines(c(0.5,0.7),c(0.8,0.6),lwd=2)
+      }
+      else
+      {
+        textbox(c(0.65,0.75), 0.6, 'Group3')
+        lines(c(0.5,0.7),c(0.8,0.6))
+      }
+    }
+    
+    else
+    {
+      if (!grepl('R',DecisionTree$LeavesForFinalComparison))
+      {
+        textbox(c(0.65,0.75), 0.6, 'Group2',col="blue",lwd=2)
+        lines(c(0.5,0.7),c(0.8,0.6),lwd=2)
+      }
+      else
+      {
+        textbox(c(0.65,0.75), 0.6, 'Group2')
+        lines(c(0.5,0.7),c(0.8,0.6))
+      }
+      
+    }
+    
+  }
+  
+}
+
+  
+  
+  
