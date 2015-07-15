@@ -912,36 +912,27 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
 #pragma omp parallel sections
     {
         {
-        //timestamp_t t0 = get_timestamp();
         IntASquared (&U1[0],&U2[0],&U1plush[0],&U1minush[0],&U2plush[0],&U2minush[0],&UU2[0],Xi,CC,n1,N,h1);
-        //timestamp_t t1 = get_timestamp();
-        //printf("A: %2.5f \n",(double) (t1 - t0) / 1000000);
         }
 #pragma omp section
         {
-            //timestamp_t t2 = get_timestamp();
             IntBSquared (&V1[0],&V2[0],&V1plush[0],&V1minush[0],&V2plush[0],&V2minush[0],&VV1[0],Eta,DD,n2,N,h2);
-            //timestamp_t t3 = get_timestamp();
-            //printf("B: %2.5f \n",(double) (t3 - t2) / 1000000);
         }
 #pragma omp section
         {
-            //timestamp_t t4 = get_timestamp();
             CalcIntAB (&U1[0],&V1[0],&U2[0],&V2[0],&U1plush[0],&U1minush[0],&V1plush[0],&V1minush[0],&U2plush[0],&U2minush[0],&V2plush[0],&V2minush[0],&UV1[0],&UV2[0],Xi,Eta,CD,n1,n2,N,h1,h2);
-            //timestamp_t t5 = get_timestamp();
-            //printf("AB: %2.5f \n",(double) (t5 - t4) / 1000000);
         }
     }
     
     return hh*(A/hh1-2.0*B/hh3+C/hh2);
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata)
+/*void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata)
 {
     EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, 50, 0.5);
-}
+}*/
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
     int n1, n2, k;
     
@@ -950,7 +941,7 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     vector<double> DD(N);
     vector<double> CD(N);
     
-    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction);
+    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
     // Figure out dimensions
     n1 = (int) Xdata.n_rows;
@@ -986,17 +977,17 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S)
+/*void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S)
 {
     EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, 50, 0.5);
-}
+}*/
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
     
-    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction);
+    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
 }
 

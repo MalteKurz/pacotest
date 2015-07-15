@@ -65,14 +65,22 @@ switch SAtestOptions.TestType
         if strcmp(SAtestOptions.Grouping,'TreeERC') && SAtestOptions.AggPvalsNumbRep >1
             % varargout are the p-values that have been aggregated.
             Grouping = 0;
-            [pVal,varargout{1}] = ERC(U,W,Grouping,SAtestOptions.AggPvalsNumbRep,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+            [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold] = ERC(U,W,Grouping,SAtestOptions.AggPvalsNumbRep,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
         else
             Grouping = find(strcmp(SAtestOptions.Grouping,{'TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'}));
             if SAtestOptions.GroupedScatterplots
-                [pVal,varargout{1},Xdata,Ydata] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+                [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold,Xdata,Ydata] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
                 GroupedScatterplot(Xdata,Ydata);
             else
-                [pVal,varargout{1}] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+                [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+            end
+        end
+        
+        if strcmp(SAtestOptions.Grouping,'TreeERC') ||  strcmp(SAtestOptions.Grouping,'TreeEC')
+            CondSetDim = size(W,2);
+            varargout{2} = ExtractDecisionTree(CondSetDim, SplitVariable, SplitQuantile, SplitThreshold);
+            if SAtestOptions.DecisionTreePlot
+                DecisionTreePlot(varargout{2},W);
             end
         end
         
@@ -82,10 +90,18 @@ switch SAtestOptions.TestType
     case {'EC'}
         Grouping = find(strcmp(SAtestOptions.Grouping,{'TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'}));
         if SAtestOptions.GroupedScatterplots
-            [pVal,varargout{1},varargout{2},Xdata,Ydata] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+            [pVal,varargout{1},varargout{2}, SplitVariable, SplitQuantile, SplitThreshold,Xdata,Ydata] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
             GroupedScatterplot(Xdata,Ydata);
         else
-            [pVal,varargout{1},varargout{2}] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+            [pVal,varargout{1},varargout{2}, SplitVariable, SplitQuantile, SplitThreshold] = EC(U,W,SAtestOptions.NumbBoot,Grouping,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
+        end
+        
+        if strcmp(SAtestOptions.Grouping,'TreeERC') ||  strcmp(SAtestOptions.Grouping,'TreeEC')
+            CondSetDim = size(W,2);
+            varargout{2} = ExtractDecisionTree(CondSetDim, SplitVariable, SplitQuantile, SplitThreshold);
+            if SAtestOptions.DecisionTreePlot
+                DecisionTreePlot(varargout{2},W);
+            end
         end
         
     otherwise
@@ -209,3 +225,230 @@ set(gca,'XTick',-4:2:4,'XLim',[-4 4],'YTick',-4:2:4,'YLim',[-4 4])
 
 
 end
+
+
+function DecisionTree = ExtractDecisionTree(CondSetDim,SplitVariable, SplitQuantile, SplitThreshold)
+%EXTRACTDECISIONTREE Extract the decision tree
+% PURPOSE:
+%         The function is internally used to obtain
+%
+%
+% USAGE:
+%          DecisionTree = ExtractDecisionTree(SplitVariable, SplitQuantile, SplitThreshold)
+%
+% INPUTS:
+%        SplitVariable   =
+%        SplitQuantile   =
+%        SplitThreshold  =
+%
+%
+% OUTPUTS:
+%        DecisionTree    =
+%
+%
+%
+% Author: Malte Kurz
+% Revision: 0    Date: 26-Apr-2014
+
+Node = struct('Variable','','Quantile','','Threshold',[]);
+DecisionTree = struct('CentralNode',Node,'LeftNode',[],'RightNode',[],'LeavesForFinalComparison','');
+Quantiles = [25,50,75];
+
+for i=1:size(SplitVariable,1)
+    
+    if SplitVariable(1)+1 <= CondSetDim
+        DecisionTree(i).CentralNode.Variable = ['W' num2str(SplitVariable(1)+1)];
+    else
+        DecisionTree(i).CentralNode.Variable = 'Mean(W)';
+    end
+    DecisionTree(i).CentralNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(1)+1))];
+    DecisionTree(i).CentralNode.Threshold = SplitThreshold(1);
+    
+    if SplitVariable(4) == 6 % The one split only case
+        DecisionTree(i).LeavesForFinalComparison = 'L vs R';
+    elseif SplitVariable(4) < 6
+        
+        if SplitVariable(2)+1 <= CondSetDim
+            DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(2)+1)];
+        else
+            DecisionTree(i).LeftNode.Variable = 'Mean(W)';
+        end
+        DecisionTree(i).LeftNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(2)+1))];
+        DecisionTree(i).LeftNode.Threshold = SplitThreshold(2);
+        
+        if SplitVariable(3)+1 <= CondSetDim
+            DecisionTree(i).RightNode.Variable = ['W' num2str(SplitVariable(3)+1)];
+        else
+            DecisionTree(i).RightNode.Variable = 'Mean(W)';
+        end
+        DecisionTree(i).RightNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(3)+1))];
+        DecisionTree(i).RightNode.Threshold = SplitThreshold(3);
+        
+        PossibleLeaves = {'LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR'};
+        
+        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(4)+1);
+        
+    elseif SplitVariable(4)<13
+        
+        if SplitVariable(2)+1 <= CondSetDim
+            DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(2)+1)];
+        else
+            DecisionTree(i).LeftNode.Variable = 'Mean(W)';
+        end
+        DecisionTree(i).LeftNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(2)+1))];
+        DecisionTree(i).LeftNode.Threshold = SplitThreshold(2);
+        
+        PossibleLeaves = {'LL vs LR','LL vs R','LR vs R','','',''};
+        
+        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(4)-10+1);
+        
+    else
+        
+        if SplitVariable(3)+1 <= CondSetDim
+            DecisionTree(i).RightNode.Variable = ['W' num2str(SplitVariable(3)+1)];
+        else
+            DecisionTree(i).RightNode.Variable = 'Mean(W)';
+        end
+        DecisionTree(i).RightNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(3)+1))];
+        DecisionTree(i).RightNode.Threshold = SplitThreshold(3);
+        
+        PossibleLeaves = {'','','','L vs RL','L vs RR','RL vs RR'};
+        
+        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(4)-10+1);
+        
+    end
+end
+
+
+end
+
+
+function DecisionTreePlot(DecisionTree,W)
+%DECISIONTREEPLOT
+% PURPOSE:
+%         The function is internally used to obtain 
+%
+%
+% USAGE:
+%          DecisionTreePlot(DecisionTree)
+%
+% INPUTS:
+%        DecisionTree    = 
+%
+%
+% OUTPUTS:
+%
+%
+%
+% Author: Malte Kurz
+% Revision: 0    Date: 26-Apr-2014
+
+PossibleLeaves = {'LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R'};
+
+figure
+annotation('textbox', [0.45,0.8,0.1,0.05],'String', DecisionTree.CentralNode.Variable,'LineWidth',3,'Color','b')
+
+annotation('line',[0.5,0.3],[0.8,0.6])
+annotation('textbox', [0.275,0.725,0.05,0.05],'String', ['<=' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none')
+
+annotation('line',[0.5,0.7],[0.8,0.6])
+annotation('textbox', [0.575,0.725,0.05,0.05],'String', ['>' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none')
+
+
+if not(isempty(DecisionTree.LeftNode))
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LL')))) || ...
+            not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LR'))))
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', DecisionTree.LeftNode.Variable,'LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', DecisionTree.LeftNode.Variable)
+    end
+    
+    annotation('line',[0.3,0.2],[0.55,0.35])
+    annotation('textbox', [0.1,0.45,0.05,0.05],'String', ['<=' num2str(DecisionTree.LeftNode.Threshold)],'LineStyle','none')
+    
+    annotation('line',[0.3,0.4],[0.55,0.35])
+    annotation('textbox', [0.35,0.45,0.05,0.05],'String',  ['>' num2str(DecisionTree.LeftNode.Threshold)],'LineStyle','none')
+    
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LL'))))
+        annotation('textbox', [0.15,0.3,0.1,0.05],'String', 'Group1','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.15,0.3,0.1,0.05],'String', 'Group1')
+    end
+    
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LR'))))
+        annotation('textbox', [0.35,0.3,0.1,0.05],'String', 'Group2','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.35,0.3,0.1,0.05],'String', 'Group2')
+    end
+    
+else
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'L'))))
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', 'Group1','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', 'Group1')
+    end
+end
+
+
+if not(isempty(DecisionTree.RightNode))
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL')))) || ...
+            not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
+        annotation('textbox', [0.65,0.55,0.1,0.05],'String', DecisionTree.RightNode.Variable,'LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.65,0.55,0.1,0.05],'String', DecisionTree.RightNode.Variable)
+    end
+    
+    annotation('line',[0.7,0.6],[0.55,0.35])
+    annotation('textbox', [0.5,0.45,0.05,0.05],'String', ['<=' num2str(DecisionTree.RightNode.Threshold)],'LineStyle','none')
+    
+    annotation('line',[0.7,0.8],[0.55,0.35])
+    annotation('textbox', [0.75,0.45,0.05,0.05],'String',  ['>' num2str(DecisionTree.RightNode.Threshold)],'LineStyle','none')
+    
+    if not(isempty(DecisionTree.LeftNode))
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
+        annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3')
+    end
+        
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
+        annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group4','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group4')
+    end
+        
+    else
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
+        annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group2','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group2')
+    end
+        
+    if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
+        annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3','LineWidth',2,'Color','b')
+    else
+        annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3')
+    end
+    end
+    
+else
+    if not(isempty(DecisionTree.LeftNode))
+        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'R'))))
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group3','LineWidth',2,'Color','b')
+        else
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group3')
+        end
+        
+    else
+        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'R'))))
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group2','LineWidth',2,'Color','b')
+        else
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group2')
+        end
+        
+    end
+    
+end
+
+end
+

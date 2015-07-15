@@ -1,57 +1,61 @@
 #include "SAtest_header.h"
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
+/*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
 {
     EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, Xdata, Ydata, 50, 0.5);
-}
+}*/
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction)
+/*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue)
 {
-    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction);
+    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, 50, 0.5);
+}*/
+
+/*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep)
+{
+     EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep, 50, 0.5);
+}*/
+
+
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+{
+    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
     *TestStat = EqualRankCorrTestStat(Xdata, Ydata);
     
-    //boost::math::normal dist(0,1);
-    //*pValue = 2*(1-boost::math::cdf(dist, std::abs(*TestStat)));
-    //*pValue = 2*(1-pnorm(std::abs(*TestStat),0,1,1,0));
     *pValue = 2*(1-NormalCDF(std::abs(*TestStat)));
 }
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue)
-{
-    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, 50, 0.5);
-}
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
     
-    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction);
+    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
 }
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep)
-{
-     EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep, 50, 0.5);
-}
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
     double S;
     int i;
     
-    //boost::math::normal dist(0,1);
-        
+    arma::umat splitVariable(1,4);
+    arma::umat splitQuantile(1,4);
+    arma::mat splitThreshold(1,3);
+    
     for (i=0;i<AggPvalsNumbRep;i++)
     {
-        Grouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction);
+        Grouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
+        
+        SplitVariable.row(i) = splitVariable;
+        SplitQuantile.row(i) = splitQuantile;
+        SplitThreshold.row(i) = splitThreshold;
         
         S = EqualRankCorrTestStat(Xdata, Ydata);
         
-        //pValues(i,0) = 2*(1-boost::math::cdf(dist,std::abs(S)));
-        //pValues(i,0) = 2*(1-pnorm(std::abs(S),0,1,1,0));
         pValues(i,0) = 2*(1-NormalCDF(std::abs(S)));
     }
     
@@ -115,4 +119,3 @@ double EqualRankCorrTestStat(const arma::mat &Xdata, const arma::mat &Ydata)
     
     return nom/sqrt(V);
 }
-

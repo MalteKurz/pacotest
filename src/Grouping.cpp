@@ -1,30 +1,4 @@
 #include "SAtest_header.h"
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction)
-{
-    arma::uvec Cols(2);
-    
-    Cols(0) =0;
-    Cols(1) =1;
-    
-    switch(GroupingMethod){
-        case 1: // TreeERC
-        {
-            TreeGrouping(Udata, Wdata, Xdata, Ydata, 0, ExpMinSampleSize, TrainingDataFraction);
-            break;
-        }
-        case 2: // TreeEC
-        {
-            TreeGrouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction);
-            break;
-        }
-        default:
-        {
-            Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod);
-            break;
-        }
-            
-    }
-}
 
 void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod)
 {
@@ -112,9 +86,35 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 
 
 
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+{
+    arma::uvec Cols(2);
+    
+    Cols(0) =0;
+    Cols(1) =1;
+    
+    switch(GroupingMethod){
+        case 1: // TreeERC
+        {
+            TreeGrouping(Udata, Wdata, Xdata, Ydata, 0, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            break;
+        }
+        case 2: // TreeEC
+        {
+            TreeGrouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            break;
+        }
+        default:
+        {
+            Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod);
+            break;
+        }
+            
+    }
+}
 
 
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int TestType, double ExpMinSampleSize, double TrainingDataFraction)
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int TestType, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
     double EvaluationDataFraction = 1-TrainingDataFraction;
     
@@ -247,14 +247,11 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
     }
     
     
-    // Split at variable k and quantile l
-    unsigned int  k;
-    unsigned int  l;
+    // Split at variable SplitVariable[0] and quantile SplitQuantile[0]
     a = abs(a);
-    a.max(k,l);
+    a.max(SplitVariable[0],SplitQuantile[0]);
     
     
-    double b1,b2,b3;
     arma::uvec B1;
     arma::uvec B2;
     arma::uvec Cols(2);
@@ -265,8 +262,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
     
     if ((m>1) && (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction)) //If the dimension of the conditioning set is larger than two, a second split is performed
     {
-        unsigned int n1 = J(l+1,0)+1;
-        unsigned int n2 = n0 - J(l+1,0)-1;
+        unsigned int n1 = J(SplitQuantile[0]+1,0)+1;
+        unsigned int n2 = n0 - J(SplitQuantile[0]+1,0)-1;
         
         arma::mat W1_1(n1,m);
         arma::mat W1_2(n0-n1,m);
@@ -274,26 +271,24 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         arma::mat U1_2(n0-n1,2);
         
         // First get the conditioning sets for both groups (formed by the first split)
-        W1_1 = A.submat(0,2+k*(m+2),n1-1,m+1+k*(m+2));
-        W1_2 = A.submat(n1,2+k*(m+2),n0-1,m+1+k*(m+2));
+        W1_1 = A.submat(0,2+SplitVariable[0]*(m+2),n1-1,m+1+SplitVariable[0]*(m+2));
+        W1_2 = A.submat(n1,2+SplitVariable[0]*(m+2),n0-1,m+1+SplitVariable[0]*(m+2));
         
         // Get the (pseudo-)observations for both groups (formed by the first split)
-        U1_1 = A.submat(0,k*(m+2),n1-1,1+k*(m+2));
-        U1_2 = A.submat(n1,k*(m+2),n0-1,1+k*(m+2));
+        U1_1 = A.submat(0,SplitVariable[0]*(m+2),n1-1,1+SplitVariable[0]*(m+2));
+        U1_2 = A.submat(n1,SplitVariable[0]*(m+2),n0-1,1+SplitVariable[0]*(m+2));
         
         // Declare some variables
         arma::mat U1_1_1;
         arma::mat U1_1_2;
-        unsigned int  k2;
-        unsigned int  l2;
         arma::mat A1(n1,(m+2)*m);
         arma::umat J1;
         
         // Prepare the (left) data sets for the second split
-        if (!(l==0 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
+        if (!(SplitQuantile[0]==0 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
         {
             unsigned int N1;
-            if ((l==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (l==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (l==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
+            if ((SplitQuantile[0]==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile[0]==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile[0]==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
             {
                 N1 = 1;
                 J1.set_size(2,1);
@@ -350,14 +345,14 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
                 }
             }
             
-            // Split at variable k2 and quantile l2
+            // Split at variable SplitVariable[1] and quantile SplitQuantile[1]
             a1 = abs(a1);
-            a1.max(k2,l2);
+            a1.max(SplitVariable[1],SplitQuantile[1]);
             
             // Get the (pseudo-)observations for both groups
-            unsigned int n3 = J1(l2+1,0)+1;
-            U1_1_1 = A1.submat(0,k2*(m+2),n3-1,1+k2*(m+2));
-            U1_1_2 = A1.submat(n3,k2*(m+2),n1-1,1+k2*(m+2));
+            unsigned int n3 = J1(SplitQuantile[1]+1,0)+1;
+            U1_1_1 = A1.submat(0,SplitVariable[1]*(m+2),n3-1,1+SplitVariable[1]*(m+2));
+            U1_1_2 = A1.submat(n3,SplitVariable[1]*(m+2),n1-1,1+SplitVariable[1]*(m+2));
         }
         
         
@@ -367,17 +362,15 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         // Declare some variables
         arma::mat U1_2_1;
         arma::mat U1_2_2;
-        unsigned int  k3;
-        unsigned int  l3;
         arma::mat A2(n2,(m+2)*m);
         arma::umat J2;
         
         // Prepare the (right) data sets for the second split
-        if (!(l==2 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
+        if (!(SplitQuantile[0]==2 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
         {
             
             unsigned int N2;
-            if ((l==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (l==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (l==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
+            if ((SplitQuantile[0]==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile[0]==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile[0]==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
             {
                 N2 = 1;
                 J2.set_size(2,1);
@@ -434,19 +427,19 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
                 }
             }
             
-            // Split at variable k3 and quantile l3
+            // Split at variable SplitVariable[2] and quantile SplitQuantile[2]
             a2 = abs(a2);
-            a2.max(k3,l3);
+            a2.max(SplitVariable[2],SplitQuantile[2]);
             
             
             // Get the (pseudo-)observations for both groups
-            unsigned int n4 = J2(l3+1,0)+1;
-            U1_2_1 = A2.submat(0,k3*(m+2),n4-1,1+k3*(m+2));
-            U1_2_2 = A2.submat(n4,k3*(m+2),n2-1,1+k3*(m+2));
+            unsigned int n4 = J2(SplitQuantile[2]+1,0)+1;
+            U1_2_1 = A2.submat(0,SplitVariable[2]*(m+2),n4-1,1+SplitVariable[2]*(m+2));
+            U1_2_2 = A2.submat(n4,SplitVariable[2]*(m+2),n2-1,1+SplitVariable[2]*(m+2));
         }
         
         // Final comparison
-        if (!(l==0 && n<ExpMinSampleSize*8/EvaluationDataFraction) && !(l==2 && n<ExpMinSampleSize*8/EvaluationDataFraction))
+        if (!(SplitQuantile[0]==0 && n<ExpMinSampleSize*8/EvaluationDataFraction) && !(SplitQuantile[0]==2 && n<ExpMinSampleSize*8/EvaluationDataFraction))
         {
             arma::mat b(6,1);
             if (TestType == 0)
@@ -469,92 +462,74 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
             }
             
             
-            unsigned int  k4;
-            unsigned int  l4;
             b = abs(b);
-            b.max(k4,l4);
+            b.max(SplitVariable[3],SplitQuantile[3]);
             
             
-            switch(k4){
+            switch(SplitVariable[3]){
                 case 0:
                 {
-                    b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                    b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
+                    SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                    SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
+                    SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                     
-                    B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 );
-                    B2 = arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 );
-                    
-                    //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 ), Cols);
-                    //Ydata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 ), Cols);
+                    B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) <= SplitThreshold[1] );
+                    B2 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) > SplitThreshold[1] );
                     
                     break;
                 }
                 case 1:
                 {
-                    b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                    b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
-                    b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                    SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                    SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
+                    SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                     
-                    B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 );
-                    B2 = arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 );
-                    
-                    //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 ), Cols);
-                    //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 ), Cols);
+                    B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) <= SplitThreshold[1] );
+                    B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) <= SplitThreshold[2] );
                     
                     break;
                 }
                 case 2:
                 {
-                    b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                    b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
-                    b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                    SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                    SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
+                    SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                     
-                    B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 );
-                    B2 = arma::find(W2.col(k) > b1 && W2.col(k3) > b3 );
-                    
-                    //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 ), Cols);
-                    //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) > b3 ), Cols);
+                    B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) <= SplitThreshold[1] );
+                    B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) > SplitThreshold[2] );
                     
                     break;
                 }
                 case 3:
                 {
-                    b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                    b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
-                    b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                    SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                    SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
+                    SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                     
-                    B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 );
-                    B2 = arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 );
-                    
-                    //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 ), Cols);
-                    //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 ), Cols);
+                    B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) > SplitThreshold[1] );
+                    B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) <= SplitThreshold[2] );
                     
                     break;
                 }
                 case 4:
                 {
-                    b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                    b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
-                    b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                    SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                    SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
+                    SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                     
-                    B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 );
-                    B2 = arma::find(W2.col(k) > b1 && W2.col(k3) > b3 );
-                    
-                    //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 ), Cols);
-                    //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) > b3 ), Cols);
+                    B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) > SplitThreshold[1] );
+                    B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) > SplitThreshold[2] );
                     
                     break;
                 }
                 case 5:
                 {
-                    b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                    b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                    SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                    SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
+                    SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                     
-                    B1 = arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 );
-                    B2 = arma::find(W2.col(k) > b1 && W2.col(k3) > b3 );
-                    
-                    //Xdata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 ), Cols);
-                    //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) > b3 ), Cols);
+                    B1 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) <= SplitThreshold[2] );
+                    B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) > SplitThreshold[2] );
                     
                     break;
                 }
@@ -562,57 +537,61 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
         }
         else
         {
-            if (l==0)
+            if (SplitQuantile[0]==0)
             {
-                arma::mat b(3,1);
+                arma::mat b(6,1);
                 if (TestType == 0)
                 {
-                    b(0,0) = EqualRankCorrTestStat(U1_1,U1_2_1);
-                    b(1,0) = EqualRankCorrTestStat(U1_1,U1_2_2);
-                    b(2,0) = EqualRankCorrTestStat(U1_2_1,U1_2_2);
+                    b(0,0) = 0;
+                    b(1,0) = 0;
+                    b(2,0) = 0;
+                    b(3,0) = EqualRankCorrTestStat(U1_1,U1_2_1);
+                    b(4,0) = EqualRankCorrTestStat(U1_1,U1_2_2);
+                    b(5,0) = EqualRankCorrTestStat(U1_2_1,U1_2_2);
                 }
                 else
                 {
-                    b(0,0) = EqualCopTestStat(U1_1.begin(),U1_2_1.begin(),U1_1.n_rows,U1_2_1.n_rows);
-                    b(1,0) = EqualCopTestStat(U1_1.begin(),U1_2_2.begin(),U1_1.n_rows,U1_2_2.n_rows);
-                    b(2,0) = EqualCopTestStat(U1_2_1.begin(),U1_2_2.begin(),U1_2_1.n_rows,U1_2_2.n_rows);
+                    b(0,0) = 0;
+                    b(1,0) = 0;
+                    b(2,0) = 0;
+                    b(3,0) = EqualCopTestStat(U1_1.begin(),U1_2_1.begin(),U1_1.n_rows,U1_2_1.n_rows);
+                    b(4,0) = EqualCopTestStat(U1_1.begin(),U1_2_2.begin(),U1_1.n_rows,U1_2_2.n_rows);
+                    b(5,0) = EqualCopTestStat(U1_2_1.begin(),U1_2_2.begin(),U1_2_1.n_rows,U1_2_2.n_rows);
                 }
                 
                 
-                unsigned int  k4;
-                unsigned int  l4;
                 b = abs(b);
-                b.max(k4,l4);
+                b.max(SplitVariable[3],SplitQuantile[3]);
+                SplitVariable[3] = SplitVariable[3] +10;
                 
-                
-                switch(k4){
-                    case 0:
+                switch(SplitVariable[3]){
+                    case 13:
                     {
-                        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                        b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                        SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                         
-                        B1 = arma::find(W2.col(k) <= b1);
-                        B2 = arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 );
+                        B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0]);
+                        B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) <= SplitThreshold[2] );
                         
                         break;
                     }
-                    case 1:
+                    case 14:
                     {
-                        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                        b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                        SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                         
-                        B1 = arma::find(W2.col(k) <= b1);
-                        B2 = arma::find(W2.col(k) > b1 && W2.col(k3) > b3 );
+                        B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0]);
+                        B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) > SplitThreshold[2] );
                         
                         break;
                     }
-                    case 2:
+                    case 15:
                     {
-                        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                        b3 = arma::as_scalar(A2(J2(l3+1),k3+2+k3*(m+2)));
+                        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                        SplitThreshold[2] = arma::as_scalar(A2(J2(SplitQuantile[2]+1),SplitVariable[2]+2+SplitVariable[2]*(m+2)));
                         
-                        B1 = arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 );
-                        B2 = arma::find(W2.col(k) > b1 && W2.col(k3) > b3 );
+                        B1 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) <= SplitThreshold[2] );
+                        B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0] && W2.col(SplitVariable[2]) > SplitThreshold[2] );
                         
                         break;
                     }
@@ -620,64 +599,60 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
             }
             else
             {
-                arma::mat b(3,1);
+                arma::mat b(6,1);
                 if (TestType == 0)
                 {
                     b(0,0) = EqualRankCorrTestStat(U1_1_1,U1_1_2);
-                    b(1,0) = EqualRankCorrTestStat(U1_1_2,U1_2);
+                    b(1,0) = EqualRankCorrTestStat(U1_1_1,U1_2);
                     b(2,0) = EqualRankCorrTestStat(U1_1_2,U1_2);
+                    b(3,0) = 0;
+                    b(4,0) = 0;
+                    b(5,0) = 0;
                 }
                 else
                 {
                     b(0,0) = EqualCopTestStat(U1_1_1.begin(),U1_1_2.begin(),U1_1_1.n_rows,U1_1_2.n_rows);
-                    b(1,0) = EqualCopTestStat(U1_1_2.begin(),U1_2.begin(),U1_1_2.n_rows,U1_2.n_rows);
+                    b(1,0) = EqualCopTestStat(U1_1_1.begin(),U1_2.begin(),U1_1_1.n_rows,U1_2.n_rows);
                     b(2,0) = EqualCopTestStat(U1_1_2.begin(),U1_2.begin(),U1_1_2.n_rows,U1_2.n_rows);
+                    b(3,0) = 0;
+                    b(4,0) = 0;
+                    b(5,0) = 0;
                 }
                 
                 
-                unsigned int  k4;
-                unsigned int  l4;
                 b = abs(b);
-                b.max(k4,l4);
+                b.max(SplitVariable[3],SplitQuantile[3]);
+                SplitVariable[3] = SplitVariable[3] +10;
                 
                 
-                switch(k4){
-                    case 0:
+                switch(SplitVariable[3]){
+                    case 10:
                     {
-                        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                        b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
+                        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                        SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
                         
-                        B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 );
-                        B2 = arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 );
-                        
-                        //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) <= b2 ), Cols);
-                        //Ydata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 ), Cols);
+                        B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) <= SplitThreshold[1] );
+                        B2 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) > SplitThreshold[1] );
                         
                         break;
                     }
-                    case 1:
+                    case 11:
                     {
-                        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                        b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
+                        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                        SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
                         
-                        B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 );
-                        B2 = arma::find(W2.col(k) > b1);
-                        
-                        //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 ), Cols);
-                        //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) <= b3 ), Cols);
+                        B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) <= SplitThreshold[1] );
+                        B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0]);
                         
                         break;
                     }
-                    case 2:
+                    case 12:
                     {
-                        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
-                        b2 = arma::as_scalar(A1(J1(l2+1),k2+2+k2*(m+2)));
+                        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
+                        SplitThreshold[1] = arma::as_scalar(A1(J1(SplitQuantile[1]+1),SplitVariable[1]+2+SplitVariable[1]*(m+2)));
                         
-                        B1 = arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 );
-                        B2 = arma::find(W2.col(k) > b1);
-                        
-                        //Xdata = U2.submat( arma::find(W2.col(k) <= b1 && W2.col(k2) > b2 ), Cols);
-                        //Ydata = U2.submat( arma::find(W2.col(k) > b1 && W2.col(k3) > b3 ), Cols);
+                        B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0] && W2.col(SplitVariable[1]) > SplitThreshold[1] );
+                        B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0]);
                         
                         break;
                     }
@@ -688,10 +663,11 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xda
     }
     else
     {
-        b1 = arma::as_scalar(A(J(l+1),k+2+k*(m+2)));
+        SplitThreshold[0] = arma::as_scalar(A(J(SplitQuantile[0]+1),SplitVariable[0]+2+SplitVariable[0]*(m+2)));
         
-        B1 = arma::find(W2.col(k) <= b1);
-        B2 = arma::find(W2.col(k) >b1);
+        B1 = arma::find(W2.col(SplitVariable[0]) <= SplitThreshold[0]);
+        B2 = arma::find(W2.col(SplitVariable[0]) > SplitThreshold[0]);
+        SplitVariable[3] = 6;
     }
     
     
