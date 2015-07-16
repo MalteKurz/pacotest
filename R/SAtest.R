@@ -182,63 +182,63 @@ DecisionTreePlot = function(DecisionTree)
   
   PossibleLeaves = c('LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R')
   
-  textbox(c(0.45,0.55), 0.85, DecisionTree$CentralNode$Variable,col="blue",lwd=2)
+  textbox(c(0.425,0.575), 1.05, DecisionTree$CentralNode$Variable,col="blue",lwd=2,justify='c')
   
-  textbox(c(0.275,0.325), 0.775, paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE)
+  textbox(c(0.1,0.3), 0.8, paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
   
-  textbox(c(0.575,0.625), 0.775, paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE)
+  textbox(c(0.7,0.9), 0.8, paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
   
   
   if (!is.null(DecisionTree$LeftNode))
   {
     if (!grepl('LL',DecisionTree$LeavesForFinalComparison) || !grepl('LR',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.25,0.35), 0.6, DecisionTree$LeftNode$Variable,col="blue",lwd=2)
-      lines(c(0.5,0.3),c(0.8,0.6),lwd=2)
+      textbox(c(0.125,0.275), 0.5, DecisionTree$LeftNode$Variable,col="blue",lwd=2,justify='c')
+      lines(c(0.5,0.2),c(0.95,0.5),lwd=2)
     }
     else
     {
-      textbox(c(0.25,0.35), 0.6, DecisionTree$LeftNode$Variable)
-      lines(c(0.5,0.3),c(0.8,0.6))
+      textbox(c(0.125,0.275), 0.6, DecisionTree$LeftNode$Variable,justify='c')
+      lines(c(0.5,0.2),c(0.95,0.5))
     }
     
-    textbox(c(0.125,0.175), 0.5, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE)
+    textbox(c(-0.025,0.125), 0.3, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
     
-    textbox(c(0.325,0.375), 0.5, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE)
+    textbox(c(0.275,0.475), 0.3, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
     
     if (!grepl('LL',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.15,0.25), 0.35, 'Group1',col="blue",lwd=2)
-      lines(c(0.3,0.2),c(0.55,0.35),lwd=2)
+      textbox(c(-0.025,0.125), 0, 'Group1',col="blue",lwd=2,justify='c')
+      lines(c(0.2,0.05),c(0.4,0),lwd=2)
     }
     else
     {
-      textbox(c(0.15,0.25), 0.35, 'Group1')
-      lines(c(0.3,0.2),c(0.55,0.35))
+      textbox(c(-0.025,0.125), 0, 'Group1',justify='c')
+      lines(c(0.2,0.05),c(0.4,0))
     }
     
     if (!grepl('LR',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.35,0.45), 0.35, 'Group2',col="blue",lwd=2)
-      lines(c(0.3,0.4),c(0.55,0.35),lwd=2)
+      textbox(c(0.275,0.425), 0, 'Group2',col="blue",lwd=2,justify='c')
+      lines(c(0.2,0.35),c(0.4,0),lwd=2)
     }
     else
     {
-      textbox(c(0.35,0.45), 0.35, 'Group2')
-      lines(c(0.3,0.4),c(0.55,0.35))
+      textbox(c(0.275,0.425), 0, 'Group2',justify='c')
+      lines(c(0.2,0.35),c(0.4,0))
     }
   }
   else
   {
     if (!grepl('L',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.25,0.35), 0.6, 'Group1',col="blue",lwd=2)
-      lines(c(0.5,0.3),c(0.8,0.6),lwd=2)
+      textbox(c(0.125,0.275), 0.5, 'Group1',col="blue",lwd=2,justify='c')
+      lines(c(0.5,0.2),c(0.95,0.5),lwd=2)
     }
     else
     {
-      textbox(c(0.25,0.35), 0.6, 'Group1')
-      lines(c(0.5,0.3),c(0.8,0.6))
+      textbox(c(0.125,0.275), 0.5, 'Group1',justify='c')
+      lines(c(0.5,0.2),c(0.95,0.5))
     }
   }
   
@@ -246,65 +246,65 @@ DecisionTreePlot = function(DecisionTree)
   {
     if (!grepl('RL',DecisionTree$LeavesForFinalComparison) || !grepl('RR',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.65,0.75), 0.6, DecisionTree$RightNode$Variable,col="blue",lwd=2)
-      lines(c(0.5,0.7),c(0.8,0.6),lwd=2)
+      textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,col="blue",lwd=2,justify='c')
+      lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
     }
     else
     {
-      textbox(c(0.65,0.75), 0.6, DecisionTree$RightNode$Variable)
-      lines(c(0.5,0.7),c(0.8,0.6))
+      textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,justify='c')
+      lines(c(0.5,0.8),c(0.95,0.5))
     }
     
-    textbox(c(0.475,0.525), 0.5, paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE)
+    textbox(c(0.525,0.725), 0.3, paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
     
-    textbox(c(0.725,0.775), 0.5, paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE)
+    textbox(c(0.875,1.075), 0.3, paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
     
     if (!is.null(DecisionTree$RightNode))
     {
       if (!grepl('RL',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.75,0.85), 0.35, 'Group3',col="blue",lwd=2)
-        lines(c(0.7,0.8),c(0.55,0.35),lwd=2)
+        textbox(c(0.875,1.025), 0, 'Group3',col="blue",lwd=2,justify='c')
+        lines(c(0.8,0.95),c(0.4,0),lwd=2)
       }
       else
       {
-        textbox(c(0.75,0.85), 0.35, 'Group3')
-        lines(c(0.7,0.8),c(0.55,0.35))
+        textbox(c(0.875,1.025), 0, 'Group3',justify='c')
+        lines(c(0.8,0.95),c(0.4,0))
       }
       
       if (!grepl('RR',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.55,0.65), 0.35, 'Group4',col="blue",lwd=2)
-        lines(c(0.7,0.6),c(0.55,0.35),lwd=2)
+        textbox(c(0.575,0.725), 0, 'Group4',col="blue",lwd=2,justify='c')
+        lines(c(0.8,0.65),c(0.4,0),lwd=2)
       }
       else
       {
-        textbox(c(0.55,0.65), 0.35, 'Group4')
-        lines(c(0.7,0.6),c(0.55,0.35))
+        textbox(c(0.575,0.725), 0, 'Group4',justify='c')
+        lines(c(0.8,0.65),c(0.4,0))
       }
     }
     else
     {
       if (!grepl('RL',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.75,0.85), 0.35, 'Group2',col="blue",lwd=2)
-        lines(c(0.7,0.8),c(0.55,0.35),lwd=2)
+        textbox(c(0.875,1.025), 0, 'Group2',col="blue",lwd=2,justify='c')
+        lines(c(0.8,0.95),c(0.4,0),lwd=2)
       }
       else
       {
-        textbox(c(0.75,0.85), 0.35, 'Group2')
-        lines(c(0.7,0.8),c(0.55,0.35))
+        textbox(c(0.875,1.025), 0, 'Group2',justify='c')
+        lines(c(0.8,0.95),c(0.4,0))
       }
       
       if (!grepl('RR',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.55,0.65), 0.35, 'Group3',col="blue",lwd=2)
-        lines(c(0.7,0.6),c(0.55,0.35),lwd=2)
+        textbox(c(0.575,0.725), 0, 'Group3',col="blue",lwd=2,justify='c')
+        lines(c(0.8,0.65),c(0.4,0),lwd=2)
       }
       else
       {
-        textbox(c(0.55,0.65), 0.35, 'Group3')
-        lines(c(0.7,0.6),c(0.55,0.35))
+        textbox(c(0.575,0.725), 0, 'Group3',justify='c')
+        lines(c(0.8,0.65),c(0.4,0))
       }
     }
   }
@@ -315,13 +315,13 @@ DecisionTreePlot = function(DecisionTree)
     {
       if (!grepl('R',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.65,0.75), 0.6, 'Group3',col="blue",lwd=2)
-        lines(c(0.5,0.7),c(0.8,0.6),lwd=2)
+        textbox(c(0.725,0.875), 0.5, 'Group3',col="blue",lwd=2,justify='c')
+        lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
       }
       else
       {
-        textbox(c(0.65,0.75), 0.6, 'Group3')
-        lines(c(0.5,0.7),c(0.8,0.6))
+        textbox(c(0.725,0.875), 0.5, 'Group3',justify='c')
+        lines(c(0.5,0.8),c(0.95,0.5))
       }
     }
     
@@ -329,13 +329,13 @@ DecisionTreePlot = function(DecisionTree)
     {
       if (!grepl('R',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.65,0.75), 0.6, 'Group2',col="blue",lwd=2)
-        lines(c(0.5,0.7),c(0.8,0.6),lwd=2)
+        textbox(c(0.725,0.875), 0.5, 'Group2',col="blue",lwd=2,justify='c')
+        lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
       }
       else
       {
-        textbox(c(0.65,0.75), 0.6, 'Group2')
-        lines(c(0.5,0.7),c(0.8,0.6))
+        textbox(c(0.725,0.875), 0.5, 'Group2',justify='c')
+        lines(c(0.5,0.8),c(0.95,0.5))
       }
       
     }
