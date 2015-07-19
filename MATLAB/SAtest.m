@@ -345,7 +345,7 @@ function DecisionTreePlot(DecisionTree)
 
 PossibleLeaves = {'LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R'};
 
-figure
+figure(1)
 annotation('textbox', [0.45,0.8,0.1,0.05],'String', DecisionTree.CentralNode.Variable,'LineWidth',1.5,'Color','b')
 
 annotation('textbox', [0.275,0.725,0.05,0.05],'String', ['<=' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none')
@@ -410,36 +410,36 @@ if not(isempty(DecisionTree.RightNode))
     
     if not(isempty(DecisionTree.LeftNode))
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b')
-            annotation('line',[0.7,0.8],[0.55,0.35],'LineWidth',1.5)
-        else
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3')
-            annotation('line',[0.7,0.8],[0.55,0.35])
-        end
-        
-        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
-            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group4','LineWidth',1.5,'Color','b')
-            annotation('line',[0.7,0.6],[0.55,0.35],'LineWidth',1.5)
-        else
-            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group4')
-            annotation('line',[0.7,0.6],[0.55,0.35])
-        end
-        
-    else
-        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b')
-            annotation('line',[0.7,0.8],[0.55,0.35],'LineWidth',1.5)
-        else
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group2')
-            annotation('line',[0.7,0.8],[0.55,0.35])
-        end
-        
-        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
             annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b')
             annotation('line',[0.7,0.6],[0.55,0.35],'LineWidth',1.5)
         else
             annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3')
             annotation('line',[0.7,0.6],[0.55,0.35])
+        end
+        
+        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group4','LineWidth',1.5,'Color','b')
+            annotation('line',[0.7,0.8],[0.55,0.35],'LineWidth',1.5)
+        else
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group4')
+            annotation('line',[0.7,0.8],[0.55,0.35])
+        end
+        
+    else
+        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
+            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b')
+            annotation('line',[0.7,0.6],[0.55,0.35],'LineWidth',1.5)
+        else
+            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group2')
+            annotation('line',[0.7,0.6],[0.55,0.35])
+        end
+        
+        if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b')
+            annotation('line',[0.7,0.8],[0.55,0.35],'LineWidth',1.5)
+        else
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3')
+            annotation('line',[0.7,0.8],[0.55,0.35])
         end
     end
     
