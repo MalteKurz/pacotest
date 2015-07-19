@@ -256,65 +256,65 @@ Quantiles = [25,50,75];
 
 for i=1:size(SplitVariable,1)
     
-    if SplitVariable(1)+1 <= CondSetDim
-        DecisionTree(i).CentralNode.Variable = ['W' num2str(SplitVariable(1)+1)];
+    if SplitVariable(i,1)+1 <= CondSetDim
+        DecisionTree(i).CentralNode.Variable = ['W' num2str(SplitVariable(i,1)+1)];
     else
         DecisionTree(i).CentralNode.Variable = 'Mean(W)';
     end
-    DecisionTree(i).CentralNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(1)+1))];
-    DecisionTree(i).CentralNode.Threshold = SplitThreshold(1);
+    DecisionTree(i).CentralNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(i,1)+1))];
+    DecisionTree(i).CentralNode.Threshold = SplitThreshold(i,1);
     
-    if SplitVariable(4) == 6 % The one split only case
+    if SplitVariable(i,4) == 6 % The one split only case
         DecisionTree(i).LeavesForFinalComparison = {'L vs R'};
-    elseif SplitVariable(4) < 6
+    elseif SplitVariable(i,4) < 6
         
-        if SplitVariable(2)+1 <= CondSetDim
-            DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(2)+1)];
+        if SplitVariable(i,2)+1 <= CondSetDim
+            DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(i,2)+1)];
         else
             DecisionTree(i).LeftNode.Variable = 'Mean(W)';
         end
-        DecisionTree(i).LeftNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(2)+1))];
-        DecisionTree(i).LeftNode.Threshold = SplitThreshold(2);
+        DecisionTree(i).LeftNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(i,2)+1))];
+        DecisionTree(i).LeftNode.Threshold = SplitThreshold(i,2);
         
-        if SplitVariable(3)+1 <= CondSetDim
-            DecisionTree(i).RightNode.Variable = ['W' num2str(SplitVariable(3)+1)];
+        if SplitVariable(i,3)+1 <= CondSetDim
+            DecisionTree(i).RightNode.Variable = ['W' num2str(SplitVariable(i,3)+1)];
         else
             DecisionTree(i).RightNode.Variable = 'Mean(W)';
         end
-        DecisionTree(i).RightNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(3)+1))];
-        DecisionTree(i).RightNode.Threshold = SplitThreshold(3);
+        DecisionTree(i).RightNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(i,3)+1))];
+        DecisionTree(i).RightNode.Threshold = SplitThreshold(i,3);
         
         PossibleLeaves = {'LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR'};
         
-        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(4)+1);
+        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(i,4)+1);
         
-    elseif SplitVariable(4)<13
+    elseif SplitVariable(i,4)<13
         
         if SplitVariable(2)+1 <= CondSetDim
-            DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(2)+1)];
+            DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(i,2)+1)];
         else
             DecisionTree(i).LeftNode.Variable = 'Mean(W)';
         end
-        DecisionTree(i).LeftNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(2)+1))];
-        DecisionTree(i).LeftNode.Threshold = SplitThreshold(2);
+        DecisionTree(i).LeftNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(i,2)+1))];
+        DecisionTree(i).LeftNode.Threshold = SplitThreshold(i,2);
         
         PossibleLeaves = {'LL vs LR','LL vs R','LR vs R','','',''};
         
-        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(4)-10+1);
+        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(i,4)-10+1);
         
     else
         
-        if SplitVariable(3)+1 <= CondSetDim
-            DecisionTree(i).RightNode.Variable = ['W' num2str(SplitVariable(3)+1)];
+        if SplitVariable(i,3)+1 <= CondSetDim
+            DecisionTree(i).RightNode.Variable = ['W' num2str(SplitVariable(i,3)+1)];
         else
             DecisionTree(i).RightNode.Variable = 'Mean(W)';
         end
-        DecisionTree(i).RightNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(3)+1))];
-        DecisionTree(i).RightNode.Threshold = SplitThreshold(3);
+        DecisionTree(i).RightNode.Quantile = ['Q' num2str(Quantiles(SplitQuantile(i,3)+1))];
+        DecisionTree(i).RightNode.Threshold = SplitThreshold(i,3);
         
         PossibleLeaves = {'','','','L vs RL','L vs RR','RL vs RR'};
         
-        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(4)-10+1);
+        DecisionTree(i).LeavesForFinalComparison = PossibleLeaves(SplitVariable(i,4)-10+1);
         
     end
 end
