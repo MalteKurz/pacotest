@@ -1,4 +1,3 @@
-useDynLib(SAtest)
-import(RcppArmadillo)
 importFrom(Rcpp, evalCpp)
+useDynLib(SAtest)
 export(SAtest, SAtestSet)

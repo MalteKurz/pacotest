@@ -1,4 +1,4 @@
-SAtestSet = function(SAtestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, GroupedScatterplots, NumbBoot){
+SAtestSet = function(SAtestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, GroupedScatterplots, DecisionTreePlot, NumbBoot){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -7,12 +7,14 @@ if(Nargs==0){
     cat('                   NumbBoot: [ positive scalar ]\n')
     cat('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n')
     cat('        GroupedScatterplots: [ logical | 0 | 1 ]\n')
+    cat('           DecisionTreePlot: [ logical | 0 | 1 ]\n')
     cat('           ExpMinSampleSize: [ positive scalar ]\n')
     cat('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n')
     cat(' Options for TestType = [ EqualRankCorr | ERC ]:\n')
     cat('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n')
     cat('            AggPvalsNumbRep: [ positive scalar ]\n')
-    cat('        GroupedScatterplots: [ logical | 0 | 1 ]\n\n')
+    cat('        GroupedScatterplots: [ logical | 0 | 1 ]\n')
+    cat('           DecisionTreePlot: [ logical | 0 | 1 ]\n')
     cat('           ExpMinSampleSize: [ positive scalar ]\n')
     cat('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n')
     cat(' Options for TestType = [ VecIndep | VI ]:\n')
@@ -32,7 +34,7 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
   {
     if (TestType=="ERC" || TestType == "EqualRankCorr")
     {
-      SAtestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      SAtestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(Grouping)))
       {
         SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
@@ -45,6 +47,10 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
       {
         SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
       }
+      if (!(missing(DecisionTreePlot)))
+      {
+        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+      }
       if (!(missing(ExpMinSampleSize)))
       {
         SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
@@ -56,7 +62,7 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
     }
     else if (TestType=="EC" || TestType == "EqualCop")
     {
-      SAtestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      SAtestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(NumbBoot)))
       {
         SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
@@ -68,6 +74,10 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
       if (!(missing(GroupedScatterplots)))
       {
         SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+      }
+      if (!(missing(DecisionTreePlot)))
+      {
+        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
       if (!(missing(ExpMinSampleSize)))
       {
@@ -104,7 +114,7 @@ else
     
     if (TestType=="ERC" || TestType == "EqualRankCorr")
     {
-      SAtestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      SAtestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(Grouping)))
       {
         SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
@@ -117,6 +127,10 @@ else
       {
         SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
       }
+      if (!(missing(DecisionTreePlot)))
+      {
+        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+      }
       if (!(missing(ExpMinSampleSize)))
       {
         SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
@@ -128,7 +142,7 @@ else
     }
     else if (TestType=="EC" || TestType == "EqualCop")
     {
-      SAtestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      SAtestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(NumbBoot)))
       {
         SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
@@ -140,6 +154,10 @@ else
       if (!(missing(GroupedScatterplots)))
       {
         SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+      }
+      if (!(missing(DecisionTreePlot)))
+      {
+        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
       if (!(missing(ExpMinSampleSize)))
       {
@@ -179,6 +197,10 @@ else
     {
       SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
     }
+    if (!(missing(DecisionTreePlot)))
+    {
+      SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+    }
     if (!(missing(ExpMinSampleSize)))
     {
       SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
@@ -202,6 +224,10 @@ else
     if (!(missing(GroupedScatterplots)))
     {
       SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+    }
+    if (!(missing(DecisionTreePlot)))
+    {
+      SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
     }
     if (!(missing(ExpMinSampleSize)))
     {
