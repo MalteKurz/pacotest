@@ -512,7 +512,7 @@ switch SAtestOptions.TestType
                             SAtestOptions.GroupedScatterplots = false;
                             warning('GroupedScatterplots is set to FALSE as AggPvalsNumbRep is larger than one')
                         end
-                    else
+                    elseif not(isempty(SAtestOptions.AggPvalsNumbRep))
                         SAtestOptions.AggPvalsNumbRep = [];
                         warning('The field AggPvalsNumbRep is set to []')
                     end
@@ -527,14 +527,14 @@ switch SAtestOptions.TestType
                 case {'ExpMinSampleSize'}
                     if strcmp(SAtestOptions.Grouping,'TreeERC') || strcmp(SAtestOptions.Grouping,'TreeEC')
                         CheckPosScalar(SAtestOptions.(FieldNames{i}),FieldNames{i});
-                    else
+                    elseif not(isempty(SAtestOptions.ExpMinSampleSize))
                         SAtestOptions.ExpMinSampleSize = [];
                         warning('The field ExpMinSampleSize is set to []')
                     end
                 case {'TrainingDataFraction'}
                     if strcmp(SAtestOptions.Grouping,'TreeERC') || strcmp(SAtestOptions.Grouping,'TreeEC')
                         CheckFraction(SAtestOptions.(FieldNames{i}),FieldNames{i});
-                    else
+                    elseif not(isempty(SAtestOptions.TrainingDataFraction))
                         SAtestOptions.TrainingDataFraction = [];
                         warning('The field TrainingDataFraction is set to []')
                     end
