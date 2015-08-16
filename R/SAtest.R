@@ -1,8 +1,8 @@
 SAtest = function(Udata,W,SAtestOptions){
   
-    SAtestOptions = SAtestSet(SAtestOptions)
-    Udata = as.matrix(Udata)
-    W = as.matrix(W)
+  SAtestOptions = SAtestSet(SAtestOptions)
+  Udata = as.matrix(Udata)
+  W = as.matrix(W)
   
   if (SAtestOptions$TestType=='ERC')
   {
@@ -35,7 +35,11 @@ SAtest = function(Udata,W,SAtestOptions){
         out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
         if (SAtestOptions$DecisionTreePlot)
         {
-        DecisionTreePlot(out$DecisionTree)
+          if (!requireNamespace("plotrix", quietly = TRUE)) {
+            stop("plotrix needed to obtain decision tree plots. Please install it.",
+                 call. = FALSE)
+            DecisionTreePlot(out$DecisionTree)
+          }
         }
       }
     }
@@ -62,7 +66,11 @@ SAtest = function(Udata,W,SAtestOptions){
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
       if (SAtestOptions$DecisionTreePlot)
       {
-        DecisionTreePlot(out$DecisionTree)
+        if (!requireNamespace("plotrix", quietly = TRUE)) {
+          stop("plotrix needed to obtain decision tree plots. Please install it.",
+               call. = FALSE)
+          DecisionTreePlot(out$DecisionTree)
+        }
       }
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
@@ -202,49 +210,49 @@ DecisionTreePlot = function(DecisionTree)
   
   PossibleLeaves = c('LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R')
   
-  textbox(c(0.425,0.575), 1, DecisionTree$CentralNode$Variable,col="blue",lwd=2,justify='c')
+  plotrix::textbox(c(0.425,0.575), 1, DecisionTree$CentralNode$Variable,col="blue",lwd=2,justify='c')
   
-  textbox(c(0.1,0.3), 0.8, paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
+  plotrix::textbox(c(0.1,0.3), 0.8, paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
   
-  textbox(c(0.7,0.9), 0.8, paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
+  plotrix::textbox(c(0.7,0.9), 0.8, paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
   
   
   if (!is.null(DecisionTree$LeftNode))
   {
     if (grepl('LL',DecisionTree$LeavesForFinalComparison) || grepl('LR',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.125,0.275), 0.5, DecisionTree$LeftNode$Variable,col="blue",lwd=2,justify='c')
+      plotrix::textbox(c(0.125,0.275), 0.5, DecisionTree$LeftNode$Variable,col="blue",lwd=2,justify='c')
       lines(c(0.5,0.2),c(0.95,0.5),lwd=2)
     }
     else
     {
-      textbox(c(0.125,0.275), 0.6, DecisionTree$LeftNode$Variable,justify='c')
+      plotrix::textbox(c(0.125,0.275), 0.6, DecisionTree$LeftNode$Variable,justify='c')
       lines(c(0.5,0.2),c(0.95,0.5))
     }
     
-    textbox(c(-0.025,0.125), 0.3, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
+    plotrix::textbox(c(-0.025,0.125), 0.3, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
     
-    textbox(c(0.275,0.475), 0.3, paste('>',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
+    plotrix::textbox(c(0.275,0.475), 0.3, paste('>',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
     
     if (grepl('LL',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(-0.025,0.125), 0.05, 'Group1',col="blue",lwd=2,justify='c')
+      plotrix::textbox(c(-0.025,0.125), 0.05, 'Group1',col="blue",lwd=2,justify='c')
       lines(c(0.2,0.05),c(0.45,0.05),lwd=2)
     }
     else
     {
-      textbox(c(-0.025,0.125), 0.05, 'Group1',justify='c')
+      plotrix::textbox(c(-0.025,0.125), 0.05, 'Group1',justify='c')
       lines(c(0.2,0.05),c(0.45,0.05))
     }
     
     if (grepl('LR',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.275,0.425), 0.05, 'Group2',col="blue",lwd=2,justify='c')
+      plotrix::textbox(c(0.275,0.425), 0.05, 'Group2',col="blue",lwd=2,justify='c')
       lines(c(0.2,0.35),c(0.45,0.05),lwd=2)
     }
     else
     {
-      textbox(c(0.275,0.425), 0.05, 'Group2',justify='c')
+      plotrix::textbox(c(0.275,0.425), 0.05, 'Group2',justify='c')
       lines(c(0.2,0.35),c(0.45,0.05))
     }
   }
@@ -252,12 +260,12 @@ DecisionTreePlot = function(DecisionTree)
   {
     if (grepl('L',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.125,0.275), 0.5, 'Group1',col="blue",lwd=2,justify='c')
+      plotrix::textbox(c(0.125,0.275), 0.5, 'Group1',col="blue",lwd=2,justify='c')
       lines(c(0.5,0.2),c(0.95,0.5),lwd=2)
     }
     else
     {
-      textbox(c(0.125,0.275), 0.5, 'Group1',justify='c')
+      plotrix::textbox(c(0.125,0.275), 0.5, 'Group1',justify='c')
       lines(c(0.5,0.2),c(0.95,0.5))
     }
   }
@@ -266,40 +274,40 @@ DecisionTreePlot = function(DecisionTree)
   {
     if (grepl('RL',DecisionTree$LeavesForFinalComparison) || grepl('RR',DecisionTree$LeavesForFinalComparison))
     {
-      textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,col="blue",lwd=2,justify='c')
+      plotrix::textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,col="blue",lwd=2,justify='c')
       lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
     }
     else
     {
-      textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,justify='c')
+      plotrix::textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,justify='c')
       lines(c(0.5,0.8),c(0.95,0.5))
     }
     
-    textbox(c(0.525,0.725), 0.3, paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
+    plotrix::textbox(c(0.525,0.725), 0.3, paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
     
-    textbox(c(0.875,1.075), 0.3, paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
+    plotrix::textbox(c(0.875,1.075), 0.3, paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
     
     if (!is.null(DecisionTree$RightNode))
     {
       if (grepl('RL',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.575,0.725), 0.05, 'Group3',col="blue",lwd=2,justify='c')
+        plotrix::textbox(c(0.575,0.725), 0.05, 'Group3',col="blue",lwd=2,justify='c')
         lines(c(0.8,0.65),c(0.45,0.05),lwd=2)
       }
       else
       {
-        textbox(c(0.575,0.725), 0.05, 'Group3',justify='c')
+        plotrix::textbox(c(0.575,0.725), 0.05, 'Group3',justify='c')
         lines(c(0.8,0.65),c(0.45,0.05))
       }
       
       if (grepl('RR',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.875,1.025), 0.05, 'Group4',col="blue",lwd=2,justify='c')
+        plotrix::textbox(c(0.875,1.025), 0.05, 'Group4',col="blue",lwd=2,justify='c')
         lines(c(0.8,0.95),c(0.45,0.05),lwd=2)
       }
       else
       {
-        textbox(c(0.875,1.025), 0.05, 'Group4',justify='c')
+        plotrix::textbox(c(0.875,1.025), 0.05, 'Group4',justify='c')
         lines(c(0.8,0.95),c(0.45,0.05))
       }
     }
@@ -307,23 +315,23 @@ DecisionTreePlot = function(DecisionTree)
     {
       if (grepl('RL',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.575,0.725), 0.05, 'Group2',col="blue",lwd=2,justify='c')
+        plotrix::textbox(c(0.575,0.725), 0.05, 'Group2',col="blue",lwd=2,justify='c')
         lines(c(0.8,0.65),c(0.45,0.05),lwd=2)
       }
       else
       {
-        textbox(c(0.575,0.725), 0.05, 'Group2',justify='c')
+        plotrix::textbox(c(0.575,0.725), 0.05, 'Group2',justify='c')
         lines(c(0.8,0.65),c(0.45,0.05))
       }
       
       if (grepl('RR',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.875,1.025), 0.05, 'Group3',col="blue",lwd=2,justify='c')
+        plotrix::textbox(c(0.875,1.025), 0.05, 'Group3',col="blue",lwd=2,justify='c')
         lines(c(0.8,0.95),c(0.45,0.05),lwd=2)
       }
       else
       {
-        textbox(c(0.875,1.025), 0.05, 'Group3',justify='c')
+        plotrix::textbox(c(0.875,1.025), 0.05, 'Group3',justify='c')
         lines(c(0.8,0.95),c(0.45,0.05))
       }
     }
@@ -335,12 +343,12 @@ DecisionTreePlot = function(DecisionTree)
     {
       if (grepl('R',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.725,0.875), 0.5, 'Group3',col="blue",lwd=2,justify='c')
+        plotrix::textbox(c(0.725,0.875), 0.5, 'Group3',col="blue",lwd=2,justify='c')
         lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
       }
       else
       {
-        textbox(c(0.725,0.875), 0.5, 'Group3',justify='c')
+        plotrix::textbox(c(0.725,0.875), 0.5, 'Group3',justify='c')
         lines(c(0.5,0.8),c(0.95,0.5))
       }
     }
@@ -349,12 +357,12 @@ DecisionTreePlot = function(DecisionTree)
     {
       if (grepl('R',DecisionTree$LeavesForFinalComparison))
       {
-        textbox(c(0.725,0.875), 0.5, 'Group2',col="blue",lwd=2,justify='c')
+        plotrix::textbox(c(0.725,0.875), 0.5, 'Group2',col="blue",lwd=2,justify='c')
         lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
       }
       else
       {
-        textbox(c(0.725,0.875), 0.5, 'Group2',justify='c')
+        plotrix::textbox(c(0.725,0.875), 0.5, 'Group2',justify='c')
         lines(c(0.5,0.8),c(0.95,0.5))
       }
       
