@@ -371,17 +371,29 @@ else
             for i=1:length(FieldNames)
                 switch FieldNames{i}
                     case {'Grouping'}
-                         SAtestOptions.Grouping = CheckGrouping(FieldValues{i},FieldNames{i});
+                        SAtestOptions.Grouping = CheckGrouping(FieldValues{i},FieldNames{i});
                     case {'AggPvalsNumbRep'}
-                        SAtestOptions.AggPvalsNumbRep = CheckPosScalar(FieldValues{i},FieldNames{i});
+                        if not(isempty(FieldValues{i}))
+                            SAtestOptions.AggPvalsNumbRep = CheckPosScalar(FieldValues{i},FieldNames{i});
+                        else
+                            SAtestOptions.AggPvalsNumbRep = [];
+                        end
                     case {'GroupedScatterplots'}
                         SAtestOptions.GroupedScatterplots = CheckLogical(FieldValues{i},FieldNames{i});
                     case {'DecisionTreePlot'}
                         SAtestOptions.DecisionTreePlot = CheckLogical(FieldValues{i},FieldNames{i});
                     case {'ExpMinSampleSize'}
-                        SAtestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
+                        if not(isempty(FieldValues{i}))
+                            SAtestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
+                        else
+                            SAtestOptions.ExpMinSampleSize = [];
+                        end
                     case {'TrainingDataFraction'}
-                        SAtestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
+                        if not(isempty(FieldValues{i}))
+                            SAtestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
+                        else
+                            SAtestOptions.TrainingDataFraction = [];
+                        end
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -400,20 +412,20 @@ else
     end
 end
 
-if strcmp(SAtestOptions.TestType,'ERC')
-    if ~strcmp(SAtestOptions.Grouping,'TreeERC')
-        SAtestOptions.AggPvalsNumbRep = [];
-        warning('The field AggPvalsNumbRep is set to []')
-    else
-        if isempty(SAtestOptions.AggPvalsNumbRep)
-            SAtestOptions.AggPvalsNumbRep = 100;
-        end
-        if SAtestOptions.GroupedScatterplots && SAtestOptions.AggPvalsNumbRep > 1
-            SAtestOptions.GroupedScatterplots = false;
-            warning('GroupedScatterplots is set to FALSE as AggPvalsNumbRep is larger than one')
-        end
-    end
-end
+% if strcmp(SAtestOptions.TestType,'ERC')
+%     if ~strcmp(SAtestOptions.Grouping,'TreeERC') && not(isempty(SAtestOptions.AggPvalsNumbRep))
+%         SAtestOptions.AggPvalsNumbRep = [];
+%         warning('The field AggPvalsNumbRep is set to []')
+%     elseif strcmp(SAtestOptions.Grouping,'TreeERC')
+%         if isempty(SAtestOptions.AggPvalsNumbRep)
+%             SAtestOptions.AggPvalsNumbRep = 100;
+%         end
+%         if SAtestOptions.GroupedScatterplots && SAtestOptions.AggPvalsNumbRep > 1
+%             SAtestOptions.GroupedScatterplots = false;
+%             warning('GroupedScatterplots is set to FALSE as AggPvalsNumbRep is larger than one')
+%         end
+%     end
+% end
 
 SAtestOptions = CheckSAtestOptions(SAtestOptions);
 

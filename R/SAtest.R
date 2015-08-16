@@ -17,7 +17,14 @@ SAtest = function(Udata,W,SAtestOptions){
     else
     {
       Grouping = which(SAtestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-      out = ERC(Udata,W,Grouping,0,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+      if (Grouping > 2)
+      {
+        out = ERC(Udata,W,Grouping,0,1,1)
+      }
+      else
+      {
+        out = ERC(Udata,W,Grouping,0,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+      }
       if (SAtestOptions$GroupedScatterplots)
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
@@ -37,7 +44,14 @@ SAtest = function(Udata,W,SAtestOptions){
   else if (SAtestOptions$TestType=='EC')
   {
     Grouping = which(SAtestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-    out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+    if (Grouping > 2)
+    {
+      out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping,1,1)
+    }
+    else
+    {
+      out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+    }
     if (SAtestOptions$GroupedScatterplots)
     {
       GroupedScatterplot(out$Xdata,out$Ydata)

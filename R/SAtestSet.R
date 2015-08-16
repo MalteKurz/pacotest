@@ -1,4 +1,4 @@
-SAtestSet = function(SAtestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, GroupedScatterplots, DecisionTreePlot, NumbBoot){
+SAtestSet = function(SAtestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping= 'TreeERC', AggPvalsNumbRep= 100, ExpMinSampleSize = 50, TrainingDataFraction = 0.5, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, NumbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -39,9 +39,16 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
       {
         SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
       }
-      if (!(missing(AggPvalsNumbRep)))
+      if (!(missing(AggPvalsNumbRep)) && !is.null(AggPvalsNumbRep))
       {
         SAtestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
+      }
+      else
+      {
+        if (is.null(AggPvalsNumbRep))
+        {
+          SAtestOptions$AggPvalsNumbRep = NULL
+        }
       }
       if (!(missing(GroupedScatterplots)))
       {
@@ -51,13 +58,27 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
       {
         SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
-      if (!(missing(ExpMinSampleSize)))
+      if (!(missing(ExpMinSampleSize)) && !is.null(ExpMinSampleSize))
       {
         SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
       }
-      if (!(missing(TrainingDataFraction)))
+      else
+      {
+        if (is.null(ExpMinSampleSize))
+        {
+          SAtestOptions$ExpMinSampleSize = NULL
+        }
+      }
+      if (!(missing(TrainingDataFraction)) && !is.null(TrainingDataFraction))
       {
         SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+      }
+      else
+      {
+        if (is.null(TrainingDataFraction))
+        {
+          SAtestOptions$TrainingDataFraction = NULL
+        }
       }
     }
     else if (TestType=="EC" || TestType == "EqualCop")
@@ -79,13 +100,27 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
       {
         SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
-      if (!(missing(ExpMinSampleSize)))
+      if (!(missing(ExpMinSampleSize)) && !is.null(ExpMinSampleSize))
       {
         SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
       }
-      if (!(missing(TrainingDataFraction)))
+      else
+      {
+        if (is.null(ExpMinSampleSize))
+        {
+          SAtestOptions$ExpMinSampleSize = NULL
+        }
+      }
+      if (!(missing(TrainingDataFraction)) && !is.null(TrainingDataFraction))
       {
         SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+      }
+      else
+      {
+        if (is.null(TrainingDataFraction))
+        {
+          SAtestOptions$TrainingDataFraction = NULL
+        }
       }
     }
     else if (TestType=="VI" || TestType == "VecIndep")
@@ -297,7 +332,7 @@ CheckSAtestOptions = function(SAtestOptions)
   if (SAtestOptions$TestType=="ERC")
   {
     CheckGrouping(SAtestOptions$Grouping,"Grouping")
-      if (SAtestOptions$Grouping=="TreeERC")
+      if (SAtestOptions$Grouping=="TreeERC" || SAtestOptions$Grouping=="TreeEC")
       {
         if (exists('AggPvalsNumbRep', where=SAtestOptions) && SAtestOptions$AggPvalsNumbRep >1 && exists('GroupedScatterplots', where=SAtestOptions) && SAtestOptions$GroupedScatterplots)
         {
@@ -309,10 +344,25 @@ CheckSAtestOptions = function(SAtestOptions)
           CheckPosScalar(SAtestOptions$AggPvalsNumbRep,"AggPvalsNumbRep")
         }
       }
-    else if (exists('AggPvalsNumbRep', where=SAtestOptions) && !is.null(SAtestOptions$AggPvalsNumbRep))
+    else
     {
-      SAtestOptions$AggPvalsNumbRep = NULL;
-      warning('The field AggPvalsNumbRep is set to NULL')
+      if (exists('ExpMinSampleSize', where=SAtestOptions) && !is.null(SAtestOptions$ExpMinSampleSize))
+      {
+        SAtestOptions$ExpMinSampleSize = NULL;
+        warning('The field ExpMinSampleSize is set to NULL')
+      }
+      
+      if (exists('TrainingDataFraction', where=SAtestOptions) && !is.null(SAtestOptions$TrainingDataFraction))
+      {
+        SAtestOptions$TrainingDataFraction = NULL;
+        warning('The field TrainingDataFraction is set to NULL')
+      }
+      
+      if (exists('AggPvalsNumbRep', where=SAtestOptions) && !is.null(SAtestOptions$AggPvalsNumbRep))
+      {
+        SAtestOptions$AggPvalsNumbRep = NULL;
+        warning('The field AggPvalsNumbRep is set to NULL')
+      }
     }
     if (SAtestOptions$Grouping=="TreeERC" || SAtestOptions$Grouping=="TreeEC")
     {
@@ -339,6 +389,20 @@ CheckSAtestOptions = function(SAtestOptions)
       if (exists('TrainingDataFraction', where=SAtestOptions))
       {
         CheckFraction(SAtestOptions$TrainingDataFraction,"TrainingDataFraction")
+      }
+    }
+    else
+    {
+      if (exists('ExpMinSampleSize', where=SAtestOptions) && !is.null(SAtestOptions$ExpMinSampleSize))
+      {
+        SAtestOptions$ExpMinSampleSize = NULL;
+        warning('The field ExpMinSampleSize is set to NULL')
+      }
+      
+      if (exists('TrainingDataFraction', where=SAtestOptions) && !is.null(SAtestOptions$TrainingDataFraction))
+      {
+        SAtestOptions$TrainingDataFraction = NULL;
+        warning('The field TrainingDataFraction is set to NULL')
       }
     }
   }

@@ -71,6 +71,8 @@ switch SAtestOptions.TestType
             if SAtestOptions.GroupedScatterplots
                 [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold,Xdata,Ydata] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
                 GroupedScatterplot(Xdata,Ydata);
+                varargout{3} = Xdata;
+                varargout{4} = Ydata;
             else
                 [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold] = ERC(U,W,Grouping,0,SAtestOptions.ExpMinSampleSize,SAtestOptions.TrainingDataFraction);
             end
@@ -345,50 +347,50 @@ function DecisionTreePlot(DecisionTree)
 
 PossibleLeaves = {'LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R'};
 
-figure(1)
-annotation('textbox', [0.45,0.8,0.1,0.05],'String', DecisionTree.CentralNode.Variable,'LineWidth',1.5,'Color','b')
+figure
+annotation('textbox', [0.45,0.8,0.1,0.05],'String', DecisionTree.CentralNode.Variable,'LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
 
-annotation('textbox', [0.275,0.725,0.05,0.05],'String', ['<=' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none')
+annotation('textbox', [0.3,0.725,0.05,0.05],'String', ['<=' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none','HorizontalAlignment','left','VerticalAlignment','middle','FontSize',15)
 
-annotation('textbox', [0.575,0.725,0.05,0.05],'String', ['>' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none')
+annotation('textbox', [0.575,0.725,0.05,0.05],'String', ['>' num2str(DecisionTree.CentralNode.Threshold)],'LineStyle','none','HorizontalAlignment','left','VerticalAlignment','middle','FontSize',15)
 
 
 if not(isempty(DecisionTree.LeftNode))
     if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LL')))) || ...
             not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LR'))))
-        annotation('textbox', [0.25,0.55,0.1,0.05],'String', DecisionTree.LeftNode.Variable,'LineWidth',1.5,'Color','b')
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', DecisionTree.LeftNode.Variable,'LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.5,0.3],[0.8,0.6],'LineWidth',1.5)
     else
-        annotation('textbox', [0.25,0.55,0.1,0.05],'String', DecisionTree.LeftNode.Variable)
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', DecisionTree.LeftNode.Variable,'HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.5,0.3],[0.8,0.6])
     end
     
-    annotation('textbox', [0.1,0.45,0.05,0.05],'String', ['<=' num2str(DecisionTree.LeftNode.Threshold)],'LineStyle','none')
+    annotation('textbox', [0.125,0.45,0.05,0.05],'String', ['<=' num2str(DecisionTree.LeftNode.Threshold)],'LineStyle','none','HorizontalAlignment','left','VerticalAlignment','middle','FontSize',15)
     
-    annotation('textbox', [0.35,0.45,0.05,0.05],'String',  ['>' num2str(DecisionTree.LeftNode.Threshold)],'LineStyle','none')
+    annotation('textbox', [0.35,0.45,0.05,0.05],'String',  ['>' num2str(DecisionTree.LeftNode.Threshold)],'LineStyle','none','HorizontalAlignment','left','VerticalAlignment','middle','FontSize',15)
     
     if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LL'))))
-        annotation('textbox', [0.15,0.3,0.1,0.05],'String', 'Group1','LineWidth',1.5,'Color','b')
+        annotation('textbox', [0.15,0.3,0.1,0.05],'String', 'Group1','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.3,0.2],[0.55,0.35],'LineWidth',1.5)
     else
-        annotation('textbox', [0.15,0.3,0.1,0.05],'String', 'Group1')
+        annotation('textbox', [0.15,0.3,0.1,0.05],'String', 'Group1','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.3,0.2],[0.55,0.35])
     end
     
     if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'LR'))))
-        annotation('textbox', [0.35,0.3,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b')
+        annotation('textbox', [0.35,0.3,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.3,0.4],[0.55,0.35],'LineWidth',1.5)
     else
-        annotation('textbox', [0.35,0.3,0.1,0.05],'String', 'Group2')
+        annotation('textbox', [0.35,0.3,0.1,0.05],'String', 'Group2','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.3,0.4],[0.55,0.35])
     end
     
 else
     if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'L'))))
-        annotation('textbox', [0.25,0.55,0.1,0.05],'String', 'Group1','LineWidth',1.5,'Color','b')
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', 'Group1','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.5,0.3],[0.8,0.6],'LineWidth',1.5)
     else
-        annotation('textbox', [0.25,0.55,0.1,0.05],'String', 'Group1')
+        annotation('textbox', [0.25,0.55,0.1,0.05],'String', 'Group1','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.5,0.3],[0.8,0.6])
     end
 end
@@ -397,48 +399,48 @@ end
 if not(isempty(DecisionTree.RightNode))
     if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL')))) || ...
             not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
-        annotation('textbox', [0.65,0.55,0.1,0.05],'String', DecisionTree.RightNode.Variable,'LineWidth',1.5,'Color','b')
+        annotation('textbox', [0.65,0.55,0.1,0.05],'String', DecisionTree.RightNode.Variable,'LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.5,0.7],[0.8,0.6],'LineWidth',1.5)
     else
-        annotation('textbox', [0.65,0.55,0.1,0.05],'String', DecisionTree.RightNode.Variable)
+        annotation('textbox', [0.65,0.55,0.1,0.05],'String', DecisionTree.RightNode.Variable,'HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
         annotation('line',[0.5,0.7],[0.8,0.6])
     end
     
-    annotation('textbox', [0.5,0.45,0.05,0.05],'String', ['<=' num2str(DecisionTree.RightNode.Threshold)],'LineStyle','none')
+    annotation('textbox', [0.525,0.45,0.05,0.05],'String', ['<=' num2str(DecisionTree.RightNode.Threshold)],'LineStyle','none','HorizontalAlignment','left','VerticalAlignment','middle','FontSize',15)
     
-    annotation('textbox', [0.75,0.45,0.05,0.05],'String',  ['>' num2str(DecisionTree.RightNode.Threshold)],'LineStyle','none')
+    annotation('textbox', [0.75,0.45,0.05,0.05],'String',  ['>' num2str(DecisionTree.RightNode.Threshold)],'LineStyle','none','HorizontalAlignment','left','VerticalAlignment','middle','FontSize',15)
     
     if not(isempty(DecisionTree.LeftNode))
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
-            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b')
+            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.6],[0.55,0.35],'LineWidth',1.5)
         else
-            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3')
+            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group3','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.6],[0.55,0.35])
         end
         
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group4','LineWidth',1.5,'Color','b')
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group4','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.8],[0.55,0.35],'LineWidth',1.5)
         else
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group4')
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group4','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.8],[0.55,0.35])
         end
         
     else
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RL'))))
-            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b')
+            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.6],[0.55,0.35],'LineWidth',1.5)
         else
-            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group2')
+            annotation('textbox', [0.55,0.3,0.1,0.05],'String', 'Group2','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.6],[0.55,0.35])
         end
         
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'RR'))))
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b')
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.8],[0.55,0.35],'LineWidth',1.5)
         else
-            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3')
+            annotation('textbox', [0.75,0.3,0.1,0.05],'String', 'Group3','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.7,0.8],[0.55,0.35])
         end
     end
@@ -446,19 +448,19 @@ if not(isempty(DecisionTree.RightNode))
 else
     if not(isempty(DecisionTree.LeftNode))
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'R'))))
-            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b')
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group3','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.5,0.7],[0.8,0.6],'LineWidth',1.5)
         else
-            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group3')
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group3','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.5,0.7],[0.8,0.6])
         end
         
     else
         if not(isempty(cell2mat(strfind(DecisionTree.LeavesForFinalComparison,'R'))))
-            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b')
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group2','LineWidth',1.5,'Color','b','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.5,0.7],[0.8,0.6],'LineWidth',1.5)
         else
-            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group2')
+            annotation('textbox', [0.65,0.55,0.1,0.05],'String', 'Group2','HorizontalAlignment','center','VerticalAlignment','middle','FontSize',15)
             annotation('line',[0.5,0.7],[0.8,0.6])
         end
         
