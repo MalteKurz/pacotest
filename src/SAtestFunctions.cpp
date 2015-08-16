@@ -1,5 +1,4 @@
-#include "SAtest_header.h"
-#include <RcppArmadillo.h>
+#include <SAtest_header.h>
 
 // [[Rcpp::export]]
 Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {

@@ -1,4 +1,4 @@
-#include "SAtest_header.h"
+#include <SAtest_header.h>
 
 /*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
 {

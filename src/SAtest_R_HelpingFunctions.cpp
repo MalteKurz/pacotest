@@ -1,4 +1,4 @@
-#include "SAtest_header.h"
+#include <SAtest_header.h>
 #include <RcppArmadilloExtensions/sample.h>
 
 double NormalCDF(double Z)
