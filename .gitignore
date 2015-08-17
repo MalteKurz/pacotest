@@ -1,0 +1,18 @@
+*.Rproj
+.Rproj.user
+.Rhistory
+.RData
+src/*.o
+src/*.so
+src/*.dll
+
+# Vim temporary files
+*~
+
+# Compiled mex files
+MATLAB/private/*.mexa64
+MATLAB/private/*.mexmaci64
+MATLAB/private/*.mexw32
+MATLAB/private/*.mexw64
+
+
