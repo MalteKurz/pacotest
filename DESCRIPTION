@@ -1,11 +1,11 @@
-Package: SAtest
+Package: pacotest
 Type: Package
-Title: Testing the simplifying assumption (SA) in vine copulas
+Title: Testing for partial copulas / the simplifying assumption (SA) in vine copulas
 Version: 0.1
 Date: 2015-03-14
 Author: Malte Kurz
 Maintainer: Malte Kurz <malte.kurz@stat.uni-muenchen.de>
-Description: The SAtest package provides different functions, which allow to test the simplifying assumption in vine copulas.
+Description: The pacotest package provides different functions, which allow to test for partial copulas / the simplifying assumption in vine copulas.
 License: MIT + file LICENSE
 Imports: Rcpp (>= 0.11.4)
 Suggests: plotrix

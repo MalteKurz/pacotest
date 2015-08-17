@@ -1,4 +1,4 @@
-#include "SAtest_header.h"
+#include "pacotest_header.h"
 #include "armaMex.hpp"
 
 
@@ -101,7 +101,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     }
     catch (std::exception& e)
     {
-        std::string msg = std::string("SAtest Error: ") + e.what();
+        std::string msg = std::string("pacotest Error: ") + e.what();
         mexErrMsgTxt(msg.c_str());
     }
     return;

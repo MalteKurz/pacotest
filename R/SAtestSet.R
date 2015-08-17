@@ -1,4 +1,4 @@
-SAtestSet = function(SAtestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping= 'TreeERC', AggPvalsNumbRep= 100, ExpMinSampleSize = 50, TrainingDataFraction = 0.5, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, NumbBoot = 1000){
+pacotestset = function(pacotestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping= 'TreeERC', AggPvalsNumbRep= 100, ExpMinSampleSize = 50, TrainingDataFraction = 0.5, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, NumbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -20,11 +20,11 @@ if(Nargs==0){
     cat(' Options for TestType = [ VecIndep | VI ]:\n')
     cat('                   NumbBoot: [ positive scalar ]\n\n')
 }
-if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
+if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
 {
-  if (nargs()==1 && is.character(SAtestOptions))
+  if (nargs()==1 && is.character(pacotestOptions))
   {
-    TestType = SAtestOptions
+    TestType = pacotestOptions
   }
   if(missing(TestType))
   {
@@ -34,101 +34,101 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
   {
     if (TestType=="ERC" || TestType == "EqualRankCorr")
     {
-      SAtestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      pacotestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(Grouping)))
       {
-        SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
       }
       if (!(missing(AggPvalsNumbRep)) && !is.null(AggPvalsNumbRep))
       {
-        SAtestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
+        pacotestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
       }
       else
       {
         if (is.null(AggPvalsNumbRep))
         {
-          SAtestOptions$AggPvalsNumbRep = NULL
+          pacotestOptions$AggPvalsNumbRep = NULL
         }
       }
       if (!(missing(GroupedScatterplots)))
       {
-        SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
       }
       if (!(missing(DecisionTreePlot)))
       {
-        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
       if (!(missing(ExpMinSampleSize)) && !is.null(ExpMinSampleSize))
       {
-        SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
+        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
       }
       else
       {
         if (is.null(ExpMinSampleSize))
         {
-          SAtestOptions$ExpMinSampleSize = NULL
+          pacotestOptions$ExpMinSampleSize = NULL
         }
       }
       if (!(missing(TrainingDataFraction)) && !is.null(TrainingDataFraction))
       {
-        SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
       }
       else
       {
         if (is.null(TrainingDataFraction))
         {
-          SAtestOptions$TrainingDataFraction = NULL
+          pacotestOptions$TrainingDataFraction = NULL
         }
       }
     }
     else if (TestType=="EC" || TestType == "EqualCop")
     {
-      SAtestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      pacotestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(NumbBoot)))
       {
-        SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
       }
       if (!(missing(Grouping)))
       {
-        SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
       }
       if (!(missing(GroupedScatterplots)))
       {
-        SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
       }
       if (!(missing(DecisionTreePlot)))
       {
-        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
       if (!(missing(ExpMinSampleSize)) && !is.null(ExpMinSampleSize))
       {
-        SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
+        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
       }
       else
       {
         if (is.null(ExpMinSampleSize))
         {
-          SAtestOptions$ExpMinSampleSize = NULL
+          pacotestOptions$ExpMinSampleSize = NULL
         }
       }
       if (!(missing(TrainingDataFraction)) && !is.null(TrainingDataFraction))
       {
-        SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
       }
       else
       {
         if (is.null(TrainingDataFraction))
         {
-          SAtestOptions$TrainingDataFraction = NULL
+          pacotestOptions$TrainingDataFraction = NULL
         }
       }
     }
     else if (TestType=="VI" || TestType == "VecIndep")
     {
-      SAtestOptions = list(TestType = 'VI',NumbBoot=1000)
+      pacotestOptions = list(TestType = 'VI',NumbBoot=1000)
       if (!(missing(NumbBoot)))
       {
-        SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
       }
     }
     else
@@ -139,9 +139,9 @@ if(missing(SAtestOptions) || (nargs()==1 && !is.list(SAtestOptions)))
 }
 else
 {
-  if (!is.list(SAtestOptions) || !exists('TestType', where=SAtestOptions))
+  if (!is.list(pacotestOptions) || !exists('TestType', where=pacotestOptions))
   {
-    stop('The provided SAtestOptions have to be given in a list which has TestType as member.')
+    stop('The provided pacotestOptions have to be given in a list which has TestType as member.')
   }
   if (!(missing(TestType)))
   {
@@ -149,66 +149,66 @@ else
     
     if (TestType=="ERC" || TestType == "EqualRankCorr")
     {
-      SAtestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      pacotestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(Grouping)))
       {
-        SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
       }
       if (!(missing(AggPvalsNumbRep)))
       {
-        SAtestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
+        pacotestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
       }
       if (!(missing(GroupedScatterplots)))
       {
-        SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
       }
       if (!(missing(DecisionTreePlot)))
       {
-        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
       if (!(missing(ExpMinSampleSize)))
       {
-        SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
+        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
       }
       if (!(missing(TrainingDataFraction)))
       {
-        SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
       }
     }
     else if (TestType=="EC" || TestType == "EqualCop")
     {
-      SAtestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
+      pacotestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
       if (!(missing(NumbBoot)))
       {
-        SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
       }
       if (!(missing(Grouping)))
       {
-        SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
       }
       if (!(missing(GroupedScatterplots)))
       {
-        SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
       }
       if (!(missing(DecisionTreePlot)))
       {
-        SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
       }
       if (!(missing(ExpMinSampleSize)))
       {
-        SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
+        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
       }
       if (!(missing(TrainingDataFraction)))
       {
-        SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
       }
     }
     else if (TestType=="VI" || TestType == "VecIndep")
     {
-      SAtestOptions = list(TestType = 'VI',NumbBoot=1000)
+      pacotestOptions = list(TestType = 'VI',NumbBoot=1000)
       if (!(missing(NumbBoot)))
       {
-        SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
       }
     }
     else
@@ -217,68 +217,68 @@ else
     }
   }
   
-  if (SAtestOptions$TestType=="ERC" || SAtestOptions$TestType == "EqualRankCorr")
+  if (pacotestOptions$TestType=="ERC" || pacotestOptions$TestType == "EqualRankCorr")
   {
-    SAtestOptions$TestType = "ERC"
+    pacotestOptions$TestType = "ERC"
     if (!(missing(Grouping)))
     {
-      SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+      pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
     }
     if (!(missing(AggPvalsNumbRep)))
     {
-      SAtestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
+      pacotestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
     }
     if (!(missing(GroupedScatterplots)))
     {
-      SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+      pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
     }
     if (!(missing(DecisionTreePlot)))
     {
-      SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+      pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
     }
     if (!(missing(ExpMinSampleSize)))
     {
-      SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
+      pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
     }
     if (!(missing(TrainingDataFraction)))
     {
-      SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+      pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
     }
   }
-  else if (SAtestOptions$TestType=="EC" || SAtestOptions$TestType == "EqualCop")
+  else if (pacotestOptions$TestType=="EC" || pacotestOptions$TestType == "EqualCop")
   {
-    SAtestOptions$TestType = "EC"
+    pacotestOptions$TestType = "EC"
     if (!(missing(NumbBoot)))
     {
-      SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+      pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
     }
     if (!(missing(Grouping)))
     {
-      SAtestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+      pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
     }
     if (!(missing(GroupedScatterplots)))
     {
-      SAtestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
+      pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
     }
     if (!(missing(DecisionTreePlot)))
     {
-      SAtestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
+      pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
     }
     if (!(missing(ExpMinSampleSize)))
     {
-      SAtestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
+      pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
     }
     if (!(missing(TrainingDataFraction)))
     {
-      SAtestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+      pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
     }
   }
-  else if (SAtestOptions$TestType=="VI" || SAtestOptions$TestType == "VecIndep")
+  else if (pacotestOptions$TestType=="VI" || pacotestOptions$TestType == "VecIndep")
   {
-    SAtestOptions$TestType = "VI"
+    pacotestOptions$TestType = "VI"
     if (!(missing(NumbBoot)))
     {
-      SAtestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+      pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
     }
   }
   else
@@ -286,8 +286,8 @@ else
     stop("No valid TestType.")
   }
 }
-SAtestOptions = CheckSAtestOptions(SAtestOptions)
-return(SAtestOptions)
+pacotestOptions = CheckpacotestOptions(pacotestOptions)
+return(pacotestOptions)
 }
 
 CheckPosScalar = function(Value,Fieldname)
@@ -326,94 +326,94 @@ CheckGrouping = function(Value,Fieldname)
   return(Value)
 }
 
-CheckSAtestOptions = function(SAtestOptions)
+CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (SAtestOptions$TestType=="ERC")
+  if (pacotestOptions$TestType=="ERC")
   {
-    CheckGrouping(SAtestOptions$Grouping,"Grouping")
-      if (SAtestOptions$Grouping=="TreeERC" || SAtestOptions$Grouping=="TreeEC")
+    CheckGrouping(pacotestOptions$Grouping,"Grouping")
+      if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
       {
-        if (exists('AggPvalsNumbRep', where=SAtestOptions) && SAtestOptions$AggPvalsNumbRep >1 && exists('GroupedScatterplots', where=SAtestOptions) && SAtestOptions$GroupedScatterplots)
+        if (exists('AggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$AggPvalsNumbRep >1 && exists('GroupedScatterplots', where=pacotestOptions) && pacotestOptions$GroupedScatterplots)
         {
-          SAtestOptions$GroupedScatterplots = FALSE
+          pacotestOptions$GroupedScatterplots = FALSE
           warning('GroupedScatterplots is set to FALSE as AggPvalsNumbRep is larger than one')
         }
-        if (exists('AggPvalsNumbRep', where=SAtestOptions))
+        if (exists('AggPvalsNumbRep', where=pacotestOptions))
         {
-          CheckPosScalar(SAtestOptions$AggPvalsNumbRep,"AggPvalsNumbRep")
+          CheckPosScalar(pacotestOptions$AggPvalsNumbRep,"AggPvalsNumbRep")
         }
       }
     else
     {
-      if (exists('ExpMinSampleSize', where=SAtestOptions) && !is.null(SAtestOptions$ExpMinSampleSize))
+      if (exists('ExpMinSampleSize', where=pacotestOptions) && !is.null(pacotestOptions$ExpMinSampleSize))
       {
-        SAtestOptions$ExpMinSampleSize = NULL;
+        pacotestOptions$ExpMinSampleSize = NULL;
         warning('The field ExpMinSampleSize is set to NULL')
       }
       
-      if (exists('TrainingDataFraction', where=SAtestOptions) && !is.null(SAtestOptions$TrainingDataFraction))
+      if (exists('TrainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$TrainingDataFraction))
       {
-        SAtestOptions$TrainingDataFraction = NULL;
+        pacotestOptions$TrainingDataFraction = NULL;
         warning('The field TrainingDataFraction is set to NULL')
       }
       
-      if (exists('AggPvalsNumbRep', where=SAtestOptions) && !is.null(SAtestOptions$AggPvalsNumbRep))
+      if (exists('AggPvalsNumbRep', where=pacotestOptions) && !is.null(pacotestOptions$AggPvalsNumbRep))
       {
-        SAtestOptions$AggPvalsNumbRep = NULL;
+        pacotestOptions$AggPvalsNumbRep = NULL;
         warning('The field AggPvalsNumbRep is set to NULL')
       }
     }
-    if (SAtestOptions$Grouping=="TreeERC" || SAtestOptions$Grouping=="TreeEC")
+    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
     {
-      if (exists('ExpMinSampleSize', where=SAtestOptions))
+      if (exists('ExpMinSampleSize', where=pacotestOptions))
       {
-        CheckPosScalar(SAtestOptions$ExpMinSampleSize,"ExpMinSampleSize")
+        CheckPosScalar(pacotestOptions$ExpMinSampleSize,"ExpMinSampleSize")
       }
-      if (exists('TrainingDataFraction', where=SAtestOptions))
+      if (exists('TrainingDataFraction', where=pacotestOptions))
       {
-        CheckFraction(SAtestOptions$TrainingDataFraction,"TrainingDataFraction")
+        CheckFraction(pacotestOptions$TrainingDataFraction,"TrainingDataFraction")
       }
     }
   }
-  else if (SAtestOptions$TestType=="EC")
+  else if (pacotestOptions$TestType=="EC")
   {
-    CheckPosScalar(SAtestOptions$NumbBoot,"NumbBoot")
-    CheckGrouping(SAtestOptions$Grouping,"Grouping")
-    if (SAtestOptions$Grouping=="TreeERC" || SAtestOptions$Grouping=="TreeEC")
+    CheckPosScalar(pacotestOptions$NumbBoot,"NumbBoot")
+    CheckGrouping(pacotestOptions$Grouping,"Grouping")
+    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
     {
-      if (exists('ExpMinSampleSize', where=SAtestOptions))
+      if (exists('ExpMinSampleSize', where=pacotestOptions))
       {
-        CheckPosScalar(SAtestOptions$ExpMinSampleSize,"ExpMinSampleSize")
+        CheckPosScalar(pacotestOptions$ExpMinSampleSize,"ExpMinSampleSize")
       }
-      if (exists('TrainingDataFraction', where=SAtestOptions))
+      if (exists('TrainingDataFraction', where=pacotestOptions))
       {
-        CheckFraction(SAtestOptions$TrainingDataFraction,"TrainingDataFraction")
+        CheckFraction(pacotestOptions$TrainingDataFraction,"TrainingDataFraction")
       }
     }
     else
     {
-      if (exists('ExpMinSampleSize', where=SAtestOptions) && !is.null(SAtestOptions$ExpMinSampleSize))
+      if (exists('ExpMinSampleSize', where=pacotestOptions) && !is.null(pacotestOptions$ExpMinSampleSize))
       {
-        SAtestOptions$ExpMinSampleSize = NULL;
+        pacotestOptions$ExpMinSampleSize = NULL;
         warning('The field ExpMinSampleSize is set to NULL')
       }
       
-      if (exists('TrainingDataFraction', where=SAtestOptions) && !is.null(SAtestOptions$TrainingDataFraction))
+      if (exists('TrainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$TrainingDataFraction))
       {
-        SAtestOptions$TrainingDataFraction = NULL;
+        pacotestOptions$TrainingDataFraction = NULL;
         warning('The field TrainingDataFraction is set to NULL')
       }
     }
   }
-  else if (SAtestOptions$TestType=="VI")
+  else if (pacotestOptions$TestType=="VI")
   {
-    CheckPosScalar(SAtestOptions$NumbBoot,"NumbBoot")
+    CheckPosScalar(pacotestOptions$NumbBoot,"NumbBoot")
   }
   else
   {
-    stop("No valid SAtestOptions$TestType.")
+    stop("No valid pacotestOptions$TestType.")
   }
   
-  return(SAtestOptions)
+  return(pacotestOptions)
 }

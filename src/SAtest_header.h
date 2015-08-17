@@ -38,7 +38,7 @@ inline int IndTria(int i, int j, int n)
 
 
 // User written headers
-#include "SAtest.h"
+#include "pacotest.h"
 
 #endif
 

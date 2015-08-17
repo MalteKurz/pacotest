@@ -1,4 +1,4 @@
-#include <SAtest_header.h>
+#include <pacotest_header.h>
 
 void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod)
 {

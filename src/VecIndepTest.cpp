@@ -1,4 +1,4 @@
-#include <SAtest_header.h>
+#include <pacotest_header.h>
 
 
 void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double *TestStat, double *pValue, arma::mat &S)

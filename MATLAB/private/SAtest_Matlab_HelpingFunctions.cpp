@@ -1,4 +1,4 @@
-#include "SAtest_header.h"
+#include "pacotest_header.h"
 #include <mex.h>
 
 double NormalCDF(double Z)

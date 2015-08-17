@@ -1,31 +1,31 @@
-SAtest = function(Udata,W,SAtestOptions){
+pacotest = function(Udata,W,pacotestOptions){
   
-  SAtestOptions = SAtestSet(SAtestOptions)
+  pacotestOptions = pacotestset(pacotestOptions)
   Udata = as.matrix(Udata)
   W = as.matrix(W)
   
-  if (SAtestOptions$TestType=='ERC')
+  if (pacotestOptions$TestType=='ERC')
   {
-    if (SAtestOptions$Grouping=='TreeERC' && SAtestOptions$AggPvalsNumbRep > 1)
+    if (pacotestOptions$Grouping=='TreeERC' && pacotestOptions$AggPvalsNumbRep > 1)
     {
       # third list element are the p-values that have been aggregated.
       Grouping = 0
-      out = ERC(Udata,W,Grouping,SAtestOptions$AggPvalsNumbRep,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+      out = ERC(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
     }
     else
     {
-      Grouping = which(SAtestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+      Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
       if (Grouping > 2)
       {
         out = ERC(Udata,W,Grouping,0,1,1)
       }
       else
       {
-        out = ERC(Udata,W,Grouping,0,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+        out = ERC(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
-      if (SAtestOptions$GroupedScatterplots)
+      if (pacotestOptions$GroupedScatterplots)
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
       }
@@ -33,7 +33,7 @@ SAtest = function(Udata,W,SAtestOptions){
       {
         CondSetDim = ncol(W);
         out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
-        if (SAtestOptions$DecisionTreePlot)
+        if (pacotestOptions$DecisionTreePlot)
         {
           if (!requireNamespace("plotrix", quietly = TRUE)) {
             stop("plotrix needed to obtain decision tree plots. Please install it.",
@@ -45,18 +45,18 @@ SAtest = function(Udata,W,SAtestOptions){
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
-  else if (SAtestOptions$TestType=='EC')
+  else if (pacotestOptions$TestType=='EC')
   {
-    Grouping = which(SAtestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
     if (Grouping > 2)
     {
-      out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping,1,1)
+      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,1,1)
     }
     else
     {
-      out = EC(Udata,W,SAtestOptions$NumbBoot,Grouping,SAtestOptions$ExpMinSampleSize,SAtestOptions$TrainingDataFraction)
+      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
     }
-    if (SAtestOptions$GroupedScatterplots)
+    if (pacotestOptions$GroupedScatterplots)
     {
       GroupedScatterplot(out$Xdata,out$Ydata)
     }
@@ -64,7 +64,7 @@ SAtest = function(Udata,W,SAtestOptions){
     {
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
-      if (SAtestOptions$DecisionTreePlot)
+      if (pacotestOptions$DecisionTreePlot)
       {
         if (!requireNamespace("plotrix", quietly = TRUE)) {
           stop("plotrix needed to obtain decision tree plots. Please install it.",
@@ -75,9 +75,9 @@ SAtest = function(Udata,W,SAtestOptions){
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
-  else if (SAtestOptions$TestType=='VI')
+  else if (pacotestOptions$TestType=='VI')
   {
-    out = VI(Udata,W,SAtestOptions$NumbBoot)
+    out = VI(Udata,W,pacotestOptions$NumbBoot)
   }
   else
   {

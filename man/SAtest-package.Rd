@@ -1,11 +1,11 @@
-\name{SAtest-package}
-\alias{SAtest-package}
+\name{pacotest-package}
+\alias{pacotest-package}
 \docType{package}
 \title{
 Testing the simplifying assumption in vine copulas
 }
 \description{
-The SAtest package provides functions, which allow to test the simplifying assumption in vine copulas. The package consists of three different test types, the Equal Copula (EC) test, the Equal Rank Correlation (ERC) test and the Vectorial Independence (VI) test. The function SAtestSet can be used to create / alter SAtest options lists and the function SAtest can be used to test the simplifying assumption for a single bivariate conditional copula.
+The pacotest package provides functions, which allow to test the simplifying assumption in vine copulas. The package consists of three different test types, the Equal Copula (EC) test, the Equal Rank Correlation (ERC) test and the Vectorial Independence (VI) test. The function pacotestset can be used to create / alter pacotest options lists and the function pacotest can be used to test the simplifying assumption for a single bivariate conditional copula.
 }
 \author{
 Malte Kurz
@@ -30,13 +30,13 @@ Spanhel, F. and M. Kurz (2015), "Simplified vine copula models: Approximations b
 van de Wiel, M. A., J. Berkhof, and W. N. van Wieringen (2009), "Testing the prediction error difference between 2 predictors", Biostatistics 10(3), pp. 550-560.
 }
 \seealso{
-Development for \pkg{SAtest} can be followed via the GitHub repository at \url{http://github.com/MalteKurz/SAtest}.
+Development for \pkg{pacotest} can be followed via the GitHub repository at \url{http://github.com/MalteKurz/pacotest}.
 }
 \examples{
 #####################
 # Generate an option file, e.g., the equal rank correlation (ERC)
 # test with default options
-SAtestOptions=SAtestSet(TestType='ERC',AggPvalsNumbRep = 1,GroupedScatterplots=TRUE)
+pacotestOptions=pacotestset(TestType='ERC',AggPvalsNumbRep = 1,GroupedScatterplots=TRUE)
 
 #####################
 # Use the specified options to test for the simplifying assumption
@@ -52,7 +52,7 @@ theta = (4*X[,1]-2)^3
 etheta = expm1(-theta);
 X[,3] = -1/theta*log(1+etheta/(exp(-theta*X[,2])*(1/X[,3]-1)+1));
 
-Result = SAtest(X[,c(2,3)],X[,1],SAtestOptions)
+Result = pacotest(X[,c(2,3)],X[,1],pacotestOptions)
 Result$pValue
 
 ##### Example 2: Non-simplified three-dim. C-Vine #####
@@ -65,7 +65,7 @@ theta = 12 + 8*sin(0.4*(3*X[,1]+2)^2)
 etheta = expm1(-theta);
 X[,3] = -1/theta*log(1+etheta/(exp(-theta*X[,2])*(1/X[,3]-1)+1));
 
-Result = SAtest(X[,c(2,3)],X[,1],SAtestOptions)
+Result = pacotest(X[,c(2,3)],X[,1],pacotestOptions)
 Result$pValue
 
 ##### Example 3: Simplified three-dim. C-Vine #####
@@ -86,7 +86,7 @@ X[,3] = (W[,1]^(-theta)*(X[,3]^((-theta)/(1+theta))-1)+1)^(-1/theta);
 U = matrix(NA,N,2)
 U[,1] = (X[,1]^theta*(X[,2]^(-theta)-1)+1)^(-(1+theta)/theta);
 U[,2] = (X[,1]^theta*(X[,3]^(-theta)-1)+1)^(-(1+theta)/theta);
-Result = SAtest(U,X[,1],SAtestOptions)
+Result = pacotest(U,X[,1],pacotestOptions)
 Result$pValue
 
 }
