@@ -106,89 +106,89 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
   for (i in 1:nrow(SplitVariable))
   {
     
-    if ((SplitVariable[1]+1) <= CondSetDim)
+    if ((SplitVariable[i,1]+1) <= CondSetDim)
     {
-      DecisionTree[[i]]$CentralNode$Variable = paste('W', SplitVariable[1]+1, sep = '')
+      DecisionTree[[i]]$CentralNode$Variable = paste('W', SplitVariable[i,1]+1, sep = '')
     }
     else
     {
       DecisionTree[[i]]$CentralNode$Variable = 'Mean(W)';
     }
-    DecisionTree[[i]]$CentralNode$Quantile = paste('Q', Quantiles[SplitQuantile[1]+1], sep = '')
-    DecisionTree[[i]]$CentralNode$Threshold = SplitThreshold[1];
+    DecisionTree[[i]]$CentralNode$Quantile = paste('Q', Quantiles[SplitQuantile[i,1]+1], sep = '')
+    DecisionTree[[i]]$CentralNode$Threshold = SplitThreshold[i,1];
     
-    if (SplitVariable[4] == 6) # The one split only case
+    if (SplitVariable[i,4] == 6) # The one split only case
     {
       DecisionTree[[i]]$LeavesForFinalComparison = 'L vs R';
     }
     else
     {
-      if (SplitVariable[4] < 6)
+      if (SplitVariable[i,4] < 6)
       {
         
         
-        if ((SplitVariable[2]+1) <= CondSetDim)
+        if ((SplitVariable[i,2]+1) <= CondSetDim)
         {
-          DecisionTree[[i]]$LeftNode$Variable = paste('W', SplitVariable[2]+1, sep = '')
+          DecisionTree[[i]]$LeftNode$Variable = paste('W', SplitVariable[i,2]+1, sep = '')
         }
         else
         {
           DecisionTree[[i]]$LeftNode$Variable = 'Mean(W)';
         }
-        DecisionTree[[i]]$LeftNode$Quantile = paste('Q', Quantiles[SplitQuantile[2]+1], sep = '')
-        DecisionTree[[i]]$LeftNode$Threshold = SplitThreshold[2];
+        DecisionTree[[i]]$LeftNode$Quantile = paste('Q', Quantiles[SplitQuantile[i,2]+1], sep = '')
+        DecisionTree[[i]]$LeftNode$Threshold = SplitThreshold[i,2];
         
-        if ((SplitVariable[3]+1) <= CondSetDim)
+        if ((SplitVariable[i,3]+1) <= CondSetDim)
         {
-          DecisionTree[[i]]$RightNode$Variable = paste('W', SplitVariable[3]+1, sep = '')
+          DecisionTree[[i]]$RightNode$Variable = paste('W', SplitVariable[i,3]+1, sep = '')
         }
         else
         {
           DecisionTree[[i]]$RightNode$Variable = 'Mean(W)';
         }
-        DecisionTree[[i]]$RightNode$Quantile = paste('Q', Quantiles[SplitQuantile[3]+1], sep = '')
-        DecisionTree[[i]]$RightNode$Threshold = SplitThreshold[3];
+        DecisionTree[[i]]$RightNode$Quantile = paste('Q', Quantiles[SplitQuantile[i,3]+1], sep = '')
+        DecisionTree[[i]]$RightNode$Threshold = SplitThreshold[i,3];
         
         PossibleLeaves = c('LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR')
         
-        DecisionTree[[i]]$LeavesForFinalComparison = PossibleLeaves[SplitVariable[4]+1]
+        DecisionTree[[i]]$LeavesForFinalComparison = PossibleLeaves[SplitVariable[i,4]+1]
       }
       else
       {
-        if (SplitVariable[4]<13)
+        if (SplitVariable[i,4]<13)
         {
           
-          if ((SplitVariable[2]+1) <= CondSetDim)
+          if ((SplitVariable[i,2]+1) <= CondSetDim)
           {
-            DecisionTree[[i]]$LeftNode$Variable = paste('W', SplitVariable[2]+1, sep = '')
+            DecisionTree[[i]]$LeftNode$Variable = paste('W', SplitVariable[i,2]+1, sep = '')
           }
           else
           {
             DecisionTree[[i]]$LeftNode$Variable = 'Mean(W)';
           }
-          DecisionTree[[i]]$LeftNode$Quantile = paste('Q', Quantiles[SplitQuantile[2]+1], sep = '')
-          DecisionTree[[i]]$LeftNode$Threshold = SplitThreshold[2];
+          DecisionTree[[i]]$LeftNode$Quantile = paste('Q', Quantiles[SplitQuantile[i,2]+1], sep = '')
+          DecisionTree[[i]]$LeftNode$Threshold = SplitThreshold[i,2];
           
           PossibleLeaves = c('LL vs LR','LL vs R','LR vs R','','','')
           
-          DecisionTree[[i]]$LeavesForFinalComparison = PossibleLeaves[SplitVariable[4]-10+1]
+          DecisionTree[[i]]$LeavesForFinalComparison = PossibleLeaves[SplitVariable[i,4]-10+1]
         }
         else
         {
-          if ((SplitVariable[3]+1) <= CondSetDim)
+          if ((SplitVariable[i,3]+1) <= CondSetDim)
           {
-            DecisionTree[[i]]$RightNode$Variable = paste('W', SplitVariable[3]+1, sep = '')
+            DecisionTree[[i]]$RightNode$Variable = paste('W', SplitVariable[i,3]+1, sep = '')
           }
           else
           {
             DecisionTree[[i]]$RightNode$Variable = 'Mean(W)';
           }
-          DecisionTree[[i]]$RightNode$Quantile = paste('Q', Quantiles[SplitQuantile[3]+1], sep = '')
-          DecisionTree[[i]]$RightNode$Threshold = SplitThreshold[3];
+          DecisionTree[[i]]$RightNode$Quantile = paste('Q', Quantiles[SplitQuantile[i,3]+1], sep = '')
+          DecisionTree[[i]]$RightNode$Threshold = SplitThreshold[i,3];
           
           PossibleLeaves = c('','','','L vs RL','L vs RR','RL vs RR')
           
-          DecisionTree[[i]]$LeavesForFinalComparison = PossibleLeaves[SplitVariable[4]-10+1]
+          DecisionTree[[i]]$LeavesForFinalComparison = PossibleLeaves[SplitVariable[i,4]-10+1]
         }
       }
     }

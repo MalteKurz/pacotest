@@ -292,7 +292,7 @@ for i=1:size(SplitVariable,1)
         
     elseif SplitVariable(i,4)<13
         
-        if SplitVariable(2)+1 <= CondSetDim
+        if SplitVariable(i,2)+1 <= CondSetDim
             DecisionTree(i).LeftNode.Variable = ['W' num2str(SplitVariable(i,2)+1)];
         else
             DecisionTree(i).LeftNode.Variable = 'Mean(W)';
