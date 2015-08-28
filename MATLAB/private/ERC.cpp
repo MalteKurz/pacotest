@@ -66,11 +66,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                 arma::umat SplitVariable(1,4);
                 arma::umat SplitQuantile(1,4);
                 arma::mat SplitThreshold(1,3);
-                SplitVariable(0,0) = 0; SplitVariable(0,1) = 0; SplitVariable(0,2) = 0; SplitVariable(0,3) = 0;
-                SplitQuantile(0,0) = 0; SplitQuantile(0,1) = 0; SplitQuantile(0,2) = 0; SplitQuantile(0,3) = 0;
-                SplitThreshold(0,0) = 0; SplitThreshold(0,1) = 0; SplitThreshold(0,2) = 0;
+                splitVariable.zeros();
+                splitQuantile.zeros();
+                splitThreshold.zeros();
                 
                 EqualRankCorrTest(Udata, Wdata, Grouping, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize,TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+                
                 plhs[2] = armaCreateMxMatrix(1, 4);
                 armaSetPr(plhs[2], arma::conv_to<arma::mat>::from(SplitVariable));
                 plhs[3] = armaCreateMxMatrix(1, 4);
@@ -87,10 +88,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                 arma::umat SplitVariable(1,4);
                 arma::umat SplitQuantile(1,4);
                 arma::mat SplitThreshold(1,3);
-                SplitVariable(0,0) = 0; SplitVariable(0,1) = 0; SplitVariable(0,2) = 0; SplitVariable(0,3) = 0;
-                SplitQuantile(0,0) = 0; SplitQuantile(0,1) = 0; SplitQuantile(0,2) = 0; SplitQuantile(0,3) = 0;
-                SplitThreshold(0,0) = 0; SplitThreshold(0,1) = 0; SplitThreshold(0,2) = 0;
+                splitVariable.zeros();
+                splitQuantile.zeros();
+                splitThreshold.zeros();
+    
                 EqualRankCorrTest(Udata, Wdata, Grouping, TestStat, pValue, ExpMinSampleSize,TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+                
                 plhs[2] = armaCreateMxMatrix(1, 4);
                 armaSetPr(plhs[2], arma::conv_to<arma::mat>::from(SplitVariable));
                 plhs[3] = armaCreateMxMatrix(1, 4);
@@ -105,12 +108,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             arma::umat SplitVariable(AggPvalsNumbRep,4);
             arma::umat SplitQuantile(AggPvalsNumbRep,4);
             arma::mat SplitThreshold(AggPvalsNumbRep,3);
-            for (i=0;i<AggPvalsNumbRep;i++)
-            {
-                SplitVariable(i,0) = 0; SplitVariable(i,1) = 0; SplitVariable(i,2) = 0; SplitVariable(i,3) = 0;
-                SplitQuantile(i,0) = 0; SplitQuantile(i,1) = 0; SplitQuantile(i,2) = 0; SplitQuantile(i,3) = 0;
-                SplitThreshold(i,0) = 0; SplitThreshold(i,1) = 0; SplitThreshold(i,2) = 0;
-            }
+            splitVariable.zeros();
+            splitQuantile.zeros();
+            splitThreshold.zeros();
             
             EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep, ExpMinSampleSize,TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             

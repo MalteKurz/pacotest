@@ -46,6 +46,10 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
     arma::umat splitQuantile(1,4);
     arma::mat splitThreshold(1,3);
     
+    splitVariable.zeros();
+    splitQuantile.zeros();
+    splitThreshold.zeros();
+    
     for (i=0;i<AggPvalsNumbRep;i++)
     {
         Grouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
