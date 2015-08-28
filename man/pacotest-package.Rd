@@ -2,10 +2,10 @@
 \alias{pacotest-package}
 \docType{package}
 \title{
-Testing the simplifying assumption in vine copulas
+Testing for partial copulas / the simplifying assumption in vine copulas
 }
 \description{
-The pacotest package provides functions, which allow to test the simplifying assumption in vine copulas. The package consists of three different test types, the Equal Copula (EC) test, the Equal Rank Correlation (ERC) test and the Vectorial Independence (VI) test. The function pacotestset can be used to create / alter pacotest options lists and the function pacotest can be used to test the simplifying assumption for a single bivariate conditional copula.
+The \pkg{pacotest} package provides functions, which allow to test for partial copulas / the simplifying assumption in vine copulas. The package consists of three different test types, the Equal Copula (EC) test, the Equal Rank Correlation (ERC) test and the Vectorial Independence (VI) test. The function \code{\link{pacotestset}} can be used to create / alter pacotest options lists and the function \code{\link{pacotest}} can be used to test for the partial copula / the simplifying assumption for a single bivariate conditional copula.
 }
 \author{
 Malte Kurz

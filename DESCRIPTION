@@ -1,6 +1,6 @@
 Package: pacotest
 Type: Package
-Title: Testing for partial copulas / the simplifying assumption (SA) in vine copulas
+Title: Testing for partial copulas / the simplifying assumption in vine copulas
 Version: 0.1
 Date: 2015-03-14
 Author: Malte Kurz
@@ -10,3 +10,4 @@ License: MIT + file LICENSE
 Imports: Rcpp (>= 0.11.4)
 Suggests: plotrix
 LinkingTo: Rcpp, RcppArmadillo
+BugReports: http://github.com/MalteKurz/pacotest/issues
