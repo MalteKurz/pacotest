@@ -49,9 +49,9 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
             arma::umat SplitVariable(1,4);
             arma::umat SplitQuantile(1,4);
             arma::mat SplitThreshold(1,3);
-            splitVariable.zeros();
-            splitQuantile.zeros();
-            splitThreshold.zeros();
+            SplitVariable.zeros();
+            SplitQuantile.zeros();
+            SplitThreshold.zeros();
             
             EqualRankCorrTest(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
@@ -65,9 +65,9 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
             arma::umat SplitVariable(AggPvalsNumbRep,4);
             arma::umat SplitQuantile(AggPvalsNumbRep,4);
             arma::mat SplitThreshold(AggPvalsNumbRep,3);
-            splitVariable.zeros();
-            splitQuantile.zeros();
-            splitThreshold.zeros();
+            SplitVariable.zeros();
+            SplitQuantile.zeros();
+            SplitThreshold.zeros();
 
             EqualRankCorrTest(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
@@ -102,9 +102,9 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
         arma::umat SplitVariable(1,4);
         arma::umat SplitQuantile(1,4);
         arma::mat SplitThreshold(1,3);
-        splitVariable.zeros();
-        splitQuantile.zeros();
-        splitThreshold.zeros();
+        SplitVariable.zeros();
+        SplitQuantile.zeros();
+        SplitThreshold.zeros();
         
         Rcpp::List out;
         

@@ -65,9 +65,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             arma::umat SplitVariable(1,4);
             arma::umat SplitQuantile(1,4);
             arma::mat SplitThreshold(1,3);
-            splitVariable.zeros();
-            splitQuantile.zeros();
-            splitThreshold.zeros();
+            SplitVariable.zeros();
+            SplitQuantile.zeros();
+            SplitThreshold.zeros();
             
             EqualCopTest(Udata, Wdata, N, Group, TestStat, pValue, S, Xdata, Ydata, ExpMinSampleSize,TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
@@ -87,9 +87,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             arma::umat SplitVariable(1,4);
             arma::umat SplitQuantile(1,4);
             arma::mat SplitThreshold(1,3);
-            splitVariable.zeros();
-            splitQuantile.zeros();
-            splitThreshold.zeros();
+            SplitVariable.zeros();
+            SplitQuantile.zeros();
+            SplitThreshold.zeros();
     
             EqualCopTest(Udata, Wdata, N, Group, TestStat, pValue, S, ExpMinSampleSize,TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
