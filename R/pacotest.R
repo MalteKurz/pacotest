@@ -11,7 +11,20 @@ pacotest = function(Udata,W,pacotestOptions){
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
       Grouping = 0
-      out = ERC(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      
+      if (pacotestOptions$ERCtype == 'standard')
+      {
+        out = ERC(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      }
+      else if (pacotestOptions$ERCtype == 'noRanks')
+      {
+        out = ERC_noRanks(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      }
+      else if (pacotestOptions$ERCtype == 'oracle')
+      {
+        out = ERC_oracle(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      }
+      
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
     }
@@ -20,12 +33,38 @@ pacotest = function(Udata,W,pacotestOptions){
       Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
       if (Grouping > 2)
       {
-        out = ERC(Udata,W,Grouping,0,1,1)
+        
+        if (pacotestOptions$ERCtype == 'standard')
+        {
+          out = ERC(Udata,W,Grouping,0,1,1)
+        }
+        else if (pacotestOptions$ERCtype == 'noRanks')
+        {
+          out = ERC_noRanks(Udata,W,Grouping,0,1,1)
+        }
+        else if (pacotestOptions$ERCtype == 'oracle')
+        {
+          out = ERC_oracle(Udata,W,Grouping,0,1,1)
+        }
+        
       }
       else
       {
         W = addAggInfo(W,pacotestOptions$aggInfo);
-        out = ERC(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        
+        if (pacotestOptions$ERCtype == 'standard')
+        {
+          out = ERC(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        }
+        else if (pacotestOptions$ERCtype == 'noRanks')
+        {
+          out = ERC_noRanks(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        }
+        else if (pacotestOptions$ERCtype == 'oracle')
+        {
+          out = ERC_oracle(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        }
+        
       }
       if (pacotestOptions$GroupedScatterplots)
       {
