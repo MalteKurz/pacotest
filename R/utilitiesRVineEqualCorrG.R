@@ -1,0 +1,323 @@
+
+
+getIndInParVector = function(svcmDataFrame, copulaInd, withCopula=TRUE)
+{
+  cPit1ParInd = sort(svcmDataFrame$cPit1ParInd[[copulaInd]])
+  cPit2ParInd = sort(svcmDataFrame$cPit2ParInd[[copulaInd]])
+  
+  if (withCopula)
+  {
+    copulaParInd = svcmDataFrame$parInd[[copulaInd]]
+    cPitsParInd = sort(unique(c(copulaParInd,
+                                cPit1ParInd,
+                                cPit2ParInd)))
+    
+    copulaParVectorInd = match(copulaParInd, cPitsParInd)
+    cPit1ParVectorInd = match(cPit1ParInd, cPitsParInd)
+    cPit2ParVectorInd = match(cPit2ParInd, cPitsParInd)
+    
+    return(list(copulaParVectorInd=copulaParVectorInd,
+                cPit1ParVectorInd=cPit1ParVectorInd,
+                cPit2ParVectorInd=cPit2ParVectorInd))
+  }
+  else
+  {
+    cPitsParInd = sort(unique(c(cPit1ParInd,
+                                cPit2ParInd)))
+    cPit1ParVectorInd = match(cPit1ParInd, cPitsParInd)
+    cPit2ParVectorInd = match(cPit2ParInd, cPitsParInd)
+    
+    return(list(cPit1ParVectorInd=cPit1ParVectorInd,
+                cPit2ParVectorInd=cPit2ParVectorInd))
+  }
+  
+  
+}
+
+
+likeWithCpits =  function(params, data, svcmDataFrame, copulaInd)
+{
+  parVectorInd = getIndInParVector(svcmDataFrame, copulaInd, withCopula=TRUE)
+  
+  cPit1CopulaInd = sort(svcmDataFrame$cPit1CopulaInd[[copulaInd]])
+  cPit2CopulaInd = sort(svcmDataFrame$cPit2CopulaInd[[copulaInd]])
+  
+  xx = insertParameterVectorsIntoDataFrame(svcmDataFrame, 
+                                           params[parVectorInd$cPit1ParVectorInd],
+                                           cPit1CopulaInd)
+  cPit1 = computeCpits(data, xx, copulaInd, 'cPit1')
+  xx = insertParameterVectorsIntoDataFrame(svcmDataFrame, 
+                                           params[parVectorInd$cPit2ParVectorInd],
+                                           cPit2CopulaInd)
+  cPit2 = computeCpits(data, xx, copulaInd, 'cPit2')
+  
+  parCopula = params[parVectorInd$copulaParVectorInd]
+  familyCopula = svcmDataFrame$family[copulaInd]
+  nPar = getNumbOfParameters(familyCopula)
+  par = getParAsScalars(nPar,parCopula)
+  
+  result = mean(log(BiCopPDF(cPit1,cPit2,familyCopula,par[1],par[2])))
+  return(result)
+}
+
+
+like =  function(params,u1,u2,family)
+{
+  nPar = getNumbOfParameters(family)
+  par = getParAsScalars(nPar,params)
+  result = mean(log(BiCopPDF(u1,u2,family,par[1],par[2])))
+  return(result)
+}
+
+
+likeMultFactor =  function(params,u1,u2,family,multFactor)
+{
+  nPar = getNumbOfParameters(family)
+  par = getParAsScalars(nPar,params)
+  result = mean(log(BiCopPDF(u1,u2,family,par[1],par[2]))*multFactor)
+  return(result)
+}
+
+
+hessianLike = function(theta,u1,u2,family)
+{
+  
+  result = hessian(like,theta,u1=u1,u2=u2,family=family)
+  
+  return(result)
+}
+
+
+hessianLikeWithCpits = function(theta, data, svcmDataFrame, copulaInd)
+{
+  
+  result = hessian(likeWithCpits,theta,data=data,svcmDataFrame=svcmDataFrame,copulaInd=copulaInd)
+  
+  return(result)
+}
+
+
+cPit2Mult =  function(par, data, svcmDataFrame, copulaInd, multFactor)
+{
+  
+  cPit2CopulaInd = sort(svcmDataFrame$cPit2CopulaInd[[copulaInd]])
+  
+  xx = insertParameterVectorsIntoDataFrame(svcmDataFrame, 
+                                           par,
+                                           cPit2CopulaInd)
+  cPit2 = computeCpits(data, xx, copulaInd, 'cPit2')
+  
+  result = mean(cPit2*multFactor)
+  
+  return(result)
+}
+
+
+cPit1Mult =  function(par, data, svcmDataFrame, copulaInd, multFactor)
+{
+  
+  cPit1CopulaInd = sort(svcmDataFrame$cPit1CopulaInd[[copulaInd]])
+  
+  xx = insertParameterVectorsIntoDataFrame(svcmDataFrame, 
+                                           par,
+                                           cPit1CopulaInd)
+  cPit1 = computeCpits(data, xx, copulaInd, 'cPit1')
+  
+  result = mean(cPit1*multFactor)
+  
+  return(result)
+}
+
+
+cPit1_mult_cPit2 =  function(par, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
+{
+  parVectorInd = getIndInParVector(svcmDataFrame, copulaInd, withCopula=FALSE)
+  
+  cPit1CopulaInd = sort(svcmDataFrame$cPit1CopulaInd[[copulaInd]])
+  cPit2CopulaInd = sort(svcmDataFrame$cPit2CopulaInd[[copulaInd]])
+  
+  xx = insertParameterVectorsIntoDataFrame(svcmDataFrame, 
+                                           par[parVectorInd$cPit1ParVectorInd],
+                                           cPit1CopulaInd)
+  cPit1 = computeCpits(data, xx, copulaInd, 'cPit1')
+  xx = insertParameterVectorsIntoDataFrame(svcmDataFrame, 
+                                           par[parVectorInd$cPit2ParVectorInd],
+                                           cPit2CopulaInd)
+  cPit2 = computeCpits(data, xx, copulaInd, 'cPit2')
+  
+  result = mean((cPit1-mucPit1)*
+                  (cPit2-mucPit2)*
+                  multFactor)
+  
+  return(result)
+}
+
+
+deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
+{
+  
+  result = grad(cPit2Mult, params, data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
+  
+  return(result)
+}
+
+
+deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
+{
+  
+  result = grad(cPit1Mult, params, data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
+  
+  return(result)
+}
+
+
+deriv1cPit1_mult_cPit2 = function(params, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
+{
+  
+  result = grad(cPit1_mult_cPit2, params, data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor)
+  
+  return(result)
+}
+
+
+getGinvD = function(data, svcmDataFrame)
+{
+  
+  d <- ncol(data)
+  nCopulas = d*(d-1)/2-1
+  
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  nParametersFirstTree = sum(svcmDataFrame$nPar[1:(d-1)])
+  
+  dInvUpperLeft = matrix(0,nrow=nParametersFirstTree,ncol=nParametersFirstTree)
+  dLower = matrix(0,nrow=nParameters-nParametersFirstTree,ncol=nParameters)
+  
+  # First tree copulas (CPITs are not depending on parameters)
+  for (jCopula in 1:(d-1))
+  {
+    parameters = extractParametersToVectors(svcmDataFrame, jCopula)
+    cPit1 = data[,svcmDataFrame$var1[jCopula]]
+    cPit2 = data[,svcmDataFrame$var2[jCopula]]
+    dInvUpperLeft[svcmDataFrame$parInd[[jCopula]],
+                  svcmDataFrame$parInd[[jCopula]]] = 
+      1/hessianLike(parameters$parCopula,cPit1,cPit2,svcmDataFrame$family[jCopula])
+    
+  }
+  
+  
+  
+  # Higher trees
+  if (nCopulas>=d)
+  {
+    for (jCopula in d:nCopulas)
+    {
+      parameters = extractParametersToVectors(svcmDataFrame, jCopula)
+      xx = hessianLikeWithCpits(parameters$parCpits, data, svcmDataFrame, jCopula)
+      dLower[svcmDataFrame$parInd[[jCopula]]-nParametersFirstTree,
+        parameters$cPitsParInd] = xx[((nrow(xx)-svcmDataFrame$nPar[jCopula]+1):nrow(xx)),]
+    }
+  }
+  
+  if (nParameters>nParametersFirstTree)
+  {
+    dLowerRight = dLower[,(nParametersFirstTree+1):nParameters]
+    dInvLowerRight = forwardsolve(dLowerRight,diag(nParameters-nParametersFirstTree))
+  }
+  else
+  {
+    dLowerRight = matrix(0,0,0)
+    dInvLowerRight = matrix(0,0,0)
+  }
+  dLowerLeft = dLower[,1:nParametersFirstTree]
+  
+  
+  dInv = rbind(cbind(dInvUpperLeft,
+                     matrix(0,nrow=nParametersFirstTree,ncol=nParameters-nParametersFirstTree)),
+               cbind(-dInvLowerRight %*% dLowerLeft %*% dInvUpperLeft,
+                     dInvLowerRight))
+  
+  return(dInv)
+  
+}
+
+
+gInvRvine = function(data, svcmDataFrame, ind, cPitData, theta)
+{
+  d <- ncol(data)
+  
+  nCopulas = d*(d-1)/2-1
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  
+  # Obtain the cPits
+  copulaInd = nrow(svcmDataFrame)
+  cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
+  cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  
+  # Obtain the estimated parameters
+  mu1 = theta[1]
+  var1 = theta[2]
+  mu2 = theta[3]
+  var2 = theta[4]
+  
+  
+  gInv = matrix(NA,nrow=nParameters+6,ncol=nParameters+6)
+  
+  dInv = getGinvD(data, svcmDataFrame)
+  
+  xx = extractParametersToVectors(svcmDataFrame, copulaInd)
+  parCpit1 = xx$parCpit1
+  parCpit2 = xx$parCpit2
+  parCpitsPair = xx$parCpitsWithoutCopula
+  
+  cPit1ParInd = xx$cPit1ParInd
+  cPit2ParInd = xx$cPit2ParInd
+  cPitsPairParInd = xx$cPitsWithoutCopulaParInd
+  
+  J = matrix(0,nrow=4,ncol=nParameters)
+  
+  # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
+  J[1,cPit1ParInd] =
+    deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-1)
+  # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
+  J[2,cPit1ParInd] =
+    deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-2*(cPit1-mu1))
+  
+  # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
+  J[3,cPit2ParInd] =
+    deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-1)
+  # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
+  J[4,cPit2ParInd] =
+    deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-2*(cPit2-mu2))
+  
+  # Obtain the subsamples
+  nGroups = ncol(ind)
+  C = matrix(NA,nrow=nGroups,ncol=nParameters+4)
+  
+  for (iGroup in 1:nGroups)
+  {
+    # Obtain the subsample
+    cPit1InGroup = cPit1[ind[,iGroup]]
+    cPit2InGroup = cPit2[ind[,iGroup]]
+    dataInGroup = data[ind[,iGroup],]
+    
+    C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
+    
+    C[iGroup,nParameters+1] = mean((cPit2InGroup-mu2)/sqrt(var1*var2))
+    C[iGroup,nParameters+3] = mean((cPit1InGroup-mu1)/sqrt(var1*var2))
+    
+    C[iGroup,nParameters+2] = mean(0.5*(cPit1InGroup-mu1)*(cPit2InGroup-mu2)/sqrt(var1^3*var2))
+    C[iGroup,nParameters+4] = mean(0.5*(cPit1InGroup-mu1)*(cPit2InGroup-mu2)/sqrt(var1*var2^3))
+    
+  }
+  
+  
+  hInv = rbind(cbind(dInv,matrix(0,nrow=nParameters,ncol=4)),
+               cbind(-J%*%dInv,diag(4)))
+  
+  gInv = rbind(cbind(hInv,matrix(0,nrow=nParameters+4,ncol=nGroups)),
+               cbind(-C%*%hInv,diag(nGroups)))
+  
+  return(gInv)
+}
+
