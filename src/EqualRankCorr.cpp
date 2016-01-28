@@ -339,4 +339,3 @@ double EqualRankCorrTestStat_oracle(const arma::mat &Xdata, const arma::mat &Yda
     
     return nom/sqrt(V);
 }
-

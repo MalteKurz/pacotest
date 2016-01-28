@@ -1,4 +1,4 @@
-pacotest = function(Udata,W,pacotestOptions){
+pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
   
   pacotestOptions = pacotestset(pacotestOptions)
   Udata = as.matrix(Udata)
@@ -24,6 +24,10 @@ pacotest = function(Udata,W,pacotestOptions){
       {
         out = ERC_oracle(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
+      else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
+      {
+        out = ERC_WithEstimation(Udata,W,Grouping, data, svcmDataFrame,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      }
       
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
@@ -46,6 +50,10 @@ pacotest = function(Udata,W,pacotestOptions){
         {
           out = ERC_oracle(Udata,W,Grouping,0,1,1)
         }
+        else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
+        {
+          out = ERC(Udata,W,Grouping,0,1,1, data, svcmDataFrame)
+        }
         
       }
       else
@@ -63,6 +71,10 @@ pacotest = function(Udata,W,pacotestOptions){
         else if (pacotestOptions$ERCtype == 'oracle')
         {
           out = ERC_oracle(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        }
+        else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
+        {
+          out = ERC(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction, data, svcmDataFrame)
         }
         
       }

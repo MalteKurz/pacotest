@@ -30,6 +30,7 @@ inline int IndTria(int i, int j, int n)
 
 // headers
 #include <RcppArmadillo.h>
+#include <Rcpp.h>
 #define ARMA_DEFAULT_OSTREAM Rcpp::Rcout
 #include <iostream>
 #include <cmath>

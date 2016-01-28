@@ -1,87 +1,6 @@
 #include <pacotest_header.h>
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod)
-{
-  
-    switch(GroupingMethod){
-        case 3: // SumMedian
-        {
-            arma::mat Wsum = sum(Wdata,1);
-            
-            double b = arma::as_scalar(median(Wsum));
-            
-            indXdata = arma::find(Wsum < b);
-            indYdata = arma::find(Wsum >= b );
-            break;
-        }
-        case 4: // SumThirdsI
-        {
-            arma::mat Wsum = sum(Wdata,1);
-            Wsum = Wsum(sort_index(Wsum));
-            
-            double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
-            double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
-            
-            indXdata = arma::find(Wsum < b1_3);
-            indYdata = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
-            
-            break;
-        }
-        case 5: // SumThirdsII
-        {
-            arma::mat Wsum = sum(Wdata,1);
-            Wsum = Wsum(sort_index(Wsum));
-            
-            double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
-            double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
-            
-            indXdata = arma::find(Wsum < b1_3);
-            indYdata = arma::find(Wsum >= b2_3);
-            
-            break;
-        }
-        case 6: // ProdMedian
-        {
-            arma::mat Wprod = prod(Wdata,1);
-            
-            double b = arma::as_scalar(median(Wprod));
-            
-            indXdata = arma::find(Wprod < b);
-            indYdata = arma::find(Wprod >= b );
-            break;
-        }
-        case 7: // ProdThirdsI
-        {
-            arma::mat Wprod = prod(Wdata,1);
-            Wprod = Wprod(sort_index(Wprod));
-            
-            double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
-            double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
-            
-            indXdata = arma::find(Wprod < b1_3);
-            indYdata = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
-            
-            break;
-        }
-        case 8: // ProdThirdsII
-        {
-            arma::mat Wprod = prod(Wdata,1);
-            Wprod = Wprod(sort_index(Wprod));
-            
-            double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
-            double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
-            
-            indXdata = arma::find(Wprod < b1_3);
-            indYdata = arma::find(Wprod >= b2_3);
-            
-            break;
-        }
-        
-    }
-}
-
-
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat data, Rcpp::DataFrame svcmDataFrame)
 {
   arma::uvec Cols(2);
   
@@ -91,7 +10,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
   arma::uvec indXdata;
   arma::uvec indYdata;
   
-  Grouping(Udata, Wdata, indXdata, indYdata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+  Grouping(Udata, Wdata, indXdata, indYdata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame);
   
   Xdata = Udata.submat(indXdata, Cols);
   Ydata = Udata.submat(indYdata, Cols);
@@ -101,18 +20,18 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat data, Rcpp::DataFrame svcmDataFrame)
 {
     
     switch(GroupingMethod){
         case 1: // TreeERC
         {
-            TreeGrouping(Udata, Wdata, indXdata, indYdata, 0, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            TreeGrouping(Udata, Wdata, indXdata, indYdata, 0, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame);
             break;
         }
         case 2: // TreeEC
         {
-            TreeGrouping(Udata, Wdata, indXdata, indYdata, 1, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            TreeGrouping(Udata, Wdata, indXdata, indYdata, 1, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame);
             break;
         }
         default:
@@ -125,7 +44,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXda
 }
 
 
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int TestType, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int TestType, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat data, Rcpp::DataFrame svcmDataFrame)
 {
     double EvaluationDataFraction = 1-TrainingDataFraction;
     
