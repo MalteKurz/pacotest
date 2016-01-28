@@ -88,14 +88,44 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
     
 }
 
-
+void getMatrixForPairwiseComparison(int nGroups, arma::mat &A)
+{
+  
+  switch ( nGroups )
+  {
+    
+    case 2 : 
+    A.set_size(1,2);
+    
+    A(0,0) = 1; A(0,1) = -1;
+    break;
+    
+    case 3 : 
+    A.set_size(2,3);
+    A.zeros();
+    
+    A(0,0) = 1; A(0,1) = -1;
+    A(1,0) = 1; A(1,2) = -1;
+    break;
+    
+    default : 
+    A.set_size(3,4);
+    A.zeros();
+    
+    A(0,0) = 1; A(0,1) = -1;
+    A(1,1) = 1; A(1,2) = -1;
+    A(2,2) = 1; A(2,3) = -1;
+    
+  }
+  return;
+}
 
 void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
 {
   arma::vec cPit1 = Udata.col(0);
   arma::vec cPit2 = Udata.col(1);
   
-  int nGroups = 2;
+  int nGroups = ind.n_cols;
   int iGroup;
   theta.set_size( nGroups+4 );
   
@@ -157,22 +187,13 @@ void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *
   arma::mat rhos(1,nGroups);
   rhos = theta.subvec(4,3+nGroups);
   
-  
-  //A = getMatrixForPairwiseComparison(nGroups)
-  arma::mat A(1,2);
-  
-  A(0,0) = 1;
-  A(0,1) = -1;
+  arma::mat A;
+  getMatrixForPairwiseComparison(nGroups, A);
   
   *testStat = arma::as_scalar(sqrt(nObs) * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
   
+  return;
+  
 }
-
-
-
-
-
-
-
 
 
