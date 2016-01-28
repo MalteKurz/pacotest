@@ -3,6 +3,8 @@ double NormalCDF(double Z);
 void NormalRand(arma::mat &X);
 void RandPerm(arma::uvec &X);
 
+void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta);
+
 //double testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcmDataFrame, arma::umat ind);
 SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcmDataFrame, arma::umat ind, double out);
 

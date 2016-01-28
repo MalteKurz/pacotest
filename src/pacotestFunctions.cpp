@@ -310,3 +310,29 @@ SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcm
 }
 
 
+
+
+// [[Rcpp::export]]
+Rcpp::List testStatEqualCorrWithoutEstimationCpp(arma::umat ind, arma::mat Udata)
+{
+  try
+  {
+    // Associate outputs
+    Rcpp::List out;
+    double testStat;
+    arma::mat sigma;
+    arma::vec theta;
+    
+    EqualRankCorrChi2TestStat(ind, Udata, &testStat, sigma, theta);
+    
+    out = Rcpp::List::create(Rcpp::Named("testStat")=testStat,Rcpp::Named("sigma")=sigma,Rcpp::Named("theta")=theta);
+    
+    return out;
+  }
+  catch( std::exception& __ex__ ) {
+    forward_exception_to_r( __ex__ );
+  }
+  catch(...) {
+    ::Rf_error( "c++ exception" );
+  }
+}

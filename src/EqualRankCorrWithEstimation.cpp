@@ -1,6 +1,6 @@
 #include <pacotest_header.h>
 
-double EqualRankCorrTestStat(arma::uvec &indXdata, arma::uvec &indYdata, arma::mat data, Rcpp::DataFrame svcmDataFrame)
+double EqualRankCorrTestStat(arma::uvec &indXdata, arma::uvec &indYdata, const arma::mat &Udata, arma::mat data, Rcpp::DataFrame svcmDataFrame)
 {
   arma::umat ind(data.n_rows,2);
   ind.zeros();
@@ -41,7 +41,7 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int Group
     Xdata = Udata.submat(indXdata, Cols);
     Ydata = Udata.submat(indYdata, Cols);
     
-    *TestStat = EqualRankCorrTestStat(indXdata, indYdata, data, svcmDataFrame);
+    *TestStat = EqualRankCorrTestStat(indXdata, indYdata, Udata, data, svcmDataFrame);
     
     *pValue = 2*(1-NormalCDF(std::abs(*TestStat)));
 }
@@ -79,7 +79,7 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
         SplitQuantile.row(i) = splitQuantile;
         SplitThreshold.row(i) = splitThreshold;
         
-        S = EqualRankCorrTestStat(indXdata, indYdata, data, svcmDataFrame);
+        S = EqualRankCorrTestStat(indXdata, indYdata, Udata, data, svcmDataFrame);
         
         pValues(i,0) = 2*(1-NormalCDF(std::abs(S)));
     }
@@ -87,3 +87,92 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
     *pValue = (double) arma::as_scalar(arma::median(pValues,0));
     
 }
+
+
+
+void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
+{
+  arma::vec cPit1 = Udata.col(0);
+  arma::vec cPit2 = Udata.col(1);
+  
+  int nGroups = 2;
+  int iGroup;
+  theta.set_size( nGroups+4 );
+  
+  theta(0) = mean(cPit1); // Mu for the first CPIT
+  theta(1) = mean(square(cPit1-theta(0))); // Variance for the first CPIT
+  
+  theta(2) = mean(cPit2); // Mu for the second CPIT
+  theta(3) = mean(square(cPit2-theta(2))); // Variance for the second CPIT
+  
+  // Obtain the variance-covariance matrix without estimation uncertainty
+  sigma.set_size(nGroups+4,nGroups+4);
+  sigma.zeros();
+  
+  // Variance of the mean estimators
+  sigma(0,0) = theta(0);
+  sigma(2,2) = theta(3);
+  
+  // Variance of the variance estimators
+  sigma(1,1) = mean(pow(cPit1-theta(1),4) - pow(theta(1),2));
+  sigma(3,3) = mean(pow(cPit2-theta(3),4) - pow(theta(3),2));
+  
+  
+  arma::vec cPit1InGroup;
+  arma::vec cPit2InGroup;
+  
+  arma::vec cPit1InGroupStandardized;
+  arma::vec cPit2InGroupStandardized;
+  
+  //double rhoInGroup;
+  double lambdaInGroup;
+  
+  double nObs = Udata.n_rows;
+  double nObsInGroup;
+  
+  for (iGroup=0;iGroup<nGroups;iGroup++)
+  {
+    // Obtain the subsample
+    cPit1InGroup = cPit1.elem(arma::find(ind.col(iGroup)));
+    cPit2InGroup = cPit2.elem(arma::find(ind.col(iGroup)));
+    
+    // Obtain standardized CPITs
+    cPit1InGroupStandardized = (cPit1InGroup-theta(0))/sqrt(theta(1));
+    cPit2InGroupStandardized = (cPit2InGroup-theta(2))/sqrt(theta(3));
+    
+    nObsInGroup = cPit1InGroup.n_elem;
+    
+    // Place the correlation parameters in the parameter vector
+    theta(4+iGroup) = mean((cPit1InGroup-theta(0)) % (cPit2InGroup-theta(2))/sqrt(theta(1)*theta(3))); // Rho in the group
+    
+    lambdaInGroup = nObsInGroup/nObs;
+    
+    sigma(4+iGroup,4+iGroup) = 1/lambdaInGroup*var(theta(4+iGroup)/2*(square(cPit2InGroupStandardized)+square(cPit1InGroupStandardized))-cPit2InGroupStandardized % cPit1InGroupStandardized);
+    
+  }
+  
+  int nCol = sigma.n_cols;
+  
+  arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
+  arma::mat rhos(1,nGroups);
+  rhos = theta.subvec(4,3+nGroups);
+  
+  
+  //A = getMatrixForPairwiseComparison(nGroups)
+  arma::mat A(1,2);
+  
+  A(0,0) = 1;
+  A(0,1) = -1;
+  
+  *testStat = arma::as_scalar(sqrt(nObs) * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
+  
+}
+
+
+
+
+
+
+
+
+

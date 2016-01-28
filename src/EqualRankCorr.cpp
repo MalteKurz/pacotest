@@ -19,21 +19,6 @@ void rankObs(const arma::mat &Xdata, const arma::mat &Ydata, arma::mat &UU, arma
     VV = join_rows(V1,V2);
 }
 
-/*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata)
-{
-    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, Xdata, Ydata, 50, 0.5);
-}*/
-
-/*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue)
-{
-    EqualRankCorrTest(Udata, Wdata, GroupingMethod, TestStat, pValue, 50, 0.5);
-}*/
-
-/*void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep)
-{
-     EqualRankCorrTest(Udata, Wdata, pValues, pValue, AggPvalsNumbRep, 50, 0.5);
-}*/
-
 
 void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
