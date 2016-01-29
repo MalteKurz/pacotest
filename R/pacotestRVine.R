@@ -44,7 +44,7 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
       cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
       
-      Udata = cbind(cPit2,cPit1)
+      Udata = cbind(cPit1,cPit2)
       W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
       
       out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame)

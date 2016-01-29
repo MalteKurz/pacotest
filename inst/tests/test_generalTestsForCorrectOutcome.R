@@ -150,5 +150,64 @@ test_that("unit tests for ERC", {
   expect_equal(resultData3Test7,0.6486563896539215)
   expect_equal(resultData4Test7,0.1209385404840901)
   
+  
+  
+  
+  # Data set 5
+  N= 756
+  # Four-dimensional D-vine
+  structure = matrix(c(4,0,0,0,
+                       1,3,2,0,
+                       2,1,2,0,
+                       3,2,1,1),4,4,TRUE)
+  
+  families = array(3,dim=dim(structure))
+  par2 = array(0,dim=dim(structure))
+  names = c("V1", "V2", "V3","V4")
+  par_firstTree = BiCopTau2Par(3, tau)
+  par_secondTree = par_firstTree/(1+par_firstTree)
+  par_thirdTree = par_firstTree/(1+2*par_firstTree)
+  par  = matrix(c(0,0,0,0,
+                  par_thirdTree,0,0,0,
+                  par_secondTree,par_secondTree,0,0,
+                  par_firstTree,par_firstTree,par_firstTree,0),4,4,TRUE)
+  
+  rvm = RVineMatrix(structure,families,par,par2,names)
+  rvm = RVineMatrixNormalize(rvm)
+  svcmDataFrame = pacotest:::rVineDataFrameRep(rvm)$variables
+  
+  U = RVineSim(N,rvm)
+  
+  # Compute CPITs for the whole vine
+  cPitData = pacotest:::getCpitsFromVine(U, svcmDataFrame)
+  
+  # Obtain the cPits to be tested
+  copulaInd = nrow(svcmDataFrame)
+  
+  cPit1 = pacotest:::getCpit1(cPitData, svcmDataFrame, copulaInd)
+  cPit2 = pacotest:::getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  
+  Udata = cbind(cPit1,cPit2)
+  W = U[,svcmDataFrame$condset[[copulaInd]]]
+  
+  
+  
+  resultData5Test1 = pacotest(Udata,W,pacotestOptions1)$pValue
+  resultData5Test2 = pacotest(Udata,W,pacotestOptions2)$pValue
+  resultData5Test3 = pacotest(Udata,W,pacotestOptions3)$pValue
+  resultData5Test4 = pacotest(Udata,W,pacotestOptions4)$pValue
+  resultData5Test5 = pacotest(Udata,W,pacotestOptions5)$pValue
+  resultData5Test6 = pacotest(Udata,W,pacotestOptions6)$pValue
+  resultData5Test7 = pacotest(Udata,W,pacotestOptions7)$pValue
+  
+  expect_equal(resultData5Test1,0.59698433554410501589)
+  expect_equal(resultData5Test2,0.5108486612543823302)
+  expect_equal(resultData5Test3,0.53326556795685631229)
+  expect_equal(resultData5Test4,0.5569561099109747726)
+  expect_equal(resultData5Test5,0.68172357330616750737)
+  expect_equal(resultData5Test6,0.023852352740848070667)
+  expect_equal(resultData5Test7,0.18236630813887733105)
+  
 })
 
