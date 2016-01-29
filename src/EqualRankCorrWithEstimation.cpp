@@ -197,3 +197,65 @@ void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *
 }
 
 
+void EqualRankCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+{
+  arma::vec cPit1 = Udata.col(0);
+  arma::vec cPit2 = Udata.col(1);
+  
+  int nGroups = ind.n_cols;
+  int iGroup;
+  theta.set_size( nGroups+4 );
+  
+  theta(0) = mean(cPit1); // Mu for the first CPIT
+  theta(1) = mean(square(cPit1-theta(0))); // Variance for the first CPIT
+  
+  theta(2) = mean(cPit2); // Mu for the second CPIT
+  theta(3) = mean(square(cPit2-theta(2))); // Variance for the second CPIT
+  
+  
+  arma::vec cPit1InGroup;
+  arma::vec cPit2InGroup;
+  
+  arma::vec cPit1InGroupStandardized;
+  arma::vec cPit2InGroupStandardized;
+  
+  //double rhoInGroup;
+  double lambdaInGroup;
+  
+  double nObs = Udata.n_rows;
+  double nObsInGroup;
+  
+  for (iGroup=0;iGroup<nGroups;iGroup++)
+  {
+    // Obtain the subsample
+    cPit1InGroup = cPit1.elem(arma::find(ind.col(iGroup)));
+    cPit2InGroup = cPit2.elem(arma::find(ind.col(iGroup)));
+    
+    // Obtain standardized CPITs
+    cPit1InGroupStandardized = (cPit1InGroup-theta(0))/sqrt(theta(1));
+    cPit2InGroupStandardized = (cPit2InGroup-theta(2))/sqrt(theta(3));
+    
+    nObsInGroup = cPit1InGroup.n_elem;
+    
+    // Place the correlation parameters in the parameter vector
+    theta(4+iGroup) = mean((cPit1InGroup-theta(0)) % (cPit2InGroup-theta(2))/sqrt(theta(1)*theta(3))); // Rho in the group
+    
+  }
+  
+  covOfCorrelationsWithEstimationFromCpp(data, svcmDataFrame, ind, cPitData, theta, sigma);
+  
+  int nCol = sigma.n_cols;
+  
+  arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
+  arma::mat rhos(1,nGroups);
+  rhos = theta.subvec(4,3+nGroups);
+  
+  arma::mat A;
+  getMatrixForPairwiseComparison(nGroups, A);
+  
+  *testStat = arma::as_scalar(sqrt(nObs) * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
+  
+  return;
+  
+}
+

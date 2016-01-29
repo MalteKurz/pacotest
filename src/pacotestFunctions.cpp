@@ -296,7 +296,7 @@ Rcpp::List ERC_WithEstimation(arma::mat Udata, arma::mat Wdata, double Grouping,
 
 
 // [[Rcpp::export]]
-SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcmDataFrame, arma::umat ind, double out){
+SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &ind, double out){
   
   Rcpp::Environment pacotest = Rcpp::Environment::namespace_env("pacotest");
   Rcpp::Function testStatEqualCorrWithEstimation = pacotest["testStatEqualCorrWithEstimation"];
@@ -310,6 +310,20 @@ SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcm
 }
 
 
+// [[Rcpp::export]]
+SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &ind, Rcpp::List cPitData, arma::vec &theta, arma::mat &sigma)
+{
+  
+  Rcpp::Environment pacotest = Rcpp::Environment::namespace_env("pacotest");
+  Rcpp::Function covOfCorrelationsWithEstimation = pacotest["covOfCorrelationsWithEstimation"];
+  
+  SEXP outFromR = covOfCorrelationsWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("ind", ind), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta));
+  
+  sigma = Rcpp::as<arma::mat>(outFromR);
+  
+  //out = Rcpp::as<double>(outFromRList["testStat"]);
+  
+}
 
 
 // [[Rcpp::export]]
@@ -336,3 +350,30 @@ Rcpp::List testStatEqualCorrWithoutEstimationCpp(arma::umat ind, arma::mat Udata
     ::Rf_error( "c++ exception" );
   }
 }
+
+// [[Rcpp::export]]
+Rcpp::List testStatEqualCorrWithEstimationCpp(arma::umat ind, arma::mat Udata, arma::mat data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+{
+  try
+  {
+    // Associate outputs
+    Rcpp::List out;
+    double testStat;
+    arma::mat sigma;
+    arma::vec theta;
+    
+    EqualRankCorrChi2WithEstimationTestStat(ind, Udata, &testStat, sigma, theta, data, svcmDataFrame, cPitData);
+    
+    out = Rcpp::List::create(Rcpp::Named("testStat")=testStat,Rcpp::Named("sigma")=sigma,Rcpp::Named("theta")=theta);
+    
+    return out;
+  }
+  catch( std::exception& __ex__ ) {
+    forward_exception_to_r( __ex__ );
+  }
+  catch(...) {
+    ::Rf_error( "c++ exception" );
+  }
+}
+
+

@@ -4,9 +4,11 @@ void NormalRand(arma::mat &X);
 void RandPerm(arma::uvec &X);
 
 void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta);
+void EqualRankCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData);
 
 //double testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcmDataFrame, arma::umat ind);
-SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat data, Rcpp::DataFrame svcmDataFrame, arma::umat ind, double out);
+SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &ind, double out);
+SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &ind, Rcpp::List cPitData, arma::vec &theta, arma::mat &sigma);
 
 void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double *TestStat, double *pValue, arma::mat &S);
 
