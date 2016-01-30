@@ -152,7 +152,7 @@ test_that("unit tests for ERC", {
   
   
   
-  
+  set.seed(31191)
   # Data set 5
   N= 756
   # Four-dimensional D-vine
@@ -164,7 +164,7 @@ test_that("unit tests for ERC", {
   families = array(3,dim=dim(structure))
   par2 = array(0,dim=dim(structure))
   names = c("V1", "V2", "V3","V4")
-  par_firstTree = BiCopTau2Par(3, tau)
+  par_firstTree = BiCopTau2Par(3, 0.5)
   par_secondTree = par_firstTree/(1+par_firstTree)
   par_thirdTree = par_firstTree/(1+2*par_firstTree)
   par  = matrix(c(0,0,0,0,
@@ -201,13 +201,91 @@ test_that("unit tests for ERC", {
   resultData5Test6 = pacotest(Udata,W,pacotestOptions6)$pValue
   resultData5Test7 = pacotest(Udata,W,pacotestOptions7)$pValue
   
-  expect_equal(resultData5Test1,0.59698433554410501589)
-  expect_equal(resultData5Test2,0.5108486612543823302)
-  expect_equal(resultData5Test3,0.53326556795685631229)
-  expect_equal(resultData5Test4,0.5569561099109747726)
-  expect_equal(resultData5Test5,0.68172357330616750737)
-  expect_equal(resultData5Test6,0.023852352740848070667)
-  expect_equal(resultData5Test7,0.18236630813887733105)
+  expect_equal(resultData5Test1,0.57379803160849718324)
+  expect_equal(resultData5Test2,0.55423774339339271222)
+  expect_equal(resultData5Test3,0.52065711751478249703)
+  expect_equal(resultData5Test4,0.51525339058554542326)
+  expect_equal(resultData5Test5,0.19100677218125783341)
+  expect_equal(resultData5Test6,0.37219710113708792676)
+  expect_equal(resultData5Test7,0.39406928943229990736)
+  
+  
+  set.seed(31312)
+  # Data set 6
+  N= 1756
+  # Four-dimensional D-vine
+  structure = matrix(c(4,0,0,0,
+                       1,3,2,0,
+                       2,1,2,0,
+                       3,2,1,1),4,4,TRUE)
+  
+  families = array(3,dim=dim(structure))
+  families  = matrix(c(0,0,0,0,
+                  5,0,0,0,
+                  1,1,0,0,
+                  2,2,2,0),4,4,TRUE)
+  par2  = matrix(c(0,0,0,0,
+                   0,0,0,0,
+                   0,0,0,0,
+                   2.5,8,6,0),4,4,TRUE)
+  par  = matrix(c(0,0,0,0,
+                   5,0,0,0,
+                   0.4,0.3,0,0,
+                   0.5,0.8,0.6,0),4,4,TRUE)
+  names = c("V1", "V2", "V3","V4")
+  
+  rvm = RVineMatrix(structure,families,par,par2,names)
+  rvm = RVineMatrixNormalize(rvm)
+  svcmDataFrame = pacotest:::rVineDataFrameRep(rvm)$variables
+  
+  U = RVineSim(N,rvm)
+  
+  # Compute CPITs for the whole vine
+  cPitData = pacotest:::getCpitsFromVine(U, svcmDataFrame)
+  
+  # Obtain the cPits to be tested
+  copulaInd = nrow(svcmDataFrame)
+  
+  cPit1 = pacotest:::getCpit1(cPitData, svcmDataFrame, copulaInd)
+  cPit2 = pacotest:::getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  
+  Udata = cbind(cPit1,cPit2)
+  W = U[,svcmDataFrame$condset[[copulaInd]]]
+  
+  
+  
+  resultData6Test1 = pacotest(Udata,W,pacotestOptions1)$pValue
+  resultData6Test2 = pacotest(Udata,W,pacotestOptions2)$pValue
+  resultData6Test3 = pacotest(Udata,W,pacotestOptions3)$pValue
+  resultData6Test4 = pacotest(Udata,W,pacotestOptions4)$pValue
+  resultData6Test5 = pacotest(Udata,W,pacotestOptions5)$pValue
+  resultData6Test6 = pacotest(Udata,W,pacotestOptions6)$pValue
+  resultData6Test7 = pacotest(Udata,W,pacotestOptions7)$pValue
+  
+  expect_equal(resultData6Test1,0.45002852538496596058)
+  expect_equal(resultData6Test2,0.52134078346324663755)
+  expect_equal(resultData6Test3,0.48119761795612780997)
+  expect_equal(resultData6Test4,0.55648280932661886578)
+  expect_equal(resultData6Test5,0.52871876986336929782)
+  expect_equal(resultData6Test6,0.93462247149359378717)
+  expect_equal(resultData6Test7,0.27515467935462911697)
+  
+  
+  # Define eight test type
+  pacotestOptions8=pacotestset(TestType='ERC',Grouping = "TreeEC")
+  pacotestOptions8$ERCtype = 'standard'
+  
+  resultData1Test8 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions8)$pValue
+  resultData2Test8 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions8)$pValue
+  resultData3Test8 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions8)$pValue
+  resultData4Test8 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions8)$pValue
+  
+  expect_equal(resultData1Test8,3.9570671184208094928e-09)
+  expect_equal(resultData2Test8,0.73256838088250231245)
+  expect_equal(resultData3Test8,0.00084414989453640565387)
+  expect_equal(resultData4Test8,0.04445133985730387316)
+  
   
 })
 
