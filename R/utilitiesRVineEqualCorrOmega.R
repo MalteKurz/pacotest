@@ -42,7 +42,7 @@ likeMultDeriv =  function(params1,u1,u2,family1,params2,v1,v2,family2)
 deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 {
   
-  result = grad(likeMultDeriv,params1,u1=u1,u2=u2,family1=family1,params2=params2,v1=v1,v2=v2,family2=family2)
+  result = jacobian(likeMultDeriv,params1,u1=u1,u2=u2,family1=family1,params2=params2,v1=v1,v2=v2,family2=family2)
   
   return(result)
 }
@@ -195,19 +195,19 @@ omegaRvine = function(data, svcmDataFrame, ind, cPitData, theta)
   }
   
   
-  omega[(nCopulas+1):(nCopulas+4),(nCopulas+1):(nCopulas+4)] = aa
+  omega[(nParameters+1):(nParameters+4),(nParameters+1):(nParameters+4)] = aa
   
-  omega[(nCopulas+5):(nCopulas+4+nGroups),(nCopulas+1):(nCopulas+4)] = bb
+  omega[(nParameters+5):(nParameters+4+nGroups),(nParameters+1):(nParameters+4)] = bb
   
-  omega[(nCopulas+5):(nCopulas+4+nGroups),(nCopulas+5):(nCopulas+4+nGroups)] = cc
+  omega[(nParameters+5):(nParameters+4+nGroups),(nParameters+5):(nParameters+4+nGroups)] = cc
   
 
   listOfMultipliers = list(a=a,aInGroups=aInGroups,bInGroups=bInGroups)
 
   res = getOmegaWithLikes(data, svcmDataFrame, ind, cPitData, theta, listOfMultipliers)
   
-  omega[1:nCopulas,1:nCopulas] = res$D
-  omega[(nCopulas+1):(nCopulas+4+nGroups),1:nCopulas] = res$E
+  omega[1:nParameters,1:nParameters] = res$D
+  omega[(nParameters+1):(nParameters+4+nGroups),1:nParameters] = res$E
   
   omega = t(triang(omega))+omega-Triang(omega)
   
