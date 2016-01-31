@@ -277,14 +277,6 @@ void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, ar
 double EqualRankCorrTestStat_oracle(const arma::mat &Xdata, const arma::mat &Ydata)
 {
     
-    arma::mat UU = Xdata;
-    arma::mat VV = Ydata;
-    
-    arma::mat U1 = UU.col(0);
-    arma::mat U2 = UU.col(1);
-    arma::mat V1 = VV.col(0);
-    arma::mat V2 = VV.col(1);
-    
     double n = (double) Xdata.n_rows;
     double m = (double) Ydata.n_rows;
     double nm = n+m;
@@ -294,22 +286,22 @@ double EqualRankCorrTestStat_oracle(const arma::mat &Xdata, const arma::mat &Yda
     int NM = N+M;
     
     
-    arma::mat R1 = cov(UU);
-    arma::mat R2 = cov(VV);
+    arma::mat R1 = cov(Xdata);
+    arma::mat R2 = cov(Ydata);
     
     
     double r1 = R1(0,1)/sqrt(R1(0,0))/sqrt(R1(1,1));
     double r2 = R2(0,1)/sqrt(R2(0,0))/sqrt(R2(1,1));
     
-    double nom = sqrt(n*m/nm)*(r1-r2);
+    double nom = sqrt(nm)*(r1-r2);
     
     arma::mat S1(N,2);
     arma::mat S2(M,2);
     
-    S1.col(0) = (U1-as_scalar(mean(U1)))/sqrt(R1(0,0));
-    S1.col(1) = (U2-as_scalar(mean(U2)))/sqrt(R1(1,1));
-    S2.col(0) = (V1-as_scalar(mean(V1)))/sqrt(R2(0,0));
-    S2.col(1) = (V2-as_scalar(mean(V2)))/sqrt(R2(1,1));
+    S1.col(0) = (Xdata.col(0)-mean(Xdata.col(0)))/sqrt(R1(0,0));
+    S1.col(1) = (Xdata.col(1)-mean(Xdata.col(1)))/sqrt(R1(1,1));
+    S2.col(0) = (Ydata.col(0)-mean(Ydata.col(0)))/sqrt(R2(0,0));
+    S2.col(1) = (Ydata.col(1)-mean(Ydata.col(1)))/sqrt(R2(1,1));
     
     arma::mat Z1(N,1);
     arma::mat Z2(M,1);
@@ -317,10 +309,13 @@ double EqualRankCorrTestStat_oracle(const arma::mat &Xdata, const arma::mat &Yda
     Z1 = 0.5*r1*(square(S1.col(0))+square(S1.col(1))) - prod(S1,1);
     Z2 = 0.5*r2*(square(S2.col(0))+square(S2.col(1))) - prod(S2,1);
     
-    double sigmaX = accu(square(Z1-as_scalar(mean(Z1))))/(n-1);
-    double sigmaY = accu(square(Z2-as_scalar(mean(Z2))))/(m-1);
+    double lambdaX = n/nm;
+    double lambdaY = m/nm;
     
-    double V = sigmaX*n/nm + sigmaY*m/nm;
+    double sigmaX =  arma::as_scalar(var(Z1)) / lambdaX;
+    double sigmaY =  arma::as_scalar(var(Z2)) / lambdaY;
+    
+    double V = sigmaX + sigmaY;
     
     return nom/sqrt(V);
 }
