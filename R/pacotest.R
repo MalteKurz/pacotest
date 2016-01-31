@@ -6,11 +6,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
   
   if (pacotestOptions$TestType=='ERC')
   {
-    if (pacotestOptions$Grouping=='TreeERC' && pacotestOptions$AggPvalsNumbRep > 1)
+    Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    if (Grouping<4  && pacotestOptions$AggPvalsNumbRep > 1)
     {
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
-      Grouping = 0
       
       if (pacotestOptions$ERCtype == 'standard')
       {
@@ -34,8 +34,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
     }
     else
     {
-      Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-      if (Grouping > 2)
+      if (Grouping > 4)
       {
         
         if (pacotestOptions$ERCtype == 'standard')
@@ -100,8 +99,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
   }
   else if (pacotestOptions$TestType=='EC')
   {
-    Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-    if (Grouping > 2)
+    Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    if (Grouping > 4)
     {
       out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,1,1)
     }
@@ -114,7 +113,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
     {
       GroupedScatterplot(out$Xdata,out$Ydata)
     }
-    if (Grouping<=2)
+    if (Grouping<=4)
     {
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)

@@ -120,6 +120,17 @@ void getMatrixForPairwiseComparison(int nGroups, arma::mat &A)
   return;
 }
 
+double EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata)
+{
+  arma::mat sigma;
+  arma::vec theta;
+  double testStat;
+  
+  EqualRankCorrChi2TestStat(ind, Udata, &testStat, sigma, theta);
+  
+  return testStat;
+}
+
 void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
 {
   arma::vec cPit1 = Udata.col(0);

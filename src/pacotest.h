@@ -3,6 +3,7 @@ double NormalCDF(double Z);
 void NormalRand(arma::mat &X);
 void RandPerm(arma::uvec &X);
 
+double EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata);
 void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta);
 void EqualRankCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData);
 

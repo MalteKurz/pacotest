@@ -359,9 +359,9 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'TreeEC' || Value == 'TreeERC'))
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'TreeEC' || Value == 'TreeERC' || Value == 'TreeERCchi2' || Value == 'TreeERCchi2WithEstimation' ))
   {
-    stop(paste("The option Grouping must be 'TreeEC', 'TreeERC' 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
+    stop(paste("The option Grouping must be 'TreeEC', 'TreeERC', TreeERCchi2, 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
   }
   return(Value)
 }
@@ -381,7 +381,7 @@ CheckpacotestOptions = function(pacotestOptions)
   if (pacotestOptions$TestType=="ERC")
   {
     CheckGrouping(pacotestOptions$Grouping,"Grouping")
-      if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
+      if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC" || pacotestOptions$Grouping=="TreeERCchi2" || pacotestOptions$Grouping=='TreeERCchi2WithEstimation' )
       {
         if (exists('AggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$AggPvalsNumbRep >1 && exists('GroupedScatterplots', where=pacotestOptions) && pacotestOptions$GroupedScatterplots)
         {
@@ -419,7 +419,7 @@ CheckpacotestOptions = function(pacotestOptions)
         warning('The field AggPvalsNumbRep is set to NULL')
       }
     }
-    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
+    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC" || pacotestOptions$Grouping=="TreeERCchi2" || pacotestOptions$Grouping=='TreeERCchi2WithEstimation' )
     {
       if (exists('ExpMinSampleSize', where=pacotestOptions))
       {
@@ -439,7 +439,7 @@ CheckpacotestOptions = function(pacotestOptions)
   {
     CheckPosScalar(pacotestOptions$NumbBoot,"NumbBoot")
     CheckGrouping(pacotestOptions$Grouping,"Grouping")
-    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
+    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC"  || pacotestOptions$Grouping=="TreeERCchi2" || pacotestOptions$Grouping=='TreeERCchi2WithEstimation' )
     {
       if (exists('ExpMinSampleSize', where=pacotestOptions))
       {
