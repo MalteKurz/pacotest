@@ -52,6 +52,7 @@ test_that("unit tests for ERC", {
   # Define first test type
   pacotestOptions1=pacotestset(TestType='ERC')
   pacotestOptions1$ERCtype = 'standard'
+  pacotestOptions1$finalComparison = 'pairwiseMax'
   
   resultData1Test1 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions1)$pValue
   resultData2Test1 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions1)$pValue
@@ -66,6 +67,7 @@ test_that("unit tests for ERC", {
   # Define second test type
   pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
   pacotestOptions2$ERCtype = 'standard'
+  pacotestOptions2$finalComparison = 'pairwiseMax'
   
   resultData1Test2 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions2)$pValue
   resultData2Test2 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions2)$pValue
@@ -80,6 +82,7 @@ test_that("unit tests for ERC", {
   # Define third test type
   pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
   pacotestOptions3$ERCtype = 'standard'
+  pacotestOptions3$finalComparison = 'pairwiseMax'
   
   resultData1Test3 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions3)$pValue
   resultData2Test3 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions3)$pValue
@@ -94,6 +97,7 @@ test_that("unit tests for ERC", {
   # Define fourth test type
   pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
   pacotestOptions4$ERCtype = 'standard'
+  pacotestOptions4$finalComparison = 'pairwiseMax'
   
   resultData1Test4 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions4)$pValue
   resultData2Test4 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions4)$pValue
@@ -277,6 +281,7 @@ test_that("unit tests for ERC", {
   # Define eight test type
   pacotestOptions8=pacotestset(TestType='ERC',Grouping = "TreeEC")
   pacotestOptions8$ERCtype = 'standard'
+  pacotestOptions8$finalComparison = 'pairwiseMax'
   
   resultData1Test8 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions8)$pValue
   resultData2Test8 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions8)$pValue
@@ -293,6 +298,7 @@ test_that("unit tests for ERC", {
   # Define first test type
   pacotestOptions1=pacotestset(TestType='ERC')
   pacotestOptions1$ERCtype = 'oracle'
+  pacotestOptions1$finalComparison = 'pairwiseMax'
   
   resultData1Test1 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions1)$pValue
   resultData2Test1 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions1)$pValue
@@ -307,6 +313,7 @@ test_that("unit tests for ERC", {
   # Define second test type
   pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
   pacotestOptions2$ERCtype = 'oracle'
+  pacotestOptions2$finalComparison = 'pairwiseMax'
   
   resultData1Test2 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions2)$pValue
   resultData2Test2 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions2)$pValue
@@ -321,6 +328,7 @@ test_that("unit tests for ERC", {
   # Define third test type
   pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
   pacotestOptions3$ERCtype = 'oracle'
+  pacotestOptions3$finalComparison = 'pairwiseMax'
   
   resultData1Test3 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions3)$pValue
   resultData2Test3 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions3)$pValue
@@ -335,6 +343,7 @@ test_that("unit tests for ERC", {
   # Define fourth test type
   pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
   pacotestOptions4$ERCtype = 'oracle'
+  pacotestOptions4$finalComparison = 'pairwiseMax'
   
   resultData1Test4 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions4)$pValue
   resultData2Test4 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions4)$pValue
@@ -402,61 +411,65 @@ test_that("unit tests for ERC", {
   pacotestOptions1=pacotestset(TestType='ERC')
   pacotestOptions1$ERCtype = 'oracle'
   pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions1$finalComparison = 'pairwiseMax'
   
   resultData1Test1 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions1)$pValue
   resultData2Test1 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions1)$pValue
   resultData3Test1 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions1)$pValue
   resultData4Test1 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions1)$pValue
   
-  expect_equal(resultData1Test1,2.9642954757491679629e-13)
-  expect_equal(resultData2Test1,0.47899678217504670918)
-  expect_equal(resultData3Test1,6.9124361790073862721e-10)
-  expect_equal(resultData4Test1,0.11604648921065396916)
+  expect_equal(resultData1Test1,2.6323387913862461573e-13)
+  expect_equal(resultData2Test1,0.50722818293597693451)
+  expect_equal(resultData3Test1,1.1875379568593302793e-09)
+  expect_equal(resultData4Test1,0.16479568003652034225)
   
   # Define second test type
   pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
   pacotestOptions2$ERCtype = 'oracle'
-  pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions2$Grouping = 'TreeERCchi2'
+  pacotestOptions2$finalComparison = 'pairwiseMax'
   
   resultData1Test2 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions2)$pValue
   resultData2Test2 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions2)$pValue
   resultData3Test2 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions2)$pValue
   resultData4Test2 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions2)$pValue
   
-  expect_equal(resultData1Test2,3.9312997301976793096e-13)
-  expect_equal(resultData2Test2,0.51757187632552470458)
-  expect_equal(resultData3Test2,6.9972971861176347375e-10)
-  expect_equal(resultData4Test2,0.14607469526678751315)
+  expect_equal(resultData1Test2,2.9143354396410359186e-13)
+  expect_equal(resultData2Test2,0.52208096086820499071)
+  expect_equal(resultData3Test2,1.3897403228213534021e-09)
+  expect_equal(resultData4Test2,0.195082924463631735)
   
   # Define third test type
   pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
   pacotestOptions3$ERCtype = 'oracle'
-  pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions3$Grouping = 'TreeERCchi2'
+  pacotestOptions3$finalComparison = 'pairwiseMax'
   
   resultData1Test3 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions3)$pValue
   resultData2Test3 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions3)$pValue
   resultData3Test3 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions3)$pValue
   resultData4Test3 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions3)$pValue
   
-  expect_equal(resultData1Test3,8.4376949871511897072e-15)
-  expect_equal(resultData2Test3,0.62315954562301456576)
-  expect_equal(resultData3Test3,2.2178925362936752208e-12)
-  expect_equal(resultData4Test3,0.13535577276547461345)
+  expect_equal(resultData1Test3,8.8817841970012523234e-16)
+  expect_equal(resultData2Test3,0.60325510317078534506)
+  expect_equal(resultData3Test3,1.024424989282124443e-11)
+  expect_equal(resultData4Test3,0.15229586777983583623)
   
   # Define fourth test type
   pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
   pacotestOptions4$ERCtype = 'oracle'
-  pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions4$Grouping = 'TreeERCchi2'
+  pacotestOptions4$finalComparison = 'pairwiseMax'
   
   resultData1Test4 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions4)$pValue
   resultData2Test4 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions4)$pValue
   resultData3Test4 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions4)$pValue
   resultData4Test4 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions4)$pValue
   
-  expect_equal(resultData1Test4,5.4045656838752620388e-13)
-  expect_equal(resultData2Test4,0.55064513931344583053)
-  expect_equal(resultData3Test4,7.9331485824951641916e-10)
-  expect_equal(resultData4Test4,0.12067722140480685589)
+  expect_equal(resultData1Test4,3.4960923045446179458e-13)
+  expect_equal(resultData2Test4,0.52722767016943350438)
+  expect_equal(resultData3Test4,1.3313964375427644882e-09)
+  expect_equal(resultData4Test4,0.15146323139883277609)
   
   # Define fifth test type
   pacotestOptions5=pacotestset(TestType='ERC',Grouping = "SumMedian",

@@ -81,7 +81,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXda
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   arma::uvec Cols(2);
   
@@ -91,7 +91,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
   arma::uvec indXdata;
   arma::uvec indYdata;
   
-  Grouping(Udata, Wdata, indXdata, indYdata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+  Grouping(Udata, Wdata, indXdata, indYdata, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
   
   Xdata = Udata.submat(indXdata, Cols);
   Ydata = Udata.submat(indYdata, Cols);
@@ -101,28 +101,28 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   
   switch(GroupingMethod){
     case 1: // TreeERC
     {
-      TreeGrouping(Udata, Wdata, indXdata, indYdata, 0, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+      TreeGrouping(Udata, Wdata, indXdata, indYdata, 0, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
     }
     case 2: // TreeERCchi2
     {
-      TreeGrouping(Udata, Wdata, indXdata, indYdata, 2, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+      TreeGrouping(Udata, Wdata, indXdata, indYdata, 2, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
     }
     case 3: // TreeERCchi2WithEstimation
     {
-      TreeGrouping(Udata, Wdata, indXdata, indYdata, 2, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+      TreeGrouping(Udata, Wdata, indXdata, indYdata, 2, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
     }
     case 4: // TreeEC
     {
-      TreeGrouping(Udata, Wdata, indXdata, indYdata, 1, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+      TreeGrouping(Udata, Wdata, indXdata, indYdata, 1, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
     }
     default:
@@ -171,7 +171,7 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, int nGroups, uns
 }
 
 
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int TestType, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int splitTestType, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   double EvaluationDataFraction = 1-TrainingDataFraction;
   
@@ -262,7 +262,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
       nObsPerGroup(0) = firstGroupInd.n_elem;
       nObsPerGroup(1) = secondGroupInd.n_elem;
       
-      a(j,i) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      a(j,i) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
     }
   }
@@ -348,7 +348,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
           nObsPerGroup(0) = firstGroupInd.n_elem;
           nObsPerGroup(1) = secondGroupInd.n_elem;
           
-          a1(j,i) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+          a1(j,i) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
           
         }
       }
@@ -421,7 +421,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
           nObsPerGroup(0) = firstGroupInd.n_elem;
           nObsPerGroup(1) = secondGroupInd.n_elem;
           
-          a2(j,i) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+          a2(j,i) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
           
         }
       }
@@ -451,24 +451,24 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     {
       ptrOnIndexVectors[0] = R1_1_1.memptr(); nObsPerGroup(0) = R1_1_1.n_elem;
       ptrOnIndexVectors[1] = R1_1_2.memptr(); nObsPerGroup(1) = R1_1_2.n_elem;
-      b(0,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      b(0,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
       ptrOnIndexVectors[1] = R1_2_1.memptr(); nObsPerGroup(1) = R1_2_1.n_elem;
-      b(1,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      b(1,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
       ptrOnIndexVectors[1] = R1_2_2.memptr(); nObsPerGroup(1) = R1_2_2.n_elem;
-      b(2,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      b(2,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
       
       ptrOnIndexVectors[0] = R1_1_2.memptr(); nObsPerGroup(0) = R1_1_2.n_elem;
       ptrOnIndexVectors[1] = R1_2_1.memptr(); nObsPerGroup(1) = R1_2_1.n_elem;
-      b(3,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      b(3,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
       ptrOnIndexVectors[1] = R1_2_2.memptr(); nObsPerGroup(1) = R1_2_2.n_elem;
-      b(4,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      b(4,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
       ptrOnIndexVectors[0] = R1_2_1.memptr(); nObsPerGroup(0) = R1_2_1.n_elem;
-      b(5,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      b(5,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
       b = abs(b);
       b.max(SplitVariable(3),SplitQuantile(3));
@@ -480,26 +480,26 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
       {
         ptrOnIndexVectors[0] = R1_1.memptr(); nObsPerGroup(0) = R1_1.n_elem;
         ptrOnIndexVectors[1] = R1_2_1.memptr(); nObsPerGroup(1) = R1_2_1.n_elem;
-        b(3,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+        b(3,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
         ptrOnIndexVectors[1] = R1_2_2.memptr(); nObsPerGroup(1) = R1_2_2.n_elem;
-        b(4,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+        b(4,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
         ptrOnIndexVectors[0] = R1_2_1.memptr(); nObsPerGroup(0) = R1_2_1.n_elem;
-        b(5,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+        b(5,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       }
       
       if (R1_2_1.is_empty() && R1_2_2.is_empty())
       {
         ptrOnIndexVectors[0] = R1_1_1.memptr(); nObsPerGroup(0) = R1_1_1.n_elem;
         ptrOnIndexVectors[1] = R1_1_2.memptr(); nObsPerGroup(1) = R1_1_2.n_elem;
-        b(0,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+        b(0,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
         ptrOnIndexVectors[1] = R1_2.memptr(); nObsPerGroup(1) = R1_2.n_elem;
-        b(1,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+        b(1,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
         ptrOnIndexVectors[0] = R1_1_2.memptr(); nObsPerGroup(0) = R1_1_2.n_elem;
-        b(2,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+        b(2,0) = splitTestStat(Udata, splitTestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       }
       
       b = abs(b);

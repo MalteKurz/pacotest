@@ -9,24 +9,26 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
     Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
     if (Grouping<4  && pacotestOptions$AggPvalsNumbRep > 1)
     {
+      finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
+      
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
       
       if (pacotestOptions$ERCtype == 'standard')
       {
-        out = ERC(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        out = ERC(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
       else if (pacotestOptions$ERCtype == 'noRanks')
       {
-        out = ERC_noRanks(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        out = ERC_noRanks(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
       else if (pacotestOptions$ERCtype == 'oracle')
       {
-        out = ERC_oracle(Udata,W,Grouping,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        out = ERC_oracle(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
       else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
       {
-        out = ERC_WithEstimation(Udata,W,Grouping, data, svcmDataFrame,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        out = ERC_WithEstimation(Udata,W,Grouping, finalComparison, data, svcmDataFrame,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
       
       CondSetDim = ncol(W);
@@ -39,41 +41,43 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
         
         if (pacotestOptions$ERCtype == 'standard')
         {
-          out = ERC(Udata,W,Grouping,0,1,1)
+          out = ERC(Udata,W,Grouping,1,0,1,1)
         }
         else if (pacotestOptions$ERCtype == 'noRanks')
         {
-          out = ERC_noRanks(Udata,W,Grouping,0,1,1)
+          out = ERC_noRanks(Udata,W,Grouping,1,0,1,1)
         }
         else if (pacotestOptions$ERCtype == 'oracle')
         {
-          out = ERC_oracle(Udata,W,Grouping,0,1,1)
+          out = ERC_oracle(Udata,W,Grouping,1,0,1,1)
         }
         else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
         {
-          out = ERC(Udata,W,Grouping,0,1,1, data, svcmDataFrame)
+          out = ERC(Udata,W,Grouping,1,0,1,1, data, svcmDataFrame)
         }
         
       }
       else
       {
+        finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
+        
         W = addAggInfo(W,pacotestOptions$aggInfo);
         
         if (pacotestOptions$ERCtype == 'standard')
         {
-          out = ERC(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+          out = ERC(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         }
         else if (pacotestOptions$ERCtype == 'noRanks')
         {
-          out = ERC_noRanks(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+          out = ERC_noRanks(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         }
         else if (pacotestOptions$ERCtype == 'oracle')
         {
-          out = ERC_oracle(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+          out = ERC_oracle(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         }
         else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
         {
-          out = ERC(Udata,W,Grouping,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction, data, svcmDataFrame)
+          out = ERC(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction, data, svcmDataFrame)
         }
         
       }
@@ -106,12 +110,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
     Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
     if (Grouping > 4)
     {
-      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,1,1)
+      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,1,1,1)
     }
     else
     {
+      finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
+     
       W = addAggInfo(W,pacotestOptions$aggInfo);
-      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,finalComparison,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
     }
     if (pacotestOptions$GroupedScatterplots)
     {

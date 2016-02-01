@@ -28,7 +28,7 @@ Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double finalComparison, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
     try
     {
         
@@ -53,7 +53,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
             SplitQuantile.zeros();
             SplitThreshold.zeros();
             
-            EqualRankCorrTest(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest(Udata, Wdata, grouping, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -69,7 +69,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
             SplitQuantile.zeros();
             SplitThreshold.zeros();
 
-            EqualRankCorrTest(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest(Udata, Wdata, grouping, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -85,7 +85,7 @@ Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPval
 }
 
 // [[Rcpp::export]]
-Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double finalComparison, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
     try
     {
         
@@ -108,7 +108,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
         
         Rcpp::List out;
         
-        EqualCopTest(Udata, Wdata, N, grouping, &TestStat, &pValue, S, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+        EqualCopTest(Udata, Wdata, N, grouping, finalComparison, &TestStat, &pValue, S, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
         
         out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("S")=S,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         return out;
@@ -123,7 +123,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
 
 
 // [[Rcpp::export]]
-Rcpp::List ERC_noRanks(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List ERC_noRanks(arma::mat Udata, arma::mat Wdata, double Grouping, double finalComparison, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
     try
     {
         
@@ -148,7 +148,7 @@ Rcpp::List ERC_noRanks(arma::mat Udata, arma::mat Wdata, double Grouping, double
             SplitQuantile.zeros();
             SplitThreshold.zeros();
             
-            EqualRankCorrTest_noRanks(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest_noRanks(Udata, Wdata, grouping, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -164,7 +164,7 @@ Rcpp::List ERC_noRanks(arma::mat Udata, arma::mat Wdata, double Grouping, double
             SplitQuantile.zeros();
             SplitThreshold.zeros();
 
-            EqualRankCorrTest_noRanks(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest_noRanks(Udata, Wdata, grouping, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -180,7 +180,7 @@ Rcpp::List ERC_noRanks(arma::mat Udata, arma::mat Wdata, double Grouping, double
 }
 
 // [[Rcpp::export]]
-Rcpp::List ERC_oracle(arma::mat Udata, arma::mat Wdata, double Grouping, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List ERC_oracle(arma::mat Udata, arma::mat Wdata, double Grouping, double finalComparison, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
     try
     {
         
@@ -205,7 +205,7 @@ Rcpp::List ERC_oracle(arma::mat Udata, arma::mat Wdata, double Grouping, double 
             SplitQuantile.zeros();
             SplitThreshold.zeros();
             
-            EqualRankCorrTest_oracle(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest_oracle(Udata, Wdata, grouping, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -221,7 +221,7 @@ Rcpp::List ERC_oracle(arma::mat Udata, arma::mat Wdata, double Grouping, double 
             SplitQuantile.zeros();
             SplitThreshold.zeros();
 
-            EqualRankCorrTest_oracle(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest_oracle(Udata, Wdata, grouping, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -320,8 +320,6 @@ SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svc
   SEXP outFromR = covOfCorrelationsWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("ind", ind), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta));
   
   sigma = Rcpp::as<arma::mat>(outFromR);
-  
-  //out = Rcpp::as<double>(outFromRList["testStat"]);
   
 }
 
