@@ -81,15 +81,19 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
       }
-      if (Grouping<=2)
+      if (Grouping<=4)
       {
         CondSetDim = ncol(W);
         out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
         if (pacotestOptions$DecisionTreePlot)
         {
-          if (!requireNamespace("plotrix", quietly = TRUE)) {
+          if (!requireNamespace("plotrix", quietly = TRUE))
+          {
             stop("plotrix needed to obtain decision tree plots. Please install it.",
                  call. = FALSE)
+          }
+          else
+          {
             DecisionTreePlot(out$DecisionTree)
           }
         }

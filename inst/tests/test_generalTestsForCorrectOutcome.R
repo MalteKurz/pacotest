@@ -463,7 +463,6 @@ test_that("unit tests for ERC", {
                                ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
                                AggPvalsNumbRep = NULL, aggInfo = NULL)
   pacotestOptions5$ERCtype = 'oracle'
-  pacotestOptions1$Grouping = 'TreeERCchi2'
   
   resultData1Test5 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions5)$pValue
   resultData2Test5 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions5)$pValue
@@ -480,7 +479,6 @@ test_that("unit tests for ERC", {
                                ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
                                AggPvalsNumbRep = NULL, aggInfo = NULL)
   pacotestOptions6$ERCtype = 'oracle'
-  pacotestOptions1$Grouping = 'TreeERCchi2'
   
   resultData1Test6 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions6)$pValue
   resultData2Test6 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions6)$pValue
@@ -497,7 +495,6 @@ test_that("unit tests for ERC", {
                                ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
                                AggPvalsNumbRep = NULL, aggInfo = NULL)
   pacotestOptions7$ERCtype = 'oracle'
-  pacotestOptions1$Grouping = 'TreeERCchi2'
   
   resultData1Test7 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions7)$pValue
   resultData2Test7 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions7)$pValue

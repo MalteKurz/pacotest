@@ -120,23 +120,61 @@ void getMatrixForPairwiseComparison(int nGroups, arma::mat &A)
   return;
 }
 
-double EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata)
+void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
+{
+  const int maxNGroups = 4;
+  unsigned int *ptrOnIndexVectors[maxNGroups];
+  arma::uvec nObsPerGroup(maxNGroups);
+  
+  int nGroups = ind.n_cols;
+  arma::uvec firstGroupInd;
+  arma::uvec secondGroupInd;
+  arma::uvec thirdGroupInd;
+  arma::uvec fourthGroupInd;
+  
+  firstGroupInd = arma::find(ind.col(0));
+  secondGroupInd = arma::find(ind.col(1));
+  ptrOnIndexVectors[0] = firstGroupInd.memptr();
+  ptrOnIndexVectors[1] = secondGroupInd.memptr();
+  nObsPerGroup(0) = firstGroupInd.n_elem;
+  nObsPerGroup(1) = secondGroupInd.n_elem;
+  
+  if (nGroups > 2)
+  {
+    thirdGroupInd = arma::find(ind.col(2));
+    ptrOnIndexVectors[2] = thirdGroupInd.memptr();
+    nObsPerGroup(2) = thirdGroupInd.n_elem;
+  }
+  if (nGroups == 4)
+  {
+    fourthGroupInd = arma::find(ind.col(3));
+    ptrOnIndexVectors[3] = fourthGroupInd.memptr();
+    nObsPerGroup(3) = fourthGroupInd.n_elem;
+  }
+  // Maybe (depending on whether the function is callable from outside) add exception for nGroups>4
+  
+  EqualRankCorrChi2TestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup, testStat, sigma, theta);
+  
+}
+
+
+double EqualRankCorrChi2TestStat(const arma::mat &Udata, int nGroups, unsigned int *ptrOnIndexVectors[], arma::uvec &nObsPerGroup)
 {
   arma::mat sigma;
   arma::vec theta;
   double testStat;
   
-  EqualRankCorrChi2TestStat(ind, Udata, &testStat, sigma, theta);
+  EqualRankCorrChi2TestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup, &testStat, sigma, theta);
   
   return testStat;
 }
 
-void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
+void EqualRankCorrChi2TestStat(const arma::mat &Udata, int nGroups, unsigned int *ptrOnIndexVectors[], arma::uvec &nObsPerGroup, double *testStat, arma::mat &sigma, arma::vec &theta)
 {
   arma::vec cPit1 = Udata.col(0);
   arma::vec cPit2 = Udata.col(1);
   
-  int nGroups = ind.n_cols;
+  //int nGroups = ind.n_cols;
   int iGroup;
   theta.set_size( nGroups+4 );
   
@@ -173,9 +211,12 @@ void EqualRankCorrChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *
   
   for (iGroup=0;iGroup<nGroups;iGroup++)
   {
+    // Obtain the indices of the subsample
+    arma::uvec indInGroup(ptrOnIndexVectors[iGroup], nObsPerGroup(iGroup), false);
+    
     // Obtain the subsample
-    cPit1InGroup = cPit1.elem(arma::find(ind.col(iGroup)));
-    cPit2InGroup = cPit2.elem(arma::find(ind.col(iGroup)));
+    cPit1InGroup = cPit1.elem(indInGroup);
+    cPit2InGroup = cPit2.elem(indInGroup);
     
     // Obtain standardized CPITs
     cPit1InGroupStandardized = (cPit1InGroup-theta(0))/sqrt(theta(1));

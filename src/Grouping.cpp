@@ -134,14 +134,37 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXda
   }
 }
 
-double EqualRankCorrTestStat(const arma::mat &Udata, int nGroups, unsigned int *ptrOnIndexVectors[], arma::uvec &nObsPerGroup)
+double splitTestStat(const arma::mat &Udata, int splitTestType, int nGroups, unsigned int *ptrOnIndexVectors[], arma::uvec &nObsPerGroup)
 {
   
+  double testStat;
+  arma::mat A_EC1;
+  arma::mat A_EC2;
+  
+  if (splitTestType == 0 || splitTestType == 1)
+  {
   arma::uvec firstGroupInd(ptrOnIndexVectors[0], nObsPerGroup(0), false);
   arma::uvec secondGroupInd(ptrOnIndexVectors[1], nObsPerGroup(1), false);
+  if (splitTestType == 0)
+  {
+    testStat = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
+  }
+  else
+  {
+    A_EC1 = Udata.rows(firstGroupInd);
+    A_EC2 = Udata.rows(secondGroupInd);
+    testStat = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+  }
+  }
+  else
+  {
+    if (splitTestType == 2)
+    {
+      testStat = EqualRankCorrChi2TestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup);
+    }
+  }
   
   
-  double testStat = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
   
   return testStat;
   
@@ -185,9 +208,6 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
   R2 = R.subvec(n0,n-1);
   
   // Some helping matrices
-  arma::umat groupInds(n,2);
-  groupInds.zeros();
-  
   arma::mat A_EC1;
   arma::mat A_EC2;
   
@@ -236,35 +256,13 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     {
       firstGroupInd = I.submat(0,j,J(i+1,0),j);
       secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
-      if (TestType == 0)
-      {
-        nGroups = 2;
-        ptrOnIndexVectors[0] = firstGroupInd.memptr();
-        ptrOnIndexVectors[1] = secondGroupInd.memptr();
-        nObsPerGroup(0) = firstGroupInd.n_elem;
-        nObsPerGroup(1) = secondGroupInd.n_elem;
-        a(j,i) = EqualRankCorrTestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup);
-        //          a(j,i) = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
-      }
-      else
-      {
-        if (TestType == 1)
-        {
-          A_EC1 = Udata.rows(firstGroupInd);
-          A_EC2 = Udata.rows(secondGroupInd);
-          a(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        }
-        else
-        {
-          colIndex(0) = 0;
-          groupInds(firstGroupInd,colIndex).ones();
-          colIndex(0) = 1;
-          groupInds(secondGroupInd,colIndex).ones();
-          
-          a(j,i) = EqualRankCorrChi2TestStat(groupInds, Udata);
-          groupInds.zeros();
-        }
-      }
+      nGroups = 2;
+      ptrOnIndexVectors[0] = firstGroupInd.memptr();
+      ptrOnIndexVectors[1] = secondGroupInd.memptr();
+      nObsPerGroup(0) = firstGroupInd.n_elem;
+      nObsPerGroup(1) = secondGroupInd.n_elem;
+      
+      a(j,i) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       
     }
   }
@@ -341,37 +339,13 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
         {
           firstGroupInd = I1.submat(0,j,J1(i+1,0),j);
           secondGroupInd = I1.submat(J1(i+1,0)+1,j,n1-1,j);
+          nGroups = 2;
+          ptrOnIndexVectors[0] = firstGroupInd.memptr();
+          ptrOnIndexVectors[1] = secondGroupInd.memptr();
+          nObsPerGroup(0) = firstGroupInd.n_elem;
+          nObsPerGroup(1) = secondGroupInd.n_elem;
           
-          if (TestType == 0)
-          {
-            nGroups = 2;
-            ptrOnIndexVectors[0] = firstGroupInd.memptr();
-            ptrOnIndexVectors[1] = secondGroupInd.memptr();
-            nObsPerGroup(0) = firstGroupInd.n_elem;
-            nObsPerGroup(1) = secondGroupInd.n_elem;
-            a1(j,i) = EqualRankCorrTestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup);
-            //            a1(j,i) = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
-          }
-          else
-          {
-            if (TestType == 1)
-            {
-              A_EC1 = Udata.rows(firstGroupInd);
-              A_EC2 = Udata.rows(secondGroupInd);
-              a1(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-            }
-            else
-            {
-              colIndex(0) = 0;
-              groupInds(firstGroupInd,colIndex).ones();
-              colIndex(0) = 1;
-              groupInds(secondGroupInd,colIndex).ones();
-              
-              
-              a1(j,i) = EqualRankCorrChi2TestStat(groupInds, Udata);
-              groupInds.zeros();
-            }
-          }
+          a1(j,i) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
           
         }
       }
@@ -435,36 +409,13 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
         {
           firstGroupInd = I2.submat(0,j,J2(i+1,0),j);
           secondGroupInd = I2.submat(J2(i+1,0)+1,j,n2-1,j);
-          if (TestType == 0)
-          {
-            nGroups = 2;
-            ptrOnIndexVectors[0] = firstGroupInd.memptr();
-            ptrOnIndexVectors[1] = secondGroupInd.memptr();
-            nObsPerGroup(0) = firstGroupInd.n_elem;
-            nObsPerGroup(1) = secondGroupInd.n_elem;
-            a2(j,i) = EqualRankCorrTestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup);
-            //            a2(j,i) = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
-          }
-          else
-          {
-            if (TestType == 1)
-            {
-              A_EC1 = Udata.rows(firstGroupInd);
-              A_EC2 = Udata.rows(secondGroupInd);
-              a2(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-            }
-            else
-            {
-              colIndex(0) = 0;
-              groupInds(firstGroupInd,colIndex).ones();
-              colIndex(0) = 1;
-              groupInds(secondGroupInd,colIndex).ones();
-              
-              
-              a2(j,i) = EqualRankCorrChi2TestStat(groupInds, Udata);
-              groupInds.zeros();
-            }
-          }
+          nGroups = 2;
+          ptrOnIndexVectors[0] = firstGroupInd.memptr();
+          ptrOnIndexVectors[1] = secondGroupInd.memptr();
+          nObsPerGroup(0) = firstGroupInd.n_elem;
+          nObsPerGroup(1) = secondGroupInd.n_elem;
+          
+          a2(j,i) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
           
         }
       }
@@ -483,10 +434,14 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     }
     
     // Final comparison
-    if (!(SplitQuantile[0]==0 && n<ExpMinSampleSize*8/EvaluationDataFraction) && !(SplitQuantile[0]==2 && n<ExpMinSampleSize*8/EvaluationDataFraction))
+    //if (!(SplitQuantile[0]==0 && n<ExpMinSampleSize*8/EvaluationDataFraction) && !(SplitQuantile[0]==2 && n<ExpMinSampleSize*8/EvaluationDataFraction))
+    
+    arma::mat b(6,1);
+    b.zeros();
+    
+    if (TestType == 0)
     {
-      arma::mat b(6,1);
-      if (TestType == 0)
+      if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
       {
         b(0,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_1_2));
         b(1,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_2_1));
@@ -496,6 +451,25 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
         b(5,0) = EqualRankCorrTestStat(Udata.rows(R1_2_1),Udata.rows(R1_2_2));
       }
       else
+      {
+        if (R1_1_1.is_empty() && R1_1_2.is_empty())
+        {
+          b(3,0) = EqualRankCorrTestStat(Udata.rows(R1_1),Udata.rows(R1_2_1));
+          b(4,0) = EqualRankCorrTestStat(Udata.rows(R1_1),Udata.rows(R1_2_2));
+          b(5,0) = EqualRankCorrTestStat(Udata.rows(R1_2_1),Udata.rows(R1_2_2));
+        }
+        
+        if (R1_2_1.is_empty() && R1_2_2.is_empty())
+        {
+          b(0,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_1_2));
+          b(1,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_2));
+          b(2,0) = EqualRankCorrTestStat(Udata.rows(R1_1_2),Udata.rows(R1_2));
+        }
+      }
+    }
+    else
+    {
+      if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
       {
         A_EC1 = Udata.rows(R1_1_1);
         A_EC2 = Udata.rows(R1_1_2);
@@ -516,8 +490,39 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
         A_EC2 = Udata.rows(R1_2_2);
         b(5,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
       }
-      
-      
+      else
+      {
+        if (R1_1_1.is_empty() && R1_1_2.is_empty())
+        {
+          A_EC1 = Udata.rows(R1_1);
+          A_EC2 = Udata.rows(R1_2_1);
+          b(3,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+          A_EC1 = Udata.rows(R1_1);
+          A_EC2 = Udata.rows(R1_2_2);
+          b(4,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+          A_EC1 = Udata.rows(R1_2_1);
+          A_EC2 = Udata.rows(R1_2_2);
+          b(5,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+        }
+        
+        if (R1_2_1.is_empty() && R1_2_2.is_empty())
+        {
+          A_EC1 = Udata.rows(R1_1_1);
+          A_EC2 = Udata.rows(R1_1_2);
+          b(0,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+          A_EC1 = Udata.rows(R1_1_1);
+          A_EC2 = Udata.rows(R1_2);
+          b(1,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+          A_EC1 = Udata.rows(R1_1_2);
+          A_EC2 = Udata.rows(R1_2);
+          b(2,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
+        }
+      }
+
+    }
+    
+    if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
+    {
       b = abs(b);
       b.max(SplitVariable[3],SplitQuantile[3]);
       
@@ -573,35 +578,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     }
     else
     {
-      if (SplitQuantile[0]==0)
+      if (R1_1_1.is_empty() && R1_1_2.is_empty())
       {
-        arma::mat b(6,1);
-        if (TestType == 0)
-        {
-          b(0,0) = 0;
-          b(1,0) = 0;
-          b(2,0) = 0;
-          b(3,0) = EqualRankCorrTestStat(Udata.rows(R1_1),Udata.rows(R1_2_1));
-          b(4,0) = EqualRankCorrTestStat(Udata.rows(R1_1),Udata.rows(R1_2_2));
-          b(5,0) = EqualRankCorrTestStat(Udata.rows(R1_2_1),Udata.rows(R1_2_2));
-        }
-        else
-        {
-          b(0,0) = 0;
-          b(1,0) = 0;
-          b(2,0) = 0;
-          A_EC1 = Udata.rows(R1_1);
-          A_EC2 = Udata.rows(R1_2_1);
-          b(3,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_1);
-          A_EC2 = Udata.rows(R1_2_2);
-          b(4,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_2_1);
-          A_EC2 = Udata.rows(R1_2_2);
-          b(5,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        }
-        
-        
         b = abs(b);
         b.max(SplitVariable[3],SplitQuantile[3]);
         SplitVariable[3] = SplitVariable[3] +10;
@@ -635,33 +613,6 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
       }
       else
       {
-        arma::mat b(6,1);
-        if (TestType == 0)
-        {
-          b(0,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_1_2));
-          b(1,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_2));
-          b(2,0) = EqualRankCorrTestStat(Udata.rows(R1_1_2),Udata.rows(R1_2));
-          b(3,0) = 0;
-          b(4,0) = 0;
-          b(5,0) = 0;
-        }
-        else
-        {
-          A_EC1 = Udata.rows(R1_1_1);
-          A_EC2 = Udata.rows(R1_1_2);
-          b(0,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_1_1);
-          A_EC2 = Udata.rows(R1_2);
-          b(1,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_1_2);
-          A_EC2 = Udata.rows(R1_2);
-          b(2,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          b(3,0) = 0;
-          b(4,0) = 0;
-          b(5,0) = 0;
-        }
-        
-        
         b = abs(b);
         b.max(SplitVariable[3],SplitQuantile[3]);
         SplitVariable[3] = SplitVariable[3] +10;
