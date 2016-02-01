@@ -932,7 +932,7 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
     EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, 50, 0.5);
 }*/
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     int n1, n2, k;
     
@@ -982,7 +982,7 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, 50, 0.5);
 }*/
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;

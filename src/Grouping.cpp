@@ -81,7 +81,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXda
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   arma::uvec Cols(2);
   
@@ -101,7 +101,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int GroupingMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   
   switch(GroupingMethod){
@@ -171,7 +171,7 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, int nGroups, uns
 }
 
 
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int TestType, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &indXdata, arma::uvec &indYdata, int TestType, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   double EvaluationDataFraction = 1-TrainingDataFraction;
   
@@ -268,9 +268,12 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
   }
   
   
-  // Split at variable SplitVariable[0] and quantile SplitQuantile[0]
+  // Split at variable SplitVariable(0) and quantile SplitQuantile(0)
   a = abs(a);
-  a.max(SplitVariable[0],SplitQuantile[0]);
+  a.max(SplitVariable(0),SplitQuantile(0));
+  
+  // Obtain the corresponding split threshold
+  SplitThreshold(0) = arma::as_scalar(Wdata(I(J(SplitQuantile(0)+1),SplitVariable(0)),SplitVariable(0)));
   
   
   arma::uvec B1;
@@ -283,15 +286,15 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
   
   if ((m>1) && (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction)) //If the dimension of the conditioning set is larger than two, a second split is performed
   {
-    unsigned int n1 = J(SplitQuantile[0]+1,0)+1;
+    unsigned int n1 = J(SplitQuantile(0)+1,0)+1;
     unsigned int n2 = n0 - n1;
     
     arma::uvec R1_1(n1);
     arma::uvec R1_2(n2);
     
     // Get the index sets for both groups (formed by the first split)
-    R1_1 = I.submat(0,SplitVariable[0],n1-1,SplitVariable[0]);
-    R1_2 = I.submat(n1,SplitVariable[0],n0-1,SplitVariable[0]);
+    R1_1 = I.submat(0,SplitVariable(0),n1-1,SplitVariable(0));
+    R1_2 = I.submat(n1,SplitVariable(0),n0-1,SplitVariable(0));
     
     // Declare some variables
     arma::umat I1(n1,m);
@@ -300,10 +303,10 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     arma::uvec R1_1_2;
     
     // Prepare the (left) data sets for the second split
-    if (!(SplitQuantile[0]==0 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
+    if (!(SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
     {
       unsigned int N1;
-      if ((SplitQuantile[0]==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile[0]==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile[0]==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
+      if ((SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
       {
         N1 = 1;
         J1.set_size(2,1);
@@ -350,15 +353,18 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
         }
       }
       
-      // Split at variable SplitVariable[1] and quantile SplitQuantile[1]
+      // Split at variable SplitVariable(1) and quantile SplitQuantile(1)
       a1 = abs(a1);
-      a1.max(SplitVariable[1],SplitQuantile[1]);
+      a1.max(SplitVariable(1),SplitQuantile(1));
+      
+      // Obtain the corresponding split threshold
+      SplitThreshold(1) = arma::as_scalar(Wdata(I1(J1(SplitQuantile(1)+1),SplitVariable(1)),SplitVariable(1)));
       
       // Get the (pseudo-)observations for both groups
-      unsigned int n3 = J1(SplitQuantile[1]+1,0)+1;
+      unsigned int n3 = J1(SplitQuantile(1)+1,0)+1;
       
-      R1_1_1 = I1.submat(0,SplitVariable[1],n3-1,SplitVariable[1]);
-      R1_1_2 = I1.submat(n3,SplitVariable[1],n1-1,SplitVariable[1]);
+      R1_1_1 = I1.submat(0,SplitVariable(1),n3-1,SplitVariable(1));
+      R1_1_2 = I1.submat(n3,SplitVariable(1),n1-1,SplitVariable(1));
       
     }
     
@@ -369,11 +375,11 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     arma::uvec R1_2_2;
     
     // Prepare the (right) data sets for the second split
-    if (!(SplitQuantile[0]==2 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
+    if (!(SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
     {
       
       unsigned int N2;
-      if ((SplitQuantile[0]==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile[0]==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile[0]==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
+      if ((SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
       {
         N2 = 1;
         J2.set_size(2,1);
@@ -420,241 +426,182 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
         }
       }
       
-      // Split at variable SplitVariable[2] and quantile SplitQuantile[2]
+      // Split at variable SplitVariable(2) and quantile SplitQuantile(2)
       a2 = abs(a2);
-      a2.max(SplitVariable[2],SplitQuantile[2]);
+      a2.max(SplitVariable(2),SplitQuantile(2));
       
+      // Obtain the corresponding split threshold
+      SplitThreshold(2) = arma::as_scalar(Wdata(I2(J2(SplitQuantile(2)+1),SplitVariable(2)),SplitVariable(2)));
       
       // Get the (pseudo-)observations for both groups
-      unsigned int n4 = J2(SplitQuantile[2]+1,0)+1;
+      unsigned int n4 = J2(SplitQuantile(2)+1,0)+1;
       
-      R1_2_1 = I2.submat(0,SplitVariable[2],n4-1,SplitVariable[2]);
-      R1_2_2 = I2.submat(n4,SplitVariable[2],n2-1,SplitVariable[2]);
+      R1_2_1 = I2.submat(0,SplitVariable(2),n4-1,SplitVariable(2));
+      R1_2_2 = I2.submat(n4,SplitVariable(2),n2-1,SplitVariable(2));
       
     }
+    
     
     // Final comparison
-    //if (!(SplitQuantile[0]==0 && n<ExpMinSampleSize*8/EvaluationDataFraction) && !(SplitQuantile[0]==2 && n<ExpMinSampleSize*8/EvaluationDataFraction))
-    
     arma::mat b(6,1);
     b.zeros();
-    
-    if (TestType == 0)
-    {
-      if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
-      {
-        b(0,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_1_2));
-        b(1,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_2_1));
-        b(2,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_2_2));
-        b(3,0) = EqualRankCorrTestStat(Udata.rows(R1_1_2),Udata.rows(R1_2_1));
-        b(4,0) = EqualRankCorrTestStat(Udata.rows(R1_1_2),Udata.rows(R1_2_2));
-        b(5,0) = EqualRankCorrTestStat(Udata.rows(R1_2_1),Udata.rows(R1_2_2));
-      }
-      else
-      {
-        if (R1_1_1.is_empty() && R1_1_2.is_empty())
-        {
-          b(3,0) = EqualRankCorrTestStat(Udata.rows(R1_1),Udata.rows(R1_2_1));
-          b(4,0) = EqualRankCorrTestStat(Udata.rows(R1_1),Udata.rows(R1_2_2));
-          b(5,0) = EqualRankCorrTestStat(Udata.rows(R1_2_1),Udata.rows(R1_2_2));
-        }
-        
-        if (R1_2_1.is_empty() && R1_2_2.is_empty())
-        {
-          b(0,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_1_2));
-          b(1,0) = EqualRankCorrTestStat(Udata.rows(R1_1_1),Udata.rows(R1_2));
-          b(2,0) = EqualRankCorrTestStat(Udata.rows(R1_1_2),Udata.rows(R1_2));
-        }
-      }
-    }
-    else
-    {
-      if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
-      {
-        A_EC1 = Udata.rows(R1_1_1);
-        A_EC2 = Udata.rows(R1_1_2);
-        b(0,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        A_EC1 = Udata.rows(R1_1_1);
-        A_EC2 = Udata.rows(R1_2_1);
-        b(1,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        A_EC1 = Udata.rows(R1_1_1);
-        A_EC2 = Udata.rows(R1_2_2);
-        b(2,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        A_EC1 = Udata.rows(R1_1_2);
-        A_EC2 = Udata.rows(R1_2_1);
-        b(3,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        A_EC1 = Udata.rows(R1_1_2);
-        A_EC2 = Udata.rows(R1_2_2);
-        b(4,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        A_EC1 = Udata.rows(R1_2_1);
-        A_EC2 = Udata.rows(R1_2_2);
-        b(5,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-      }
-      else
-      {
-        if (R1_1_1.is_empty() && R1_1_2.is_empty())
-        {
-          A_EC1 = Udata.rows(R1_1);
-          A_EC2 = Udata.rows(R1_2_1);
-          b(3,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_1);
-          A_EC2 = Udata.rows(R1_2_2);
-          b(4,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_2_1);
-          A_EC2 = Udata.rows(R1_2_2);
-          b(5,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        }
-        
-        if (R1_2_1.is_empty() && R1_2_2.is_empty())
-        {
-          A_EC1 = Udata.rows(R1_1_1);
-          A_EC2 = Udata.rows(R1_1_2);
-          b(0,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_1_1);
-          A_EC2 = Udata.rows(R1_2);
-          b(1,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          A_EC1 = Udata.rows(R1_1_2);
-          A_EC2 = Udata.rows(R1_2);
-          b(2,0) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-        }
-      }
-
-    }
+    nGroups = 2;
     
     if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
     {
+      ptrOnIndexVectors[0] = R1_1_1.memptr(); nObsPerGroup(0) = R1_1_1.n_elem;
+      ptrOnIndexVectors[1] = R1_1_2.memptr(); nObsPerGroup(1) = R1_1_2.n_elem;
+      b(0,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      
+      ptrOnIndexVectors[1] = R1_2_1.memptr(); nObsPerGroup(1) = R1_2_1.n_elem;
+      b(1,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      
+      ptrOnIndexVectors[1] = R1_2_2.memptr(); nObsPerGroup(1) = R1_2_2.n_elem;
+      b(2,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      
+      
+      ptrOnIndexVectors[0] = R1_1_2.memptr(); nObsPerGroup(0) = R1_1_2.n_elem;
+      ptrOnIndexVectors[1] = R1_2_1.memptr(); nObsPerGroup(1) = R1_2_1.n_elem;
+      b(3,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      
+      ptrOnIndexVectors[1] = R1_2_2.memptr(); nObsPerGroup(1) = R1_2_2.n_elem;
+      b(4,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      
+      ptrOnIndexVectors[0] = R1_2_1.memptr(); nObsPerGroup(0) = R1_2_1.n_elem;
+      b(5,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      
       b = abs(b);
-      b.max(SplitVariable[3],SplitQuantile[3]);
+      b.max(SplitVariable(3),SplitQuantile(3));
       
-      
-      SplitThreshold[0] = arma::as_scalar(Wdata(I(J(SplitQuantile[0]+1),SplitVariable[0]),SplitVariable[0]));
-      SplitThreshold[1] = arma::as_scalar(Wdata(I1(J1(SplitQuantile[1]+1),SplitVariable[1]),SplitVariable[1]));
-      SplitThreshold[2] = arma::as_scalar(Wdata(I2(J2(SplitQuantile[2]+1),SplitVariable[2]),SplitVariable[2]));
-      
-      switch(SplitVariable[3]){
-        case 0:
-        {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) <= SplitThreshold[1] );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) > SplitThreshold[1] );
-          
-          break;
-        }
-        case 1:
-        {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) <= SplitThreshold[1] );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) <= SplitThreshold[2] );
-          
-          break;
-        }
-        case 2:
-        {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) <= SplitThreshold[1] );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) > SplitThreshold[2] );
-          
-          break;
-        }
-        case 3:
-        {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) > SplitThreshold[1] );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) <= SplitThreshold[2] );
-          
-          break;
-        }
-        case 4:
-        {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) > SplitThreshold[1] );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) > SplitThreshold[2] );
-          
-          break;
-        }
-        case 5:
-        {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) <= SplitThreshold[2] );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) > SplitThreshold[2] );
-          
-          break;
-        }
-      }
     }
     else
     {
       if (R1_1_1.is_empty() && R1_1_2.is_empty())
       {
-        b = abs(b);
-        b.max(SplitVariable[3],SplitQuantile[3]);
-        SplitVariable[3] = SplitVariable[3] +10;
+        ptrOnIndexVectors[0] = R1_1.memptr(); nObsPerGroup(0) = R1_1.n_elem;
+        ptrOnIndexVectors[1] = R1_2_1.memptr(); nObsPerGroup(1) = R1_2_1.n_elem;
+        b(3,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
-        SplitThreshold[0] = arma::as_scalar(Wdata(I(J(SplitQuantile[0]+1),SplitVariable[0]),SplitVariable[0]));
-        SplitThreshold[2] = arma::as_scalar(Wdata(I2(J2(SplitQuantile[2]+1),SplitVariable[2]),SplitVariable[2]));
+        ptrOnIndexVectors[1] = R1_2_2.memptr(); nObsPerGroup(1) = R1_2_2.n_elem;
+        b(4,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
-        switch(SplitVariable[3]){
-          case 13:
-          {
-            B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0]);
-            B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) <= SplitThreshold[2] );
-            
-            break;
-          }
-          case 14:
-          {
-            B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0]);
-            B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) > SplitThreshold[2] );
-            
-            break;
-          }
-          case 15:
-          {
-            B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) <= SplitThreshold[2] );
-            B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(2)) > SplitThreshold[2] );
-            
-            break;
-          }
-        }
+        ptrOnIndexVectors[0] = R1_2_1.memptr(); nObsPerGroup(0) = R1_2_1.n_elem;
+        b(5,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
       }
-      else
+      
+      if (R1_2_1.is_empty() && R1_2_2.is_empty())
       {
-        b = abs(b);
-        b.max(SplitVariable[3],SplitQuantile[3]);
-        SplitVariable[3] = SplitVariable[3] +10;
+        ptrOnIndexVectors[0] = R1_1_1.memptr(); nObsPerGroup(0) = R1_1_1.n_elem;
+        ptrOnIndexVectors[1] = R1_1_2.memptr(); nObsPerGroup(1) = R1_1_2.n_elem;
+        b(0,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
+        ptrOnIndexVectors[1] = R1_2.memptr(); nObsPerGroup(1) = R1_2.n_elem;
+        b(1,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
         
-        SplitThreshold[0] = arma::as_scalar(Wdata(I(J(SplitQuantile[0]+1),SplitVariable[0]),SplitVariable[0]));
-        SplitThreshold[1] = arma::as_scalar(Wdata(I1(J1(SplitQuantile[1]+1),SplitVariable[1]),SplitVariable[1]));
+        ptrOnIndexVectors[0] = R1_1_2.memptr(); nObsPerGroup(0) = R1_1_2.n_elem;
+        b(2,0) = splitTestStat(Udata, TestType, nGroups, ptrOnIndexVectors, nObsPerGroup);
+      }
+      
+      b = abs(b);
+      b.max(SplitVariable(3),SplitQuantile(3));
+      SplitVariable(3) = SplitVariable(3) +10;
+      
+    }
+    
+    switch(SplitVariable(3)){
+      case 0:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
         
-        switch(SplitVariable[3]){
-          case 10:
-          {
-            B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) <= SplitThreshold[1] );
-            B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) > SplitThreshold[1] );
-            
-            break;
-          }
-          case 11:
-          {
-            B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) <= SplitThreshold[1] );
-            B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0]);
-            
-            break;
-          }
-          case 12:
-          {
-            B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0] && Wdata.submat(R2,SplitVariable.col(1)) > SplitThreshold[1] );
-            B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0]);
-            
-            break;
-          }
-        }
+        break;
+      }
+      case 1:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+        
+        break;
+      }
+      case 2:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+        
+        break;
+      }
+      case 3:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+        
+        break;
+      }
+      case 4:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+        
+        break;
+      }
+      case 5:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+        
+        break;
+      }
+      case 13:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+        
+        break;
+      }
+      case 14:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+        
+        break;
+      }
+      case 15:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+        
+        break;
+      }
+      case 10:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+        
+        break;
+      }
+      case 11:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+        
+        break;
+      }
+      case 12:
+      {
+        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+        
+        break;
       }
     }
     
   }
   else
   {
-    SplitThreshold[0] = arma::as_scalar(Wdata(I(J(SplitQuantile[0]+1),SplitVariable[0]),SplitVariable[0]));
     
-    B1 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) <= SplitThreshold[0]);
-    B2 = arma::find(Wdata.submat(R2,SplitVariable.col(0)) > SplitThreshold[0]);
-    SplitVariable[3] = 6;
+    B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+    B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+    SplitVariable(3) = 6;
   }
   
   

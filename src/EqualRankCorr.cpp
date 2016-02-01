@@ -20,7 +20,7 @@ void rankObs(const arma::mat &Xdata, const arma::mat &Ydata, arma::mat &UU, arma
 }
 
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
@@ -30,7 +30,7 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int Group
 }
 
 
-void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
@@ -46,9 +46,9 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
     double S;
     int i;
     
-    arma::umat splitVariable(1,4);
-    arma::umat splitQuantile(1,4);
-    arma::mat splitThreshold(1,3);
+    arma::uvec splitVariable(4);
+    arma::uvec splitQuantile(4);
+    arma::vec splitThreshold(3);
     
     splitVariable.zeros();
     splitQuantile.zeros();
@@ -58,9 +58,9 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat
     {
         Grouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
         
-        SplitVariable.row(i) = splitVariable;
-        SplitQuantile.row(i) = splitQuantile;
-        SplitThreshold.row(i) = splitThreshold;
+        SplitVariable.col(i) = splitVariable;
+        SplitQuantile.col(i) = splitQuantile;
+        SplitThreshold.col(i) = splitThreshold;
         
         S = EqualRankCorrTestStat(Xdata, Ydata);
         
@@ -123,7 +123,7 @@ double EqualRankCorrTestStat(const arma::mat &Xdata, const arma::mat &Ydata)
 
 
 // NO RANK STUFF
-void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
@@ -133,7 +133,7 @@ void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, i
 }
 
 
-void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
@@ -149,9 +149,9 @@ void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, a
     double S;
     int i;
     
-    arma::umat splitVariable(1,4);
-    arma::umat splitQuantile(1,4);
-    arma::mat splitThreshold(1,3);
+    arma::uvec splitVariable(4);
+    arma::uvec splitQuantile(4);
+    arma::vec splitThreshold(3);
     
     splitVariable.zeros();
     splitQuantile.zeros();
@@ -161,9 +161,9 @@ void EqualRankCorrTest_noRanks(const arma::mat &Udata, const arma::mat &Wdata, a
     {
         Grouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
         
-        SplitVariable.row(i) = splitVariable;
-        SplitQuantile.row(i) = splitQuantile;
-        SplitThreshold.row(i) = splitThreshold;
+        SplitVariable.col(i) = splitVariable;
+        SplitQuantile.col(i) = splitQuantile;
+        SplitThreshold.col(i) = splitThreshold;
         
         S = EqualRankCorrTestStat_noRanks(Xdata, Ydata);
         
@@ -223,7 +223,7 @@ double EqualRankCorrTestStat_noRanks(const arma::mat &Xdata, const arma::mat &Yd
 }
 
 // ORACLE STUFF
-void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
@@ -233,7 +233,7 @@ void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, in
 }
 
 
-void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
@@ -249,9 +249,9 @@ void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, ar
     double S;
     int i;
     
-    arma::umat splitVariable(1,4);
-    arma::umat splitQuantile(1,4);
-    arma::mat splitThreshold(1,3);
+    arma::uvec splitVariable(4);
+    arma::uvec splitQuantile(4);
+    arma::vec splitThreshold(3);
     
     splitVariable.zeros();
     splitQuantile.zeros();
@@ -261,9 +261,9 @@ void EqualRankCorrTest_oracle(const arma::mat &Udata, const arma::mat &Wdata, ar
     {
         Grouping(Udata, Wdata, Xdata, Ydata, 1, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
         
-        SplitVariable.row(i) = splitVariable;
-        SplitQuantile.row(i) = splitQuantile;
-        SplitThreshold.row(i) = splitThreshold;
+        SplitVariable.col(i) = splitVariable;
+        SplitQuantile.col(i) = splitQuantile;
+        SplitThreshold.col(i) = splitThreshold;
         
         S = EqualRankCorrTestStat_oracle(Xdata, Ydata);
         
