@@ -184,27 +184,21 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
   // Evaluation data
   R2 = R.subvec(n0,n-1);
   
-  arma::umat J(4,1);
-  
-  // Get quantiles from learning data set
-  J(0,0) = 0;
-  J(1,0) = floor(n0/4)-1;
-  J(2,0) = floor(n0/2)-1;
-  J(3,0) = floor(3*n0/4)-1;
-  
-  
-  // Learn the first split
-  arma::mat a(m,3);
-  arma::umat I(n0,m);
-  arma::uvec firstGroupInd;
-  arma::uvec secondGroupInd;
-  
-  
+  // Some helping matrices
   arma::umat groupInds(n,2);
   groupInds.zeros();
   
   arma::mat A_EC1;
   arma::mat A_EC2;
+  
+  
+  // Learn the first split
+  arma::umat J(4,1);
+  arma::mat a(m,3);
+  a.zeros();
+  arma::umat I(n0,m);
+  arma::uvec firstGroupInd;
+  arma::uvec secondGroupInd;
   
   arma::uvec X(n0);
   arma::uvec colIndex(1);
@@ -215,82 +209,53 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
     I.col(j) = R1(X);
   }
   
+  
+  J(0,0) = 0;
+  J(1,0) = floor(n0/4)-1;
+  J(2,0) = floor(n0/2)-1;
+  J(3,0) = floor(3*n0/4)-1;
+  
+  unsigned int iStart;
+  unsigned int iEnd;
+  
+  if (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction) // Use the 0.25 and 0.75 quantile only for more than 8*ExpMinSampleSize observations
+  {
+    iStart = 0;
+    iEnd = 3;
+  }
+  else
+  {
+    iStart = 1;
+    iEnd = 2;
+  }
+  
+  
   for (j=0;j<m;j++)
   {
-    if (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction) // Use the 0.25 and 0.75 quantile only for more than 8*ExpMinSampleSize observations
+    for (i=iStart;i<iEnd;i++)
     {
-      for (i=0;i<3;i++)
-      {
-        if (TestType == 0)
-        {
-          firstGroupInd = I.submat(0,j,J(i+1,0),j);
-          secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
-          nGroups = 2;
-          ptrOnIndexVectors[0] = firstGroupInd.memptr();
-          ptrOnIndexVectors[1] = secondGroupInd.memptr();
-          nObsPerGroup(0) = firstGroupInd.n_elem;
-          nObsPerGroup(1) = secondGroupInd.n_elem;
-          a(j,i) = EqualRankCorrTestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup);
-          //          a(j,i) = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
-        }
-        else
-        {
-          if (TestType == 1)
-          {
-            firstGroupInd = I.submat(0,j,J(i+1,0),j);
-            secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
-            A_EC1 = Udata.rows(firstGroupInd);
-            A_EC2 = Udata.rows(secondGroupInd);
-            a(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
-          }
-          else
-          {
-            firstGroupInd = I.submat(0,j,J(i+1,0),j);
-            secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
-            
-            colIndex(0) = 0;
-            groupInds(firstGroupInd,colIndex).ones();
-            colIndex(0) = 1;
-            groupInds(secondGroupInd,colIndex).ones();
-            
-            a(j,i) = EqualRankCorrChi2TestStat(groupInds, Udata);
-            groupInds.zeros();
-          }
-        }
-      }
-    }
-    else
-    {
-      a(j,0) = 0;
-      a(j,2) = 0;
-      i=1;
+      firstGroupInd = I.submat(0,j,J(i+1,0),j);
+      secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
       if (TestType == 0)
       {
-        firstGroupInd = I.submat(0,j,J(i+1,0),j);
-        secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
         nGroups = 2;
         ptrOnIndexVectors[0] = firstGroupInd.memptr();
         ptrOnIndexVectors[1] = secondGroupInd.memptr();
         nObsPerGroup(0) = firstGroupInd.n_elem;
         nObsPerGroup(1) = secondGroupInd.n_elem;
         a(j,i) = EqualRankCorrTestStat(Udata, nGroups, ptrOnIndexVectors, nObsPerGroup);
-        //        a(j,i) = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
+        //          a(j,i) = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
       }
       else
       {
         if (TestType == 1)
         {
-          firstGroupInd = I.submat(0,j,J(i+1,0),j);
-          secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
           A_EC1 = Udata.rows(firstGroupInd);
           A_EC2 = Udata.rows(secondGroupInd);
           a(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
         }
         else
         {
-          firstGroupInd = I.submat(0,j,J(i+1,0),j);
-          secondGroupInd = I.submat(J(i+1,0)+1,j,n0-1,j);
-          
           colIndex(0) = 0;
           groupInds(firstGroupInd,colIndex).ones();
           colIndex(0) = 1;
@@ -300,6 +265,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
           groupInds.zeros();
         }
       }
+      
     }
   }
   
@@ -373,10 +339,11 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
       {
         for (i=0;i<N1;i++)
         {
+          firstGroupInd = I1.submat(0,j,J1(i+1,0),j);
+          secondGroupInd = I1.submat(J1(i+1,0)+1,j,n1-1,j);
+          
           if (TestType == 0)
           {
-            firstGroupInd = I1.submat(0,j,J1(i+1,0),j);
-            secondGroupInd = I1.submat(J1(i+1,0)+1,j,n1-1,j);
             nGroups = 2;
             ptrOnIndexVectors[0] = firstGroupInd.memptr();
             ptrOnIndexVectors[1] = secondGroupInd.memptr();
@@ -389,17 +356,12 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
           {
             if (TestType == 1)
             {
-              firstGroupInd = I1.submat(0,j,J1(i+1,0),j);
-              secondGroupInd = I1.submat(J1(i+1,0)+1,j,n1-1,j);
               A_EC1 = Udata.rows(firstGroupInd);
               A_EC2 = Udata.rows(secondGroupInd);
               a1(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
             }
             else
             {
-              firstGroupInd = I1.submat(0,j,J1(i+1,0),j);
-              secondGroupInd = I1.submat(J1(i+1,0)+1,j,n1-1,j);
-              
               colIndex(0) = 0;
               groupInds(firstGroupInd,colIndex).ones();
               colIndex(0) = 1;
@@ -410,6 +372,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
               groupInds.zeros();
             }
           }
+          
         }
       }
       
@@ -470,10 +433,10 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
       {
         for (i=0;i<N2;i++)
         {
+          firstGroupInd = I2.submat(0,j,J2(i+1,0),j);
+          secondGroupInd = I2.submat(J2(i+1,0)+1,j,n2-1,j);
           if (TestType == 0)
           {
-            firstGroupInd = I2.submat(0,j,J2(i+1,0),j);
-            secondGroupInd = I2.submat(J2(i+1,0)+1,j,n2-1,j);
             nGroups = 2;
             ptrOnIndexVectors[0] = firstGroupInd.memptr();
             ptrOnIndexVectors[1] = secondGroupInd.memptr();
@@ -486,17 +449,12 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
           {
             if (TestType == 1)
             {
-              firstGroupInd = I2.submat(0,j,J2(i+1,0),j);
-              secondGroupInd = I2.submat(J2(i+1,0)+1,j,n2-1,j);
               A_EC1 = Udata.rows(firstGroupInd);
               A_EC2 = Udata.rows(secondGroupInd);
               a2(j,i) = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
             }
             else
             {
-              firstGroupInd = I2.submat(0,j,J2(i+1,0),j);
-              secondGroupInd = I2.submat(J2(i+1,0)+1,j,n2-1,j);
-              
               colIndex(0) = 0;
               groupInds(firstGroupInd,colIndex).ones();
               colIndex(0) = 1;
@@ -507,6 +465,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::uvec &in
               groupInds.zeros();
             }
           }
+          
         }
       }
       
