@@ -50,11 +50,11 @@ test_that("unit tests for ERC", {
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
   
-  expect_equal(res$testStat,0.019913692476495194195)
-  expect_equal(res$pValue,0.88777839627590227067)
+  expect_equal(res$testStat,0.64034211409376129431)
+  expect_equal(res$pValue,0.4235869398574387823)
   
-  expect_equal(resWithEstimation$testStat,0.017573566369596227421)
-  expect_equal(resWithEstimation$pValue,0.89453715405386580173)
+  expect_equal(resWithEstimation$testStat,0.56509332232365161452)
+  expect_equal(resWithEstimation$pValue,0.4522153139963757118)
   
   
   ind = matrix(NA,N,3)
@@ -66,11 +66,11 @@ test_that("unit tests for ERC", {
   res = pacotest:::testStatEqualCorrWithoutEstimation(U, svcmDataFrameHat, ind)
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
-  expect_equal(res$testStat,0.048459334734335994532)
-  expect_equal(res$pValue,0.97606151453549416797)
+  expect_equal(res$testStat,1.5582520864971858288)
+  expect_equal(res$pValue,0.45880681345004847849)
   
-  expect_equal(resWithEstimation$testStat,0.045530358645845779575)
-  expect_equal(resWithEstimation$pValue,0.97749199215700122156)
+  expect_equal(resWithEstimation$testStat,1.4640683110446852666)
+  expect_equal(resWithEstimation$pValue,0.48092970859984129905)
   
   
   ind = matrix(NA,N,4)
@@ -83,11 +83,11 @@ test_that("unit tests for ERC", {
   res = pacotest:::testStatEqualCorrWithoutEstimation(U, svcmDataFrameHat, ind)
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
-  expect_equal(res$testStat,0.055479327317821756915)
-  expect_equal(res$pValue,0.99658178997021218404)
+  expect_equal(res$testStat,1.7839860580917361599)
+  expect_equal(res$pValue,0.61842593405983881105)
   
-  expect_equal(resWithEstimation$testStat,0.05125015765542074303)
-  expect_equal(resWithEstimation$pValue,0.99696125608624075465)
+  expect_equal(resWithEstimation$testStat,1.6479934266055609182)
+  expect_equal(resWithEstimation$pValue,0.64855724663587799306)
   
   
   
@@ -129,11 +129,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,0.039978469586072304387)
-  expect_equal(res2$pValue,0.84152268356999970766)
+  expect_equal(res2$testStat,1.6752839226413402951)
+  expect_equal(res2$pValue,0.19555228871052821038)
   
-  expect_equal(resWithEstimation2$testStat,0.016783546044932356328)
-  expect_equal(resWithEstimation2$pValue,0.89692141488942633831)
+  expect_equal(resWithEstimation2$testStat,0.70330868452706607474)
+  expect_equal(resWithEstimation2$pValue,0.401674156693845541)
   
   
   ind = matrix(NA,N,3)
@@ -145,11 +145,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,0.069919838268819423099)
-  expect_equal(res2$pValue,0.96564411933409000088)
+  expect_equal(res2$testStat,2.9299666079825024134)
+  expect_equal(res2$pValue,0.23108184958970501288)
   
-  expect_equal(resWithEstimation2$testStat,0.031277987879511671976)
-  expect_equal(resWithEstimation2$pValue,0.98448266011797580521)
+  expect_equal(resWithEstimation2$testStat,1.3106932498829706457)
+  expect_equal(resWithEstimation2$pValue,0.51926204221407701311)
   
   
   ind = matrix(NA,N,4)
@@ -162,11 +162,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,0.070925651334994108121)
-  expect_equal(res2$pValue,0.99508185005149674129)
+  expect_equal(res2$testStat,2.9721148561868826476)
+  expect_equal(res2$pValue,0.3959445289661274181)
   
-  expect_equal(resWithEstimation2$testStat,0.031782253825141076886)
-  expect_equal(resWithEstimation2$pValue,0.99850734737477131464)
+  expect_equal(resWithEstimation2$testStat,1.3318243396969435821)
+  expect_equal(resWithEstimation2$pValue,0.72159030055902029233)
   
 })
 

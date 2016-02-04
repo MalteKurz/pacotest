@@ -1,5 +1,7 @@
 
 double NormalCDF(double Z);
+double Chi2CDF(double Z, double df);
+
 void NormalRand(arma::mat &X);
 void RandPerm(arma::uvec &X);
 
@@ -33,6 +35,9 @@ void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int Group
 //void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction);
 //void EqualRankCorrTest(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction);
 
+void EqualRankCorrTest_chi2(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold);
+void EqualRankCorrTest_chi2(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold);
+void EqualRankCorrTest_chi2(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold);
 
 
 double EqualCopTestStat(double *Xdata, double *Ydata, int n1, int n2);

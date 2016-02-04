@@ -26,9 +26,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
       {
         out = ERC_oracle(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
+      else if (pacotestOptions$ERCtype == 'chi2')
+      {
+        out = ERC_chi2(Udata,W,Grouping, finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      }
       else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
       {
-        out = ERC_WithEstimation(Udata,W,Grouping, finalComparison, data, svcmDataFrame,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        out = ERC_chi2WithEstimation(Udata,W,Grouping, finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction, data, svcmDataFrame)
       }
       
       CondSetDim = ncol(W);
@@ -51,9 +55,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
         {
           out = ERC_oracle(Udata,W,Grouping,1,0,1,1)
         }
+        else if (pacotestOptions$ERCtype == 'chi2')
+        {
+          out = ERC_chi2(Udata,W,Grouping,1,0,1,1)
+        }
         else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
         {
-          out = ERC(Udata,W,Grouping,1,0,1,1, data, svcmDataFrame)
+          out = ERC_chi2WithEstimation(Udata,W,Grouping,1,0,1,1, data, svcmDataFrame)
         }
         
       }
@@ -75,9 +83,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL){
         {
           out = ERC_oracle(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         }
+        else if (pacotestOptions$ERCtype == 'chi2')
+        {
+          out = ERC_chi2(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        }
         else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
         {
-          out = ERC(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction, data, svcmDataFrame)
+          out = ERC_chi2WithEstimation(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction, data, svcmDataFrame)
         }
         
       }

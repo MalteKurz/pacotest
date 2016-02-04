@@ -237,6 +237,64 @@ Rcpp::List ERC_oracle(arma::mat Udata, arma::mat Wdata, double Grouping, double 
 }
 
 
+// [[Rcpp::export]]
+Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double finalComparison, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+    try
+    {
+        
+        int grouping = (int) Grouping;
+        int aggPvalsNumbRep = (int) AggPvalsNumbRep;
+        
+        
+        // Associate outputs
+        double pValue;
+        Rcpp::List out;
+        unsigned int i=0;
+        
+        if (AggPvalsNumbRep == 0)
+        {
+            double TestStat;
+            arma::mat Xdata(1,2);
+            arma::mat Ydata(1,2);
+            arma::uvec SplitVariable(4);
+            arma::uvec SplitQuantile(4);
+            arma::vec SplitThreshold(3);
+            SplitVariable.zeros();
+            SplitQuantile.zeros();
+            SplitThreshold.zeros();
+            
+            EqualRankCorrTest_chi2(Udata, Wdata, grouping, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            
+            out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+        }
+        else
+        {
+            arma::mat pValues(AggPvalsNumbRep,1);
+            arma::mat Xdata(1,2);
+            arma::mat Ydata(1,2);
+            arma::umat SplitVariable(4,AggPvalsNumbRep);
+            arma::umat SplitQuantile(4,AggPvalsNumbRep);
+            arma::mat SplitThreshold(3,AggPvalsNumbRep);
+            SplitVariable.zeros();
+            SplitQuantile.zeros();
+            SplitThreshold.zeros();
+
+            EqualRankCorrTest_chi2(Udata, Wdata, grouping, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            
+            out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+        }
+        
+        return out;
+    }
+    catch( std::exception& __ex__ ) {
+        forward_exception_to_r( __ex__ );
+    }
+    catch(...) {
+        ::Rf_error( "c++ exception" );
+    }
+}
+
+
 //// [[Rcpp::export]]
 //Rcpp::List ERC_WithEstimation(arma::mat Udata, arma::mat Wdata, double Grouping, arma::mat data, Rcpp::DataFrame svcmDataFrame, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
 //    try

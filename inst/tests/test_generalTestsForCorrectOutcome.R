@@ -519,5 +519,185 @@ test_that("unit tests for ERC", {
   expect_equal(resultData3Test7,0.68096584974330975903)
   expect_equal(resultData4Test7,0.10258495090255403959)
   
+  
+  set.seed(1921)
+  
+  # Define first test type
+  pacotestOptions1=pacotestset(TestType='ERC')
+  pacotestOptions1$ERCtype = 'chi2'
+  pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions1$finalComparison = 'pairwiseMax'
+  
+  resultData1Test1 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions1)$pValue
+  resultData2Test1 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions1)$pValue
+  resultData3Test1 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions1)$pValue
+  resultData4Test1 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions1)$pValue
+  
+  expect_equal(resultData1Test1,6.747824521369238937e-12)
+  expect_equal(resultData2Test1,0.54837431230034150431)
+  expect_equal(resultData3Test1,6.3621330426144595549e-13)
+  expect_equal(resultData4Test1,0.19718603557591019015)
+  
+  # Define second test type
+  pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions2$ERCtype = 'chi2'
+  pacotestOptions2$Grouping = 'TreeERCchi2'
+  pacotestOptions2$finalComparison = 'pairwiseMax'
+  
+  resultData1Test2 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions2)$pValue
+  resultData2Test2 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions2)$pValue
+  resultData3Test2 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions2)$pValue
+  resultData4Test2 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions2)$pValue
+  
+  expect_equal(resultData1Test2,2.0561330416057899129e-13)
+  expect_equal(resultData2Test2,0.4724491699757810137)
+  expect_equal(resultData3Test2,8.8887952554017601869e-11)
+  expect_equal(resultData4Test2,0.16216672971204970644)
+  
+  # Define third test type
+  pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions3$ERCtype = 'chi2'
+  pacotestOptions3$Grouping = 'TreeERCchi2'
+  pacotestOptions3$finalComparison = 'pairwiseMax'
+  
+  resultData1Test3 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions3)$pValue
+  resultData2Test3 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions3)$pValue
+  resultData3Test3 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions3)$pValue
+  resultData4Test3 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions3)$pValue
+  
+  expect_equal(resultData1Test3,3.2751579226442117942e-15)
+  expect_equal(resultData2Test3,0.56515797435065617815)
+  expect_equal(resultData3Test3,5.1547655033346018172e-13)
+  expect_equal(resultData4Test3,0.16719854809316819777)
+  
+  # Define fourth test type
+  pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions4$ERCtype = 'chi2'
+  pacotestOptions4$Grouping = 'TreeERCchi2'
+  pacotestOptions4$finalComparison = 'pairwiseMax'
+  
+  resultData1Test4 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions4)$pValue
+  resultData2Test4 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions4)$pValue
+  resultData3Test4 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions4)$pValue
+  resultData4Test4 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions4)$pValue
+  
+  expect_equal(resultData1Test4,6.7212901910806976957e-13)
+  expect_equal(resultData2Test4,0.39351569625630455906)
+  expect_equal(resultData3Test4,8.0557782666801358573e-13)
+  expect_equal(resultData4Test4,0.2108259163343279563)
+  
+  # Define fifth test type
+  pacotestOptions5=pacotestset(TestType='ERC',Grouping = "SumMedian",
+                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
+                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions5$ERCtype = 'chi2'
+  
+  resultData1Test5 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions5)$pValue
+  resultData2Test5 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions5)$pValue
+  resultData3Test5 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions5)$pValue
+  resultData4Test5 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions5)$pValue
+  
+  expect_equal(resultData1Test5,2.1094237467877974268e-14)
+  expect_equal(resultData2Test5,0.38705697988022236267)
+  expect_equal(resultData3Test5,0.31096627103168605899)
+  expect_equal(resultData4Test5,0.53365617218709471281)
+  
+  # Define sixth test type
+  pacotestOptions6=pacotestset(TestType='ERC',Grouping = "ProdThirdsI",
+                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
+                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions6$ERCtype = 'chi2'
+  
+  resultData1Test6 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions6)$pValue
+  resultData2Test6 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions6)$pValue
+  resultData3Test6 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions6)$pValue
+  resultData4Test6 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions6)$pValue
+  
+  expect_equal(resultData1Test6,0.88737165766259773481)
+  expect_equal(resultData2Test6,0.077376748544651263728)
+  expect_equal(resultData3Test6,0.81333770215943657078)
+  expect_equal(resultData4Test6,0.0043935785665404347711)
+  
+  # Define seventh test type
+  pacotestOptions7=pacotestset(TestType='ERC',Grouping = "SumThirdsII",
+                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
+                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions7$ERCtype = 'chi2'
+  
+  resultData1Test7 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions7)$pValue
+  resultData2Test7 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions7)$pValue
+  resultData3Test7 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions7)$pValue
+  resultData4Test7 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions7)$pValue
+  
+  expect_equal(resultData1Test7,0.89545899920300386921)
+  expect_equal(resultData2Test7,0.23908782274707562898)
+  expect_equal(resultData3Test7,0.45311029913162337301)
+  expect_equal(resultData4Test7,0.037277790614566375105)
+  
+  
+  # Define first test type
+  pacotestOptions8=pacotestset(TestType='ERC')
+  pacotestOptions8$ERCtype = 'chi2'
+  pacotestOptions8$Grouping = 'TreeERCchi2'
+  pacotestOptions8$finalComparison = 'all'
+  
+  resultData1Test8 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions8)$pValue
+  resultData2Test8 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions8)$pValue
+  resultData3Test8 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions8)$pValue
+  resultData4Test8 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions8)$pValue
+  
+  expect_equal(resultData1Test8,1.5570877920367820479e-13)
+  expect_equal(resultData2Test8,0.45283578468966628749)
+  expect_equal(resultData3Test8,2.3037127760971998214e-14)
+  expect_equal(resultData4Test8,0.21988081013202520619)
+  
+  # Define second test type
+  pacotestOptions9=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions9$ERCtype = 'chi2'
+  pacotestOptions9$Grouping = 'TreeERCchi2'
+  pacotestOptions9$finalComparison = 'all'
+  
+  resultData1Test9 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions9)$pValue
+  resultData2Test9 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions9)$pValue
+  resultData3Test9 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions9)$pValue
+  resultData4Test9 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions9)$pValue
+  
+  expect_equal(resultData1Test9,1.1734502258775592054e-12)
+  expect_equal(resultData2Test9,0.50019733787994291596)
+  expect_equal(resultData3Test9,1.3259948694610557141e-12)
+  expect_equal(resultData4Test9,0.17302613830172214326)
+  
+  # Define third test type
+  pacotestOptions10=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions10$ERCtype = 'chi2'
+  pacotestOptions10$Grouping = 'TreeERCchi2'
+  pacotestOptions10$finalComparison = 'all'
+  
+  resultData1Test10 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions10)$pValue
+  resultData2Test10 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions10)$pValue
+  resultData3Test10 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions10)$pValue
+  resultData4Test10 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions10)$pValue
+  
+  expect_equal(resultData1Test10,4.3298697960381105077e-15)
+  expect_equal(resultData2Test10,0.6262659148713292101)
+  expect_equal(resultData3Test10,6.1062266354383609723e-16)
+  expect_equal(resultData4Test10,0.20561538542137952623)
+  
+  # Define fourth test type
+  pacotestOptions11=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions11$ERCtype = 'chi2'
+  pacotestOptions11$Grouping = 'TreeERCchi2'
+  pacotestOptions11$finalComparison = 'all'
+  
+  resultData1Test11 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions11)$pValue
+  resultData2Test11 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions11)$pValue
+  resultData3Test11 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions11)$pValue
+  resultData4Test11 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions11)$pValue
+  
+  expect_equal(resultData1Test11,1.1501355423604309181e-12)
+  expect_equal(resultData2Test11,0.50161697436848429188)
+  expect_equal(resultData3Test11,6.1561866715464930166e-14)
+  expect_equal(resultData4Test11,0.19060016502803306393)
+  
 })
 

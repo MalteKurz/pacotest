@@ -1,5 +1,82 @@
 #include <pacotest_header.h>
 
+void EqualRankCorrTest_chi2(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+{
+  
+  unsigned int n=Udata.n_rows;
+  arma::umat indexVectors(n,2);
+  arma::uvec nObsPerVector(2);
+  indexVectors.zeros();
+  nObsPerVector.zeros();
+  
+  Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+  
+  *TestStat = EqualRankCorrChi2TestStat(Udata, indexVectors, nObsPerVector);
+  
+  int nGroups = indexVectors.n_cols;
+  double df = nGroups-1;
+  
+  *pValue = 1-Chi2CDF(*TestStat, df);
+}
+
+
+void EqualRankCorrTest_chi2(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+{
+    arma::mat Xdata;
+    arma::mat Ydata;
+    
+    EqualRankCorrTest_chi2(Udata, Wdata, GroupingMethod, finalComparisonMethod, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+}
+
+
+void EqualRankCorrTest_chi2(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
+{
+    arma::mat Xdata;
+    arma::mat Ydata;
+    double S;
+    int i;
+    
+    arma::uvec splitVariable(4);
+    arma::uvec splitQuantile(4);
+    arma::vec splitThreshold(3);
+    
+    splitVariable.zeros();
+    splitQuantile.zeros();
+    splitThreshold.zeros();
+    
+    unsigned int n=Udata.n_rows;
+    arma::umat indexVectors(n,2);
+    arma::uvec nObsPerVector(2);
+    indexVectors.zeros();
+    nObsPerVector.zeros();
+    int nGroups;
+    double df;
+    
+    for (i=0;i<AggPvalsNumbRep;i++)
+    {
+        Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
+        
+        SplitVariable.col(i) = splitVariable;
+        SplitQuantile.col(i) = splitQuantile;
+        SplitThreshold.col(i) = splitThreshold;
+        
+        S = EqualRankCorrChi2TestStat(Udata, indexVectors, nObsPerVector);
+        
+        nGroups = indexVectors.n_cols;
+        df = nGroups-1;
+        pValues(i,0) = 1-Chi2CDF(S, df);
+        
+        
+        indexVectors.set_size(n,2);
+        nObsPerVector.set_size(2);
+        indexVectors.zeros();
+        nObsPerVector.zeros();
+    }
+    
+    *pValue = (double) arma::as_scalar(arma::median(pValues,0));
+    
+}
+
 //double EqualRankCorrTestStat(arma::uvec &indXdata, arma::uvec &indYdata, const arma::mat &Udata, arma::mat data, Rcpp::DataFrame svcmDataFrame)
 //{
 //  arma::umat ind(data.n_rows,2);
@@ -234,6 +311,7 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
   
   int nCol = sigma.n_cols;
   
+  
   arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
   arma::mat rhos(1,nGroups);
   rhos = theta.subvec(4,3+nGroups);
@@ -241,7 +319,7 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
   
-  *testStat = arma::as_scalar(sqrt(nObs) * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
+  *testStat = arma::as_scalar(nObs * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
   
   return;
   
@@ -304,7 +382,7 @@ void EqualRankCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &U
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
   
-  *testStat = arma::as_scalar(sqrt(nObs) * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
+  *testStat = arma::as_scalar(nObs * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
   
   return;
   
