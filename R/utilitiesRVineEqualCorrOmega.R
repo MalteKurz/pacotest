@@ -48,7 +48,7 @@ deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 }
 
 
-getOmegaWithLikes = function(data, svcmDataFrame, ind, cPitData, theta, listOfMultipliers)
+getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
 {
   
   d <- ncol(data)
@@ -58,7 +58,7 @@ getOmegaWithLikes = function(data, svcmDataFrame, ind, cPitData, theta, listOfMu
   
   D = matrix(0,nrow=nParameters,ncol=nParameters)
   
-  nGroups = ncol(ind)
+  nGroups = length(indList)
   
   E = matrix(0,nrow=4+nGroups,ncol=nParameters)
   
@@ -103,7 +103,7 @@ getOmegaWithLikes = function(data, svcmDataFrame, ind, cPitData, theta, listOfMu
     
     for (iGroup in 1:nGroups)
     {
-      E[(4+iGroup),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1[ind[,iGroup]],cPit2_1[ind[,iGroup]],family_1,listOfMultipliers$bInGroups[[iGroup]])
+      E[(4+iGroup),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1[indList[[iGroup]]],cPit2_1[indList[[iGroup]]],family_1,listOfMultipliers$bInGroups[[iGroup]])
     }
     
   }
@@ -115,7 +115,7 @@ getOmegaWithLikes = function(data, svcmDataFrame, ind, cPitData, theta, listOfMu
 }
 
 
-omegaRvine = function(data, svcmDataFrame, ind, cPitData, theta)
+omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
 {
   
   d <- ncol(data)
@@ -158,7 +158,7 @@ omegaRvine = function(data, svcmDataFrame, ind, cPitData, theta)
   aa[4,3] = mean(a[,4]*a[,3])
   
   # Obtain the subsamples
-  nGroups = ncol(ind)
+  nGroups = length(indList)
   nObs = nrow(data)
   
   omega = matrix(0,nrow=nParameters+4+nGroups,ncol=nParameters+4+nGroups)
@@ -171,9 +171,9 @@ omegaRvine = function(data, svcmDataFrame, ind, cPitData, theta)
   for (iGroup in 1:nGroups)
   {
     # Obtain the subsample
-    cPit1InGroup = cPit1[ind[,iGroup]]
-    cPit2InGroup = cPit2[ind[,iGroup]]
-    dataInGroup = data[ind[,iGroup],]
+    cPit1InGroup = cPit1[indList[[iGroup]]]
+    cPit2InGroup = cPit2[indList[[iGroup]]]
+    dataInGroup = data[indList[[iGroup]],]
     
     nObsPerGroup = length(cPit1InGroup)
     lambdaInGroup = nObsPerGroup/nObs
@@ -204,7 +204,7 @@ omegaRvine = function(data, svcmDataFrame, ind, cPitData, theta)
 
   listOfMultipliers = list(a=a,aInGroups=aInGroups,bInGroups=bInGroups)
 
-  res = getOmegaWithLikes(data, svcmDataFrame, ind, cPitData, theta, listOfMultipliers)
+  res = getOmegaWithLikes(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
   
   omega[1:nParameters,1:nParameters] = res$D
   omega[(nParameters+1):(nParameters+4+nGroups),1:nParameters] = res$E

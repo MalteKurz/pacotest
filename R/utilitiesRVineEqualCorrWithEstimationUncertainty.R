@@ -1,13 +1,10 @@
 
 
-covOfCorrelationsWithEstimation = function(data, svcmDataFrame, ind, cPitData, theta)
+covOfCorrelationsWithEstimation = function(data, svcmDataFrame, indList, cPitData, theta)
 {
-  ind = (ind == 1) # transfer the possibly numeric matrix into a matrix of logicals
   
-  #indexCombinations = getIndexCombinations(RVM)
-  
-  gInv = gInvRvine(data, svcmDataFrame, ind, cPitData, theta)
-  omega = omegaRvine(data, svcmDataFrame, ind, cPitData, theta)
+  gInv = gInvRvine(data, svcmDataFrame, indList, cPitData, theta)
+  omega = omegaRvine(data, svcmDataFrame, indList, cPitData, theta)
   
   varMat = gInv %*% omega %*% t(gInv)
   

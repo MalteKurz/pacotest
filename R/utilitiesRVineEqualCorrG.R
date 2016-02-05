@@ -241,7 +241,7 @@ getGinvD = function(data, svcmDataFrame)
 }
 
 
-gInvRvine = function(data, svcmDataFrame, ind, cPitData, theta)
+gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
 {
   d <- ncol(data)
   
@@ -291,15 +291,15 @@ gInvRvine = function(data, svcmDataFrame, ind, cPitData, theta)
     deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-2*(cPit2-mu2))
   
   # Obtain the subsamples
-  nGroups = ncol(ind)
+  nGroups = length(indList)
   C = matrix(NA,nrow=nGroups,ncol=nParameters+4)
   
   for (iGroup in 1:nGroups)
   {
     # Obtain the subsample
-    cPit1InGroup = cPit1[ind[,iGroup]]
-    cPit2InGroup = cPit2[ind[,iGroup]]
-    dataInGroup = data[ind[,iGroup],]
+    cPit1InGroup = cPit1[indList[[iGroup]]]
+    cPit2InGroup = cPit2[indList[[iGroup]]]
+    dataInGroup = data[indList[[iGroup]],]
     
     C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
     

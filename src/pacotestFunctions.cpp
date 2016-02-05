@@ -238,12 +238,13 @@ Rcpp::List ERC_oracle(arma::mat Udata, arma::mat Wdata, double Grouping, double 
 
 
 // [[Rcpp::export]]
-Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double finalComparison, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleErcTestType,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
     try
     {
         
         int grouping = (int) Grouping;
         int aggPvalsNumbRep = (int) AggPvalsNumbRep;
+        int intErcTestType = (int) doubleErcTestType;
         
         
         // Associate outputs
@@ -263,7 +264,7 @@ Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double fi
             SplitQuantile.zeros();
             SplitThreshold.zeros();
             
-            EqualRankCorrTest_chi2(Udata, Wdata, grouping, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest_chi2(Udata, Wdata, grouping, intErcTestType, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -279,7 +280,7 @@ Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double fi
             SplitQuantile.zeros();
             SplitThreshold.zeros();
 
-            EqualRankCorrTest_chi2(Udata, Wdata, grouping, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+            EqualRankCorrTest_chi2(Udata, Wdata, grouping, intErcTestType, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -293,64 +294,6 @@ Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double fi
         ::Rf_error( "c++ exception" );
     }
 }
-
-
-//// [[Rcpp::export]]
-//Rcpp::List ERC_WithEstimation(arma::mat Udata, arma::mat Wdata, double Grouping, arma::mat data, Rcpp::DataFrame svcmDataFrame, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
-//    try
-//    {
-//        
-//        int grouping = (int) Grouping;
-//        int aggPvalsNumbRep = (int) AggPvalsNumbRep;
-//        
-//        
-//        // Associate outputs
-//        double pValue;
-//        Rcpp::List out;
-//        unsigned int i=0;
-//        
-//        if (AggPvalsNumbRep == 0)
-//        {
-//            double TestStat;
-//            arma::mat Xdata(1,2);
-//            arma::mat Ydata(1,2);
-//            arma::uvec SplitVariable(4);
-//            arma::uvec SplitQuantile(4);
-//            arma::vec SplitThreshold(3);
-//            SplitVariable.zeros();
-//            SplitQuantile.zeros();
-//            SplitThreshold.zeros();
-//            
-//            EqualRankCorrTest(Udata, Wdata, Grouping, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame);
-//            
-//            out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
-//        }
-//        else
-//        {
-//            arma::mat pValues(AggPvalsNumbRep,1);
-//            arma::mat Xdata(1,2);
-//            arma::mat Ydata(1,2);
-//            arma::umat SplitVariable(AggPvalsNumbRep,4);
-//            arma::umat SplitQuantile(AggPvalsNumbRep,4);
-//            arma::mat SplitThreshold(AggPvalsNumbRep,3);
-//            SplitVariable.zeros();
-//            SplitQuantile.zeros();
-//            SplitThreshold.zeros();
-//
-//            EqualRankCorrTest(Udata, Wdata, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame);
-//            
-//            out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
-//        }
-//        
-//        return out;
-//    }
-//    catch( std::exception& __ex__ ) {
-//        forward_exception_to_r( __ex__ );
-//    }
-//    catch(...) {
-//        ::Rf_error( "c++ exception" );
-//    }
-//}
 
 
 // [[Rcpp::export]]
@@ -369,13 +312,44 @@ SEXP testStatEqualCorrWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svc
 
 
 // [[Rcpp::export]]
-SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &ind, Rcpp::List cPitData, arma::vec &theta, arma::mat &sigma)
+SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &indexVectors, arma::uvec &nObsPerVector, Rcpp::List cPitData, arma::vec &theta, arma::mat &sigma)
 {
+  int nGroups = nObsPerVector.n_elem;
+  
+  Rcpp::List indListForR;
+  
+  arma::uvec indInFirstGroup = indexVectors.submat(0,0,nObsPerVector(0)-1,0);
+  indInFirstGroup++;
+  arma::uvec indInSecondGroup = indexVectors.submat(0,1,nObsPerVector(1)-1,1);
+  indInSecondGroup++;
+  
+  if (nGroups == 2)
+  {
+    indListForR = Rcpp::List::create(indInFirstGroup,indInSecondGroup);
+  }
+  else
+  {
+    if (nGroups > 2)
+    {
+      arma::uvec indInThirdGroup = indexVectors.submat(0,2,nObsPerVector(2)-1,2);
+      indInThirdGroup++;
+      if (nGroups == 3)
+      {
+      indListForR = Rcpp::List::create(indInFirstGroup,indInSecondGroup,indInThirdGroup);
+      }
+      else
+      {
+      arma::uvec indInFourthGroup = indexVectors.submat(0,3,nObsPerVector(3)-1,3);
+      indInFourthGroup++;
+      indListForR = Rcpp::List::create(indInFirstGroup,indInSecondGroup,indInThirdGroup,indInFourthGroup);
+      }
+    }
+  }
   
   Rcpp::Environment pacotest = Rcpp::Environment::namespace_env("pacotest");
   Rcpp::Function covOfCorrelationsWithEstimation = pacotest["covOfCorrelationsWithEstimation"];
   
-  SEXP outFromR = covOfCorrelationsWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("ind", ind), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta));
+  SEXP outFromR = covOfCorrelationsWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("indList", indListForR), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta));
   
   sigma = Rcpp::as<arma::mat>(outFromR);
   
