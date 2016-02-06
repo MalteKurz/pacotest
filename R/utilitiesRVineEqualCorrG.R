@@ -35,7 +35,7 @@ getIndInParVector = function(svcmDataFrame, copulaInd, withCopula=TRUE)
 }
 
 
-likeWithCpits =  function(params, data, svcmDataFrame, copulaInd)
+scoreWithCpits =  function(params, data, svcmDataFrame, copulaInd)
 {
   parVectorInd = getIndInParVector(svcmDataFrame, copulaInd, withCopula=TRUE)
   
@@ -53,10 +53,9 @@ likeWithCpits =  function(params, data, svcmDataFrame, copulaInd)
   
   parCopula = params[parVectorInd$copulaParVectorInd]
   familyCopula = svcmDataFrame$family[copulaInd]
-  nPar = getNumbOfParameters(familyCopula)
-  par = getParAsScalars(nPar,parCopula)
   
-  result = mean(log(BiCopPDF(cPit1,cPit2,familyCopula,par[1],par[2])))
+  result = score(parCopula,cPit1,cPit2,familyCopula)
+  #result = mean(log(BiCopPDF(cPit1,cPit2,familyCopula,par[1],par[2])))
   return(result)
 }
 
@@ -66,6 +65,13 @@ like =  function(params,u1,u2,family)
   nPar = getNumbOfParameters(family)
   par = getParAsScalars(nPar,params)
   result = mean(log(BiCopPDF(u1,u2,family,par[1],par[2])))
+  return(result)
+}
+
+score =  function(params,u1,u2,family)
+{
+  result = grad(like,params, method='simple',u1=u1,u2=u2,family=family)
+  
   return(result)
 }
 
@@ -82,7 +88,7 @@ likeMultFactor =  function(params,u1,u2,family,multFactor)
 hessianLike = function(theta,u1,u2,family)
 {
   
-  result = hessian(like,theta,u1=u1,u2=u2,family=family)
+  result = jacobian(score,theta, method='simple',u1=u1,u2=u2,family=family)
   
   return(result)
 }
@@ -91,7 +97,7 @@ hessianLike = function(theta,u1,u2,family)
 hessianLikeWithCpits = function(theta, data, svcmDataFrame, copulaInd)
 {
   
-  result = hessian(likeWithCpits,theta,data=data,svcmDataFrame=svcmDataFrame,copulaInd=copulaInd)
+  result = jacobian(scoreWithCpits,theta, method='simple',data=data,svcmDataFrame=svcmDataFrame,copulaInd=copulaInd)
   
   return(result)
 }
@@ -156,7 +162,7 @@ cPit1_mult_cPit2 =  function(par, data, svcmDataFrame, copulaInd, mucPit1, mucPi
 deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 {
   
-  result = grad(cPit2Mult, params, data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
+  result = grad(cPit2Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
   
   return(result)
 }
@@ -165,7 +171,7 @@ deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 {
   
-  result = grad(cPit1Mult, params, data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
+  result = grad(cPit1Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
   
   return(result)
 }
@@ -174,7 +180,7 @@ deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 deriv1cPit1_mult_cPit2 = function(params, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
 {
   
-  result = grad(cPit1_mult_cPit2, params, data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor)
+  result = grad(cPit1_mult_cPit2, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor)
   
   return(result)
 }
@@ -214,7 +220,7 @@ getGinvD = function(data, svcmDataFrame)
       parameters = extractParametersToVectors(svcmDataFrame, jCopula)
       xx = hessianLikeWithCpits(parameters$parCpits, data, svcmDataFrame, jCopula)
       dLower[svcmDataFrame$parInd[[jCopula]]-nParametersFirstTree,
-        parameters$cPitsParInd] = xx[((nrow(xx)-svcmDataFrame$nPar[jCopula]+1):nrow(xx)),]
+        parameters$cPitsParInd] = xx #[((nrow(xx)-svcmDataFrame$nPar[jCopula]+1):nrow(xx)),]
     }
   }
   
