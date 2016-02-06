@@ -88,7 +88,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         }
         else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
         {
-          out = ERC_chi2WithEstimation(Udata,W,Grouping, ercTestType, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+          out = ERC_chi2(Udata,W,Grouping, ercTestType, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         }
         else if (pacotestOptions$ERCtype == 'standard')
         {
