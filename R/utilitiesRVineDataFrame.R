@@ -7,12 +7,12 @@ getNumbOfParameters = function(family)
     nPar = 0
   }
   else if (any(family == c(2,
-                                    7,17,27,37,
-                                    8,18,28,38,
-                                    9,19,29,39,
-                                    10,20,30,40,
-                                    104,114,124,134,
-                                    204,214,224,234)))
+                           7,17,27,37,
+                           8,18,28,38,
+                           9,19,29,39,
+                           10,20,30,40,
+                           104,114,124,134,
+                           204,214,224,234)))
   {
     nPar = 2
   }
@@ -28,13 +28,13 @@ getNumbOfParameters = function(family)
 
 rVineDataFrameRep = function(rvm)
 {
-  o <- diag(RVM$Matrix)
+  o <- diag(rvm$Matrix)
   
-  if (!is(RVM, "RVineMatrix")) 
-    stop("'RVM' has to be an RVineMatrix object.")
+  if (!is(rvm, "RVineMatrix")) 
+    stop("'rvm' has to be an RVineMatrix object.")
   
   if (any(o != length(o):1))
-    stop("The RVM Matrix needs to be provided in normalized form")
+    stop("The rvm Matrix needs to be provided in normalized form")
   
   d = dim(rvm$Matrix)[1]
   nCopulas = d*(d-1)/2
