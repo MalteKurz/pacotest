@@ -11,98 +11,98 @@ test_that("unit tests for ERC", {
   
   # Define the test types
   pacotestOptions1=pacotestset(TestType='ERC')
-  pacotestOptions1$ERCtype = 'chi2'
+  pacotestOptions1$withEstUncert = FALSE
   pacotestOptions1$Grouping = 'TreeERCchi2'
   pacotestOptions1$finalComparison = 'pairwiseMax'
   
   pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
-  pacotestOptions2$ERCtype = 'chi2'
+  pacotestOptions2$withEstUncert = FALSE
   pacotestOptions2$Grouping = 'TreeERCchi2'
   pacotestOptions2$finalComparison = 'pairwiseMax'
   
   pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
-  pacotestOptions3$ERCtype = 'chi2'
+  pacotestOptions3$withEstUncert = FALSE
   pacotestOptions3$Grouping = 'TreeERCchi2'
   pacotestOptions3$finalComparison = 'pairwiseMax'
   
   pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
-  pacotestOptions4$ERCtype = 'chi2'
+  pacotestOptions4$withEstUncert = FALSE
   pacotestOptions4$Grouping = 'TreeERCchi2'
   pacotestOptions4$finalComparison = 'pairwiseMax'
   
   pacotestOptions5=pacotestset(TestType='ERC',Grouping = "SumMedian",
                                ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
                                AggPvalsNumbRep = NULL, aggInfo = NULL)
-  pacotestOptions5$ERCtype = 'chi2'
+  pacotestOptions5$withEstUncert = FALSE
   
   pacotestOptions6=pacotestset(TestType='ERC',Grouping = "ProdThirdsI",
                                ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
                                AggPvalsNumbRep = NULL, aggInfo = NULL)
-  pacotestOptions6$ERCtype = 'chi2'
+  pacotestOptions6$withEstUncert = FALSE
   
   pacotestOptions7=pacotestset(TestType='ERC',Grouping = "SumThirdsII",
                                ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
                                AggPvalsNumbRep = NULL, aggInfo = NULL)
-  pacotestOptions7$ERCtype = 'chi2'
+  pacotestOptions7$withEstUncert = FALSE
   
   pacotestOptions8=pacotestset(TestType='ERC')
-  pacotestOptions8$ERCtype = 'chi2'
+  pacotestOptions8$withEstUncert = FALSE
   pacotestOptions8$Grouping = 'TreeERCchi2'
   pacotestOptions8$finalComparison = 'all'
   
   pacotestOptions9=pacotestset(TestType='ERC',ExpMinSampleSize=56)
-  pacotestOptions9$ERCtype = 'chi2'
+  pacotestOptions9$withEstUncert = FALSE
   pacotestOptions9$Grouping = 'TreeERCchi2'
   pacotestOptions9$finalComparison = 'all'
   
   pacotestOptions10=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
-  pacotestOptions10$ERCtype = 'chi2'
+  pacotestOptions10$withEstUncert = FALSE
   pacotestOptions10$Grouping = 'TreeERCchi2'
   pacotestOptions10$finalComparison = 'all'
   
   pacotestOptions11=pacotestset(TestType='ERC',aggInfo="meanPairwise")
-  pacotestOptions11$ERCtype = 'chi2'
+  pacotestOptions11$withEstUncert = FALSE
   pacotestOptions11$Grouping = 'TreeERCchi2'
   pacotestOptions11$finalComparison = 'all'
   
   
   pacotestOptions12=pacotestset(TestType='ERC')
-  pacotestOptions12$ERCtype = 'chi2'
+  pacotestOptions12$withEstUncert = FALSE
   pacotestOptions12$Grouping = 'TreeEC'
   pacotestOptions12$finalComparison = 'pairwiseMax'
   
   pacotestOptions13=pacotestset(TestType='ERC',ExpMinSampleSize=56)
-  pacotestOptions13$ERCtype = 'chi2'
+  pacotestOptions13$withEstUncert = FALSE
   pacotestOptions13$Grouping = 'TreeEC'
   pacotestOptions13$finalComparison = 'pairwiseMax'
   
   pacotestOptions14=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
-  pacotestOptions14$ERCtype = 'chi2'
+  pacotestOptions14$withEstUncert = FALSE
   pacotestOptions14$Grouping = 'TreeEC'
   pacotestOptions14$finalComparison = 'pairwiseMax'
   
   pacotestOptions15=pacotestset(TestType='ERC',aggInfo="meanPairwise")
-  pacotestOptions15$ERCtype = 'chi2'
+  pacotestOptions15$withEstUncert = FALSE
   pacotestOptions15$Grouping = 'TreeEC'
   pacotestOptions15$finalComparison = 'pairwiseMax'
   
   pacotestOptions16=pacotestset(TestType='ERC')
-  pacotestOptions16$ERCtype = 'chi2'
+  pacotestOptions16$withEstUncert = FALSE
   pacotestOptions16$Grouping = 'TreeEC'
   pacotestOptions16$finalComparison = 'all'
   
   pacotestOptions17=pacotestset(TestType='ERC',ExpMinSampleSize=56)
-  pacotestOptions17$ERCtype = 'chi2'
+  pacotestOptions17$withEstUncert = FALSE
   pacotestOptions17$Grouping = 'TreeEC'
   pacotestOptions17$finalComparison = 'all'
   
   pacotestOptions18=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
-  pacotestOptions18$ERCtype = 'chi2'
+  pacotestOptions18$withEstUncert = FALSE
   pacotestOptions18$Grouping = 'TreeEC'
   pacotestOptions18$finalComparison = 'all'
   
   pacotestOptions19=pacotestset(TestType='ERC',aggInfo="meanPairwise")
-  pacotestOptions19$ERCtype = 'chi2'
+  pacotestOptions19$withEstUncert = FALSE
   pacotestOptions19$Grouping = 'TreeEC'
   pacotestOptions19$finalComparison = 'all'
   
@@ -476,25 +476,25 @@ test_that("unit tests for ERC", {
   
   rvmHat = RVineSeqEst(U,rvm)$RVM
   
-  pacotestOptions1$ERCtype = "chi2WithEstimation"
-  pacotestOptions2$ERCtype = "chi2WithEstimation"
-  pacotestOptions3$ERCtype = "chi2WithEstimation"
-  pacotestOptions4$ERCtype = "chi2WithEstimation"
-  pacotestOptions5$ERCtype = "chi2WithEstimation"
-  pacotestOptions6$ERCtype = "chi2WithEstimation"
-  pacotestOptions7$ERCtype = "chi2WithEstimation"
-  pacotestOptions8$ERCtype = "chi2WithEstimation"
-  pacotestOptions9$ERCtype = "chi2WithEstimation"
-  pacotestOptions10$ERCtype = "chi2WithEstimation"
-  pacotestOptions11$ERCtype = "chi2WithEstimation"
-  pacotestOptions12$ERCtype = "chi2WithEstimation"
-  pacotestOptions13$ERCtype = "chi2WithEstimation"
-  pacotestOptions14$ERCtype = "chi2WithEstimation"
-  pacotestOptions15$ERCtype = "chi2WithEstimation"
-  pacotestOptions16$ERCtype = "chi2WithEstimation"
-  pacotestOptions17$ERCtype = "chi2WithEstimation"
-  pacotestOptions18$ERCtype = "chi2WithEstimation"
-  pacotestOptions19$ERCtype = "chi2WithEstimation"
+  pacotestOptions1$withEstUncert = TRUE
+  pacotestOptions2$withEstUncert = TRUE
+  pacotestOptions3$withEstUncert = TRUE
+  pacotestOptions4$withEstUncert = TRUE
+  pacotestOptions5$withEstUncert = TRUE
+  pacotestOptions6$withEstUncert = TRUE
+  pacotestOptions7$withEstUncert = TRUE
+  pacotestOptions8$withEstUncert = TRUE
+  pacotestOptions9$withEstUncert = TRUE
+  pacotestOptions10$withEstUncert = TRUE
+  pacotestOptions11$withEstUncert = TRUE
+  pacotestOptions12$withEstUncert = TRUE
+  pacotestOptions13$withEstUncert = TRUE
+  pacotestOptions14$withEstUncert = TRUE
+  pacotestOptions15$withEstUncert = TRUE
+  pacotestOptions16$withEstUncert = TRUE
+  pacotestOptions17$withEstUncert = TRUE
+  pacotestOptions18$withEstUncert = TRUE
+  pacotestOptions19$withEstUncert = TRUE
   
   pacotestOptions1$AggPvalsNumbRep = 1
   pacotestOptions2$AggPvalsNumbRep = 1
