@@ -16,12 +16,6 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
   if (dim(data)[1] < 2) 
     stop("Number of observations has to be at least 2.")
   
-  if (!(tree > 1 && tree <= (d-1)))
-    stop("'tree' has do be larger than 2 and at most dim (of the vine) - 1")
-  
-  if (!(copulaNumber > 0 && copulaNumber <= (d-tree)))
-    stop("Invalid copula number")
-  
   oldRVM <- RVM
   
   if (any(o != length(o):1)) {

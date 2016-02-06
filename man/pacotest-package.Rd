@@ -36,7 +36,7 @@ Development for \pkg{pacotest} can be followed via the GitHub repository at \url
 #####################
 # Generate an option file, e.g., the equal rank correlation (ERC)
 # test with default options
-pacotestOptions=pacotestset(TestType='ERC',AggPvalsNumbRep = 1,GroupedScatterplots=TRUE)
+pacotestOptions=pacotestset(testType='ERC',aggPvalsNumbRep = 1)
 
 #####################
 # Use the specified options to test for the simplifying assumption

@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5),testType = 'ERC',grouping= 'TreeERC', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
+pacotestset = function(pacotestOptions=list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'pairwiseMax'),testType = 'ERC',grouping= 'TreeERC', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'pairwiseMax', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -19,6 +19,8 @@ if(Nargs==0){
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('       trainingDataFraction: [ numeric between 0 and 1 ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n\n')
+    cat('              withEstUncert: [ logical | 0 | 1 ]\n')
+    cat('            finalComparison: [ pairwiseMax | all ]\n')
     cat(' Options for testType = [ VecIndep | VI ]:\n')
     cat('                   numbBoot: [ positive scalar ]\n\n')
 }
@@ -36,7 +38,7 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
   {
     if (testType=="ERC" || testType == "EqualRankCorr")
     {
-      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'pairwiseMax')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -91,6 +93,28 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
         if (is.null(aggInfo))
         {
           pacotestOptions$aggInfo = NULL
+        }
+      }
+      if (!(missing(withEstUncert)) && !is.null(withEstUncert))
+      {
+        pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
+      }
+      else
+      {
+        if (is.null(withEstUncert))
+        {
+          pacotestOptions$withEstUncert = NULL
+        }
+      }
+      if (!(missing(finalComparison)) && !is.null(finalComparison))
+      {
+        pacotestOptions$finalComparison = CheckFinalComparison(finalComparison,"finalComparison")
+      }
+      else
+      {
+        if (is.null(finalComparison))
+        {
+          pacotestOptions$finalComparison = NULL
         }
       }
     }
@@ -173,7 +197,7 @@ else
     
     if (testType=="ERC" || testType == "EqualRankCorr")
     {
-      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'pairwiseMax')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -201,6 +225,14 @@ else
       if (!(missing(aggInfo)))
       {
         pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
+      }
+      if (!(missing(withEstUncert)))
+      {
+        pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
+      }
+      if (!(missing(finalComparison)))
+      {
+        pacotestOptions$finalComparison = CheckFinalComparison(finalComparison,"finalComparison")
       }
     }
     else if (testType=="EC" || testType == "EqualCop")
@@ -279,6 +311,14 @@ else
     if (!(missing(aggInfo)))
     {
       pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
+    }
+    if (!(missing(withEstUncert)))
+    {
+      pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
+    }
+    if (!(missing(finalComparison)))
+    {
+      pacotestOptions$finalComparison = CheckFinalComparison(finalComparison,"finalComparison")
     }
   }
   else if (pacotestOptions$testType=="EC" || pacotestOptions$testType == "EqualCop")
@@ -375,6 +415,15 @@ CheckAggInfo = function(Value,Fieldname)
   return(Value)
 }
 
+CheckFinalComparison = function(Value,Fieldname)
+{
+  if (!(Value == 'pairwiseMax' || Value == 'all' ))
+  {
+    stop(paste("The option aggInfo must be 'pairwiseMax' or 'all'"))
+  }
+  return(Value)
+}
+
 CheckpacotestOptions = function(pacotestOptions)
 {
   
@@ -432,6 +481,14 @@ CheckpacotestOptions = function(pacotestOptions)
       if (exists('aggInfo', where=pacotestOptions))
       {
         CheckAggInfo(pacotestOptions$aggInfo,"aggInfo")
+      }
+      if (exists('withEstUncert', where=pacotestOptions))
+      {
+        CheckLogical(pacotestOptions$withEstUncert,"withEstUncert")
+      }
+      if (exists('finalComparison', where=pacotestOptions))
+      {
+        CheckFinalComparison(pacotestOptions$finalComparison,"finalComparison")
       }
     }
   }
