@@ -200,7 +200,9 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
   omega[1:nParameters,1:nParameters] = res$D
   omega[(nParameters+1):(nParameters+4+nGroups),1:nParameters] = res$E
   
-  omega = t(triang(omega))+omega-Triang(omega)
+  
+  xx = t(omega)
+  omega[upper.tri(omega)] = xx[upper.tri(xx)]
   
   
   return(omega)
