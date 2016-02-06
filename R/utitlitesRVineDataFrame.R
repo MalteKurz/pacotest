@@ -28,26 +28,33 @@ getNumbOfParameters = function(family)
 
 rVineDataFrameRep = function(rvm)
 {
-  rvmNormalized = RVineMatrixNormalize(rvm)
-  d = dim(rvmNormalized$Matrix)[1]
+  o <- diag(RVM$Matrix)
+  
+  if (!is(RVM, "RVineMatrix")) 
+    stop("'RVM' has to be an RVineMatrix object.")
+  
+  if (any(o != length(o):1))
+    stop("The RVM Matrix needs to be provided in normalized form")
+  
+  d = dim(rvm$Matrix)[1]
   nCopulas = d*(d-1)/2
   
   copulaInd = 1:nCopulas
   
   
   # Matrix shifted to upper diagonal
-  xx = rvmNormalized$Matrix
+  xx = rvm$Matrix
   structureMatrix = xx[nrow(xx):1,ncol(xx):1]
   
-  xx = rvmNormalized$family
+  xx = rvm$family
   xx = xx[nrow(xx):1,ncol(xx):1]
   family = t(xx)[lower.tri(xx,FALSE)]
   
-  xx = rvmNormalized$par
+  xx = rvm$par
   xx = xx[nrow(xx):1,ncol(xx):1]
   par1 = t(xx)[lower.tri(xx,FALSE)]
   
-  xx = rvmNormalized$par2
+  xx = rvm$par2
   xx = xx[nrow(xx):1,ncol(xx):1]
   par2 = t(xx)[lower.tri(xx,FALSE)]
   

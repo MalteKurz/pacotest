@@ -193,7 +193,7 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   
   if (splitTestType == 0)
   {
-    testStat = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
+    //testStat = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
   }
   else
   {

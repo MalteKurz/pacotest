@@ -1,3 +1,11 @@
 importFrom(Rcpp, evalCpp)
+
+importFrom(numDeriv, grad)
+importFrom(numDeriv, jacobian)
+
+importFrom(VineCopula, BiCopPDF)
+importFrom(VineCopula, RVineMatrix)
+importFrom(VineCopula, RVineMatrixNormalize)
+
 useDynLib(pacotest)
 export(pacotest, pacotestset, pacotestRvineSeq)

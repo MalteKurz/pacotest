@@ -1,18 +1,26 @@
 pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustration=2)
 {
   data <- as.matrix(data)
-  if (any(data > 1) || any(data < 0)) 
-    stop("Data has be in the interval [0,1].")
-  if (dim(data)[2] != dim(RVM$Matrix)[1]) 
-    stop("Dimensions of 'data' and 'RVM' do not match.")
-  if (dim(data)[1] < 2) 
-    stop("Number of observations has to be at least 2.")
+  d <- dim(RVM$Matrix)[1]
+  o <- diag(RVM$Matrix)
+  
   if (!is(RVM, "RVineMatrix")) 
     stop("'RVM' has to be an RVineMatrix object.")
   
-  d <- dim(RVM$Matrix)[1]
+  if (any(data > 1) || any(data < 0)) 
+    stop("Data has be in the interval [0,1].")
   
-  o <- diag(RVM$Matrix)
+  if (dim(data)[2] != d) 
+    stop("Dimensions of 'data' and 'RVM' do not match.")
+  
+  if (dim(data)[1] < 2) 
+    stop("Number of observations has to be at least 2.")
+  
+  if (!(tree > 1 && tree <= (d-1)))
+    stop("'tree' has do be larger than 2 and at most dim (of the vine) - 1")
+  
+  if (!(copulaNumber > 0 && copulaNumber <= (d-tree)))
+    stop("Invalid copula number")
   
   oldRVM <- RVM
   
@@ -82,23 +90,32 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
 
 pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNumber)
 {
+  
   data <- as.matrix(data)
-  if (any(data > 1) || any(data < 0)) 
-    stop("Data has be in the interval [0,1].")
-  if (dim(data)[2] != dim(RVM$Matrix)[1]) 
-    stop("Dimensions of 'data' and 'RVM' do not match.")
-  if (dim(data)[1] < 2) 
-    stop("Number of observations has to be at least 2.")
+  d <- dim(RVM$Matrix)[1]
+  o <- diag(RVM$Matrix)
+  
   if (!is(RVM, "RVineMatrix")) 
     stop("'RVM' has to be an RVineMatrix object.")
   
-  d <- dim(RVM$Matrix)[1]
+  if (any(data > 1) || any(data < 0)) 
+    stop("Data has be in the interval [0,1].")
   
-  o <- diag(RVM$Matrix)
+  if (dim(data)[2] != d) 
+    stop("Dimensions of 'data' and 'RVM' do not match.")
   
-  if (any(o != length(o):1)) {
+  if (dim(data)[1] < 2) 
+    stop("Number of observations has to be at least 2.")
+  
+  if (!(tree > 1 && tree <= (d-1)))
+    stop("'tree' has do be larger than 2 and at most dim (of the vine) - 1")
+  
+  if (!(copulaNumber > 0 && copulaNumber <= (d-tree)))
+    stop("Invalid copula number")
+  
+  if (any(o != length(o):1))
     stop("The RVM Matrix needs to be provided in normalized form")
-  }
+  
   
   out = list()
   

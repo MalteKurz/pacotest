@@ -2,15 +2,6 @@
 
 extractSubTree = function(RVM, tree, copulaNumber, data)
 {
-  if (!is(RVM, "RVineMatrix")) 
-    stop("'RVM' has to be an RVineMatrix object.")
-  # Check whether the object has been normalized
-  
-  d <- dim(RVM$Matrix)[1]
-  if (!(tree > 1 && tree <= (d-1)))
-    stop("'tree' has do be larger than 2 and at most dim (of the vine) - 1")
-  if (!(copulaNumber > 0 && copulaNumber <= (d-tree)))
-    stop("Invalid copula number")
   
   newMatrix = matrix(0,nrow=tree+1,ncol=tree+1)
   newFamily = matrix(0,nrow=tree+1,ncol=tree+1)
@@ -61,93 +52,5 @@ extractSubTree = function(RVM, tree, copulaNumber, data)
   
   return(list(RVM=RVineMatrix(newMatrix,newFamily,newPar,newPar2,names=newNames),data=newData))
   
-}
-
-
-helpingGetIndexCombinations = function(d,iStart,iLimit,kLimitDeduction=0,kStartInflation=0)
-{
-  res = matrix(0,0,2)
-  for (i in iStart:iLimit)
-  {
-    for (k in (d-kStartInflation):(i + 1 + kLimitDeduction))
-    {
-      res = rbind(res,c(k,i))
-    }
-  }
-  
-  return(res)
-}
-
-
-getIndexCombinations = function(RVM)
-{
-  
-  d <- dim(RVM$Matrix)[1]
-  nCopulas = d*(d-1)/2-1
-  dCondSet = d-2
-  
-  indexCombinations = matrix(0,nrow=nCopulas,ncol=2)
-  
-  if (dCondSet>=3)
-  {
-    numbCopulas = (dCondSet-1)*(dCondSet-2)/2
-    iStart = d-1
-    iLimit = 4
-    indexCombinations[1:numbCopulas,1:2] = helpingGetIndexCombinations(d,iStart,iLimit)
-  }
-  else
-  {
-    numbCopulas = 0
-  }
-  
-  if (dCondSet>=2)
-  {
-    if (RVM$MaxMat[3,1]==(d-2))
-    {
-      iStart = 3
-      iLimit = 3
-      indexCombinations[(numbCopulas+1):(numbCopulas+dCondSet-1),1:2] = helpingGetIndexCombinations(d,iStart,iLimit)
-    }
-    else
-    { # should be RVM$MaxMat[3,1]==(d-1)
-      iStart = 2
-      iLimit = 2
-      indexCombinations[(numbCopulas+1):(numbCopulas+dCondSet-1),1:2] = helpingGetIndexCombinations(d,iStart,iLimit,1)
-    }
-  }
-  
-  # Copulas for the first cPit
-  iStart = 1
-  iLimit = 1
-  indexCombinations[(numbCopulas+dCondSet):(numbCopulas+2*dCondSet-1),1:2] = helpingGetIndexCombinations(d,iStart,iLimit,1)
-  
-  # Copulas for the second cPit
-  if (RVM$MaxMat[3,1]==(d-2))
-  {
-    iStart = 2
-    iLimit = 2
-    indexCombinations[(numbCopulas+2*dCondSet):(numbCopulas+3*dCondSet-1),1:2] = helpingGetIndexCombinations(d,iStart,iLimit)
-  }
-  else
-  { # should be RVM$MaxMat[3,1]==(d-1)
-    if (dCondSet>=2)
-    {
-      iStart = 3
-      iLimit = 3
-      indexCombinations[(numbCopulas+2*dCondSet):(numbCopulas+3*dCondSet-2),1:2] = helpingGetIndexCombinations(d,iStart,iLimit)
-      
-      iStart = 2
-      iLimit = 2
-      indexCombinations[(numbCopulas+3*dCondSet-1),1:2] = helpingGetIndexCombinations(d,iStart,iLimit,0,dCondSet-1)
-    }
-    else
-    {
-      iStart = 2
-      iLimit = 2
-      indexCombinations[numbCopulas+2,1:2] = helpingGetIndexCombinations(d,iStart,iLimit)
-    }
-  }
-  
-  return(indexCombinations)
 }
 
