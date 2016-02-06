@@ -809,17 +809,17 @@ test_that("unit tests for ERC", {
   resultData6Test10 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions10, 3, 1)$pValue
   resultData6Test11 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions11, 3, 1)$pValue
   
-  expect_equal(resultData6Test1,0.22186365899499105314)
-  expect_equal(resultData6Test2,0.81853465184251250619)
-  expect_equal(resultData6Test3,0.17519674250887773415)
-  expect_equal(resultData6Test4,0.073495903248815386277)
-  expect_equal(resultData6Test5,0.49343206116136972827)
-  expect_equal(resultData6Test6,0.89780770265184439705)
-  expect_equal(resultData6Test7,0.97106984006898766637)
-  expect_equal(resultData6Test8,0.47869966995504387164)
-  expect_equal(resultData6Test9,0.47710583521899785353)
-  expect_equal(resultData6Test10,0.030759007411572447666)
-  expect_equal(resultData6Test11,0.44285639410706745256)
+  expect_equal(resultData6Test1,0.22185963874400715934)
+  expect_equal(resultData6Test2,0.81853415514460237112)
+  expect_equal(resultData6Test3,0.17520223260212630656)
+  expect_equal(resultData6Test4,0.073496161308055585337)
+  expect_equal(resultData6Test5,0.49343446518015587898)
+  expect_equal(resultData6Test6,0.89780976876241724849)
+  expect_equal(resultData6Test7,0.9710702182702302121)
+  expect_equal(resultData6Test8,0.47870072891438175677)
+  expect_equal(resultData6Test9,0.47710526905101735551)
+  expect_equal(resultData6Test10,0.030759519295320059129)
+  expect_equal(resultData6Test11,0.4428576682008489307)
   
   
 })

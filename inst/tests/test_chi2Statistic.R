@@ -53,8 +53,8 @@ test_that("unit tests for ERC", {
   expect_equal(res$testStat,0.64034211409376129431)
   expect_equal(res$pValue,0.4235869398574387823)
   
-  expect_equal(resWithEstimation$testStat,0.56509332232365161452)
-  expect_equal(resWithEstimation$pValue,0.4522153139963757118)
+  expect_equal(resWithEstimation$testStat,0.56509311895736236142)
+  expect_equal(resWithEstimation$pValue,0.45221539535817567579)
   
   
   ind = matrix(NA,N,3)
@@ -69,8 +69,8 @@ test_that("unit tests for ERC", {
   expect_equal(res$testStat,1.5582520864971858288)
   expect_equal(res$pValue,0.45880681345004847849)
   
-  expect_equal(resWithEstimation$testStat,1.4640683110446852666)
-  expect_equal(resWithEstimation$pValue,0.48092970859984129905)
+  expect_equal(resWithEstimation$testStat,1.4640687567395958002)
+  expect_equal(resWithEstimation$pValue,0.4809296014258914731)
   
   
   ind = matrix(NA,N,4)
@@ -86,8 +86,8 @@ test_that("unit tests for ERC", {
   expect_equal(res$testStat,1.7839860580917361599)
   expect_equal(res$pValue,0.61842593405983881105)
   
-  expect_equal(resWithEstimation$testStat,1.6479934266055609182)
-  expect_equal(resWithEstimation$pValue,0.64855724663587799306)
+  expect_equal(resWithEstimation$testStat,1.6479933841949565565)
+  expect_equal(resWithEstimation$pValue,0.64855725616395010213)
   
   
   
@@ -132,8 +132,8 @@ test_that("unit tests for ERC", {
   expect_equal(res2$testStat,1.6752839226413402951)
   expect_equal(res2$pValue,0.19555228871052821038)
   
-  expect_equal(resWithEstimation2$testStat,0.70330868452706607474)
-  expect_equal(resWithEstimation2$pValue,0.401674156693845541)
+  expect_equal(resWithEstimation2$testStat,0.70330445282512621397)
+  expect_equal(resWithEstimation2$pValue,0.40167557291709143907)
   
   
   ind = matrix(NA,N,3)
@@ -148,8 +148,8 @@ test_that("unit tests for ERC", {
   expect_equal(res2$testStat,2.9299666079825024134)
   expect_equal(res2$pValue,0.23108184958970501288)
   
-  expect_equal(resWithEstimation2$testStat,1.3106932498829706457)
-  expect_equal(resWithEstimation2$pValue,0.51926204221407701311)
+  expect_equal(resWithEstimation2$testStat,1.3106905960240724518)
+  expect_equal(resWithEstimation2$pValue,0.51926273123862976)
   
   
   ind = matrix(NA,N,4)
@@ -165,8 +165,8 @@ test_that("unit tests for ERC", {
   expect_equal(res2$testStat,2.9721148561868826476)
   expect_equal(res2$pValue,0.3959445289661274181)
   
-  expect_equal(resWithEstimation2$testStat,1.3318243396969435821)
-  expect_equal(resWithEstimation2$pValue,0.72159030055902029233)
+  expect_equal(resWithEstimation2$testStat,1.331820494912132169)
+  expect_equal(resWithEstimation2$pValue,0.72159121006110882313)
   
 })
 
