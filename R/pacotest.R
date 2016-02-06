@@ -27,18 +27,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       {
         out = ERC_chi2(Udata,W,Grouping, ercTestType, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
       }
-      else if (pacotestOptions$ERCtype == 'standard')
-      {
-        out = ERC(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-      }
-      else if (pacotestOptions$ERCtype == 'noRanks')
-      {
-        out = ERC_noRanks(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-      }
-      else if (pacotestOptions$ERCtype == 'oracle')
-      {
-        out = ERC_oracle(Udata,W,Grouping,finalComparison,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-      }
       
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
@@ -59,18 +47,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         {
           out = ERC_chi2(Udata,W,Grouping, ercTestType,1, data, svcmDataFrame, cPitData,0,1,1)
         }
-        else if (pacotestOptions$ERCtype == 'standard')
-        {
-          out = ERC(Udata,W,Grouping,1,0,1,1)
-        }
-        else if (pacotestOptions$ERCtype == 'noRanks')
-        {
-          out = ERC_noRanks(Udata,W,Grouping,1,0,1,1)
-        }
-        else if (pacotestOptions$ERCtype == 'oracle')
-        {
-          out = ERC_oracle(Udata,W,Grouping,1,0,1,1)
-        }
         
       }
       else
@@ -89,18 +65,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         else if (pacotestOptions$ERCtype == 'chi2WithEstimation')
         {
           out = ERC_chi2(Udata,W,Grouping, ercTestType, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-        }
-        else if (pacotestOptions$ERCtype == 'standard')
-        {
-          out = ERC(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-        }
-        else if (pacotestOptions$ERCtype == 'noRanks')
-        {
-          out = ERC_noRanks(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-        }
-        else if (pacotestOptions$ERCtype == 'oracle')
-        {
-          out = ERC_oracle(Udata,W,Grouping,finalComparison,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         }
         
       }

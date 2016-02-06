@@ -6,8 +6,6 @@ test_that("unit tests for ERC", {
   library("testthat")
   library("VineCopula")
   library("numDeriv")
-  library('MCMCpack')
-  library('fBasics')
   
   
   set.seed(3141)
