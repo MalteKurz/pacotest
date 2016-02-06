@@ -699,5 +699,128 @@ test_that("unit tests for ERC", {
   expect_equal(resultData3Test11,6.1561866715464930166e-14)
   expect_equal(resultData4Test11,0.19060016502803306393)
   
+  
+  
+  set.seed(51312)
+  # Data set 6
+  N= 768
+  # Four-dimensional D-vine
+  structure = matrix(c(4,0,0,0,
+                       1,3,2,0,
+                       2,1,2,0,
+                       3,2,1,1),4,4,TRUE)
+  
+  families = array(3,dim=dim(structure))
+  families  = matrix(c(0,0,0,0,
+                       5,0,0,0,
+                       1,1,0,0,
+                       2,2,2,0),4,4,TRUE)
+  par2  = matrix(c(0,0,0,0,
+                   0,0,0,0,
+                   0,0,0,0,
+                   2.5,8,6,0),4,4,TRUE)
+  par  = matrix(c(0,0,0,0,
+                  5,0,0,0,
+                  0.4,0.3,0,0,
+                  0.5,0.8,0.6,0),4,4,TRUE)
+  names = c("V1", "V2", "V3","V4")
+  
+  rvm = RVineMatrix(structure,families,par,par2,names)
+  rvm = RVineMatrixNormalize(rvm)
+  
+  U = RVineSim(N,rvm)
+  
+  rvmHat = RVineSeqEst(U,rvm)$RVM
+  
+  
+  # Define the test types
+  pacotestOptions1=pacotestset(TestType='ERC')
+  pacotestOptions1$ERCtype = 'chi2WithEstimation'
+  pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions1$finalComparison = 'pairwiseMax'
+  pacotestOptions1$AggPvalsNumbRep = 1
+  
+  pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions2$ERCtype = 'chi2WithEstimation'
+  pacotestOptions2$Grouping = 'TreeERCchi2'
+  pacotestOptions2$finalComparison = 'pairwiseMax'
+  pacotestOptions2$AggPvalsNumbRep = 1
+  
+  pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions3$ERCtype = 'chi2WithEstimation'
+  pacotestOptions3$Grouping = 'TreeERCchi2'
+  pacotestOptions3$finalComparison = 'pairwiseMax'
+  pacotestOptions3$AggPvalsNumbRep = 1
+  
+  pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions4$ERCtype = 'chi2WithEstimation'
+  pacotestOptions4$Grouping = 'TreeERCchi2'
+  pacotestOptions4$finalComparison = 'pairwiseMax'
+  pacotestOptions4$AggPvalsNumbRep = 1
+  
+  pacotestOptions5=pacotestset(TestType='ERC',Grouping = "SumMedian",
+                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
+                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions5$ERCtype = 'chi2WithEstimation'
+  
+  pacotestOptions6=pacotestset(TestType='ERC',Grouping = "ProdThirdsI",
+                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
+                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions6$ERCtype = 'chi2WithEstimation'
+  
+  pacotestOptions7=pacotestset(TestType='ERC',Grouping = "SumThirdsII",
+                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
+                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions7$ERCtype = 'chi2WithEstimation'
+  
+  pacotestOptions8=pacotestset(TestType='ERC')
+  pacotestOptions8$ERCtype = 'chi2WithEstimation'
+  pacotestOptions8$Grouping = 'TreeERCchi2'
+  pacotestOptions8$finalComparison = 'all'
+  pacotestOptions8$AggPvalsNumbRep = 1
+  
+  pacotestOptions9=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions9$ERCtype = 'chi2WithEstimation'
+  pacotestOptions9$Grouping = 'TreeERCchi2'
+  pacotestOptions9$finalComparison = 'all'
+  pacotestOptions9$AggPvalsNumbRep = 1
+  
+  pacotestOptions10=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions10$ERCtype = 'chi2WithEstimation'
+  pacotestOptions10$Grouping = 'TreeERCchi2'
+  pacotestOptions10$finalComparison = 'all'
+  pacotestOptions10$AggPvalsNumbRep = 1
+  
+  pacotestOptions11=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions11$ERCtype = 'chi2WithEstimation'
+  pacotestOptions11$Grouping = 'TreeERCchi2'
+  pacotestOptions11$finalComparison = 'all'
+  pacotestOptions11$AggPvalsNumbRep = 1
+  
+  resultData6Test1 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions1, 3, 1)$pValue
+  resultData6Test2 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions2, 3, 1)$pValue
+  resultData6Test3 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions3, 3, 1)$pValue
+  resultData6Test4 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions4, 3, 1)$pValue
+  resultData6Test5 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions5, 3, 1)$pValue
+  resultData6Test6 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions6, 3, 1)$pValue
+  resultData6Test7 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions7, 3, 1)$pValue
+  resultData6Test8 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions8, 3, 1)$pValue
+  resultData6Test9 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions9, 3, 1)$pValue
+  resultData6Test10 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions10, 3, 1)$pValue
+  resultData6Test11 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions11, 3, 1)$pValue
+  
+  expect_equal(resultData6Test1,0.22186365899499105314)
+  expect_equal(resultData6Test2,0.81853465184251250619)
+  expect_equal(resultData6Test3,0.17519674250887773415)
+  expect_equal(resultData6Test4,0.073495903248815386277)
+  expect_equal(resultData6Test5,0.49343206116136972827)
+  expect_equal(resultData6Test6,0.89780770265184439705)
+  expect_equal(resultData6Test7,0.97106984006898766637)
+  expect_equal(resultData6Test8,0.47869966995504387164)
+  expect_equal(resultData6Test9,0.47710583521899785353)
+  expect_equal(resultData6Test10,0.030759007411572447666)
+  expect_equal(resultData6Test11,0.44285639410706745256)
+  
+  
 })
 
