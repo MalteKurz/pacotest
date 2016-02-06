@@ -10,100 +10,100 @@ test_that("unit tests for ERC", {
   
   
   # Define the test types
-  pacotestOptions1=pacotestset(TestType='ERC')
+  pacotestOptions1=pacotestset(testType='ERC')
   pacotestOptions1$withEstUncert = FALSE
-  pacotestOptions1$Grouping = 'TreeERCchi2'
+  pacotestOptions1$grouping = 'TreeERCchi2'
   pacotestOptions1$finalComparison = 'pairwiseMax'
   
-  pacotestOptions2=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions2=pacotestset(testType='ERC',expMinSampleSize=56)
   pacotestOptions2$withEstUncert = FALSE
-  pacotestOptions2$Grouping = 'TreeERCchi2'
+  pacotestOptions2$grouping = 'TreeERCchi2'
   pacotestOptions2$finalComparison = 'pairwiseMax'
   
-  pacotestOptions3=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions3=pacotestset(testType='ERC',trainingDataFraction=0.34)
   pacotestOptions3$withEstUncert = FALSE
-  pacotestOptions3$Grouping = 'TreeERCchi2'
+  pacotestOptions3$grouping = 'TreeERCchi2'
   pacotestOptions3$finalComparison = 'pairwiseMax'
   
-  pacotestOptions4=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions4=pacotestset(testType='ERC',aggInfo="meanPairwise")
   pacotestOptions4$withEstUncert = FALSE
-  pacotestOptions4$Grouping = 'TreeERCchi2'
+  pacotestOptions4$grouping = 'TreeERCchi2'
   pacotestOptions4$finalComparison = 'pairwiseMax'
   
-  pacotestOptions5=pacotestset(TestType='ERC',Grouping = "SumMedian",
-                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
-                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions5=pacotestset(testType='ERC',grouping = "SumMedian",
+                               expMinSampleSize = NULL, trainingDataFraction = NULL,
+                               aggPvalsNumbRep = NULL, aggInfo = NULL)
   pacotestOptions5$withEstUncert = FALSE
   
-  pacotestOptions6=pacotestset(TestType='ERC',Grouping = "ProdThirdsI",
-                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
-                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions6=pacotestset(testType='ERC',grouping = "ProdThirdsI",
+                               expMinSampleSize = NULL, trainingDataFraction = NULL,
+                               aggPvalsNumbRep = NULL, aggInfo = NULL)
   pacotestOptions6$withEstUncert = FALSE
   
-  pacotestOptions7=pacotestset(TestType='ERC',Grouping = "SumThirdsII",
-                               ExpMinSampleSize = NULL, TrainingDataFraction = NULL,
-                               AggPvalsNumbRep = NULL, aggInfo = NULL)
+  pacotestOptions7=pacotestset(testType='ERC',grouping = "SumThirdsII",
+                               expMinSampleSize = NULL, trainingDataFraction = NULL,
+                               aggPvalsNumbRep = NULL, aggInfo = NULL)
   pacotestOptions7$withEstUncert = FALSE
   
-  pacotestOptions8=pacotestset(TestType='ERC')
+  pacotestOptions8=pacotestset(testType='ERC')
   pacotestOptions8$withEstUncert = FALSE
-  pacotestOptions8$Grouping = 'TreeERCchi2'
+  pacotestOptions8$grouping = 'TreeERCchi2'
   pacotestOptions8$finalComparison = 'all'
   
-  pacotestOptions9=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions9=pacotestset(testType='ERC',expMinSampleSize=56)
   pacotestOptions9$withEstUncert = FALSE
-  pacotestOptions9$Grouping = 'TreeERCchi2'
+  pacotestOptions9$grouping = 'TreeERCchi2'
   pacotestOptions9$finalComparison = 'all'
   
-  pacotestOptions10=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions10=pacotestset(testType='ERC',trainingDataFraction=0.34)
   pacotestOptions10$withEstUncert = FALSE
-  pacotestOptions10$Grouping = 'TreeERCchi2'
+  pacotestOptions10$grouping = 'TreeERCchi2'
   pacotestOptions10$finalComparison = 'all'
   
-  pacotestOptions11=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions11=pacotestset(testType='ERC',aggInfo="meanPairwise")
   pacotestOptions11$withEstUncert = FALSE
-  pacotestOptions11$Grouping = 'TreeERCchi2'
+  pacotestOptions11$grouping = 'TreeERCchi2'
   pacotestOptions11$finalComparison = 'all'
   
   
-  pacotestOptions12=pacotestset(TestType='ERC')
+  pacotestOptions12=pacotestset(testType='ERC')
   pacotestOptions12$withEstUncert = FALSE
-  pacotestOptions12$Grouping = 'TreeEC'
+  pacotestOptions12$grouping = 'TreeEC'
   pacotestOptions12$finalComparison = 'pairwiseMax'
   
-  pacotestOptions13=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions13=pacotestset(testType='ERC',expMinSampleSize=56)
   pacotestOptions13$withEstUncert = FALSE
-  pacotestOptions13$Grouping = 'TreeEC'
+  pacotestOptions13$grouping = 'TreeEC'
   pacotestOptions13$finalComparison = 'pairwiseMax'
   
-  pacotestOptions14=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions14=pacotestset(testType='ERC',trainingDataFraction=0.34)
   pacotestOptions14$withEstUncert = FALSE
-  pacotestOptions14$Grouping = 'TreeEC'
+  pacotestOptions14$grouping = 'TreeEC'
   pacotestOptions14$finalComparison = 'pairwiseMax'
   
-  pacotestOptions15=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions15=pacotestset(testType='ERC',aggInfo="meanPairwise")
   pacotestOptions15$withEstUncert = FALSE
-  pacotestOptions15$Grouping = 'TreeEC'
+  pacotestOptions15$grouping = 'TreeEC'
   pacotestOptions15$finalComparison = 'pairwiseMax'
   
-  pacotestOptions16=pacotestset(TestType='ERC')
+  pacotestOptions16=pacotestset(testType='ERC')
   pacotestOptions16$withEstUncert = FALSE
-  pacotestOptions16$Grouping = 'TreeEC'
+  pacotestOptions16$grouping = 'TreeEC'
   pacotestOptions16$finalComparison = 'all'
   
-  pacotestOptions17=pacotestset(TestType='ERC',ExpMinSampleSize=56)
+  pacotestOptions17=pacotestset(testType='ERC',expMinSampleSize=56)
   pacotestOptions17$withEstUncert = FALSE
-  pacotestOptions17$Grouping = 'TreeEC'
+  pacotestOptions17$grouping = 'TreeEC'
   pacotestOptions17$finalComparison = 'all'
   
-  pacotestOptions18=pacotestset(TestType='ERC',TrainingDataFraction=0.34)
+  pacotestOptions18=pacotestset(testType='ERC',trainingDataFraction=0.34)
   pacotestOptions18$withEstUncert = FALSE
-  pacotestOptions18$Grouping = 'TreeEC'
+  pacotestOptions18$grouping = 'TreeEC'
   pacotestOptions18$finalComparison = 'all'
   
-  pacotestOptions19=pacotestset(TestType='ERC',aggInfo="meanPairwise")
+  pacotestOptions19=pacotestset(testType='ERC',aggInfo="meanPairwise")
   pacotestOptions19$withEstUncert = FALSE
-  pacotestOptions19$Grouping = 'TreeEC'
+  pacotestOptions19$grouping = 'TreeEC'
   pacotestOptions19$finalComparison = 'all'
   
   
@@ -496,22 +496,22 @@ test_that("unit tests for ERC", {
   pacotestOptions18$withEstUncert = TRUE
   pacotestOptions19$withEstUncert = TRUE
   
-  pacotestOptions1$AggPvalsNumbRep = 1
-  pacotestOptions2$AggPvalsNumbRep = 1
-  pacotestOptions3$AggPvalsNumbRep = 1
-  pacotestOptions4$AggPvalsNumbRep = 1
-  pacotestOptions8$AggPvalsNumbRep = 1
-  pacotestOptions9$AggPvalsNumbRep = 1
-  pacotestOptions10$AggPvalsNumbRep = 1
-  pacotestOptions11$AggPvalsNumbRep = 1
-  pacotestOptions12$AggPvalsNumbRep = 1
-  pacotestOptions13$AggPvalsNumbRep = 1
-  pacotestOptions14$AggPvalsNumbRep = 1
-  pacotestOptions15$AggPvalsNumbRep = 1
-  pacotestOptions16$AggPvalsNumbRep = 1
-  pacotestOptions17$AggPvalsNumbRep = 1
-  pacotestOptions18$AggPvalsNumbRep = 1
-  pacotestOptions19$AggPvalsNumbRep = 1
+  pacotestOptions1$aggPvalsNumbRep = 1
+  pacotestOptions2$aggPvalsNumbRep = 1
+  pacotestOptions3$aggPvalsNumbRep = 1
+  pacotestOptions4$aggPvalsNumbRep = 1
+  pacotestOptions8$aggPvalsNumbRep = 1
+  pacotestOptions9$aggPvalsNumbRep = 1
+  pacotestOptions10$aggPvalsNumbRep = 1
+  pacotestOptions11$aggPvalsNumbRep = 1
+  pacotestOptions12$aggPvalsNumbRep = 1
+  pacotestOptions13$aggPvalsNumbRep = 1
+  pacotestOptions14$aggPvalsNumbRep = 1
+  pacotestOptions15$aggPvalsNumbRep = 1
+  pacotestOptions16$aggPvalsNumbRep = 1
+  pacotestOptions17$aggPvalsNumbRep = 1
+  pacotestOptions18$aggPvalsNumbRep = 1
+  pacotestOptions19$aggPvalsNumbRep = 1
   
   
   

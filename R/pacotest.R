@@ -4,9 +4,9 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   Udata = as.matrix(Udata)
   W = as.matrix(W)
   
-  if (pacotestOptions$TestType=='ERC')
+  if (pacotestOptions$testType=='ERC')
   {
-    Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    grouping = which(pacotestOptions$grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
     
     if (!(pacotestOptions$withEstUncert))
     {
@@ -15,14 +15,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
-    if (Grouping<4  && pacotestOptions$AggPvalsNumbRep > 1)
+    if (grouping<4  && pacotestOptions$aggPvalsNumbRep > 1)
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
       
-      out = ERC(Udata,W,Grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      out = ERC(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       
       
       CondSetDim = ncol(W);
@@ -30,10 +30,10 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     }
     else
     {
-      if (Grouping > 4)
+      if (grouping > 4)
       {
         
-        out = ERC(Udata,W,Grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData,0,1,1)
+        out = ERC(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData,0,1,1)
         
       }
       else
@@ -42,18 +42,18 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         W = addAggInfo(W,pacotestOptions$aggInfo);
         
-        out = ERC(Udata,W,Grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+        out = ERC(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
         
       }
-      if (pacotestOptions$GroupedScatterplots)
+      if (pacotestOptions$groupedScatterplots)
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
       }
-      if (Grouping<=4)
+      if (grouping<=4)
       {
         CondSetDim = ncol(W);
         out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
-        if (pacotestOptions$DecisionTreePlot)
+        if (pacotestOptions$decisionTreePlot)
         {
           if (!requireNamespace("plotrix", quietly = TRUE))
           {
@@ -62,53 +62,53 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
           }
           else
           {
-            DecisionTreePlot(out$DecisionTree)
+            decisionTreePlot(out$DecisionTree)
           }
         }
       }
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
-  else if (pacotestOptions$TestType=='EC')
+  else if (pacotestOptions$testType=='EC')
   {
-    Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-    if (Grouping > 4)
+    grouping = which(pacotestOptions$grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    if (grouping > 4)
     {
-      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,1,1,1)
+      out = EC(Udata,W,pacotestOptions$numbBoot,grouping,1,1,1)
     }
     else
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
      
       W = addAggInfo(W,pacotestOptions$aggInfo);
-      out = EC(Udata,W,pacotestOptions$NumbBoot,Grouping,finalComparison,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      out = EC(Udata,W,pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
     }
-    if (pacotestOptions$GroupedScatterplots)
+    if (pacotestOptions$groupedScatterplots)
     {
       GroupedScatterplot(out$Xdata,out$Ydata)
     }
-    if (Grouping<=4)
+    if (grouping<=4)
     {
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
-      if (pacotestOptions$DecisionTreePlot)
+      if (pacotestOptions$decisionTreePlot)
       {
         if (!requireNamespace("plotrix", quietly = TRUE)) {
           stop("plotrix needed to obtain decision tree plots. Please install it.",
                call. = FALSE)
-          DecisionTreePlot(out$DecisionTree)
+          decisionTreePlot(out$DecisionTree)
         }
       }
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
-  else if (pacotestOptions$TestType=='VI')
+  else if (pacotestOptions$testType=='VI')
   {
-    out = VI(Udata,W,pacotestOptions$NumbBoot)
+    out = VI(Udata,W,pacotestOptions$numbBoot)
   }
   else
   {
-    stop('Unknown TestType')
+    stop('Unknown testType')
   }
   return(out)
 }
@@ -251,7 +251,7 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
 }
 
 
-DecisionTreePlot = function(DecisionTree)
+decisionTreePlot = function(DecisionTree)
 {
   plot.new()
   par(mfrow=c(1,1))
