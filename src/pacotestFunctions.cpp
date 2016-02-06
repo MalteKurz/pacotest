@@ -67,13 +67,13 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
 
 
 // [[Rcpp::export]]
-Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleErcTestType,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
     try
     {
         
         int grouping = (int) Grouping;
         int aggPvalsNumbRep = (int) AggPvalsNumbRep;
-        int intErcTestType = (int) doubleErcTestType;
+        int intWithEstUncert = (int) doubleWithEstUncert;
         
         
         // Associate outputs
@@ -93,7 +93,7 @@ Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double do
             SplitQuantile.zeros();
             SplitThreshold.zeros();
             
-            EqualRankCorrTest_chi2(Udata, Wdata, grouping, intErcTestType, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+            EqualRankCorrTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }
@@ -109,7 +109,7 @@ Rcpp::List ERC_chi2(arma::mat Udata, arma::mat Wdata, double Grouping, double do
             SplitQuantile.zeros();
             SplitThreshold.zeros();
 
-            EqualRankCorrTest_chi2(Udata, Wdata, grouping, intErcTestType, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+            EqualRankCorrTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
             
             out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         }

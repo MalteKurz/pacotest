@@ -8,6 +8,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   {
     Grouping = which(pacotestOptions$Grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
     
+    if (!(pacotestOptions$withEstUncert))
+    {
+      data = matrix()
+      svcmDataFrame = data.frame()
+      cPitData = matrix()
+    }
+    
     if (Grouping<4  && pacotestOptions$AggPvalsNumbRep > 1)
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
@@ -15,18 +22,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
       
-      if (pacotestOptions$withEstUncert)
-      {
-        out = ERC_chi2(Udata,W,Grouping, 2, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-      }
-      else
-      {
-        data = matrix()
-        svcmDataFrame = data.frame()
-        cPitData = matrix()
-        out = ERC_chi2(Udata,W,Grouping, 1, finalComparison, data, svcmDataFrame, cPitData, pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-      }
-
+      out = ERC(Udata,W,Grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$AggPvalsNumbRep,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
+      
       
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
@@ -36,17 +33,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       if (Grouping > 4)
       {
         
-        if (pacotestOptions$withEstUncert)
-        {
-          out = ERC_chi2(Udata,W,Grouping, 2, 1, data, svcmDataFrame, cPitData,0,1,1)
-        }
-        else
-        {
-          data = matrix()
-          svcmDataFrame = data.frame()
-          cPitData = matrix()
-          out = ERC_chi2(Udata,W,Grouping, 1, 1, data, svcmDataFrame, cPitData,0,1,1)
-        }
+        out = ERC(Udata,W,Grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData,0,1,1)
         
       }
       else
@@ -55,17 +42,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         W = addAggInfo(W,pacotestOptions$aggInfo);
         
-        if (pacotestOptions$withEstUncert)
-        {
-          out = ERC_chi2(Udata,W,Grouping, 2, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-        }
-        else
-        {
-          data = matrix()
-          svcmDataFrame = data.frame()
-          cPitData = matrix()
-          out = ERC_chi2(Udata,W,Grouping, 1, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
-        }
+        out = ERC(Udata,W,Grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$ExpMinSampleSize,pacotestOptions$TrainingDataFraction)
         
       }
       if (pacotestOptions$GroupedScatterplots)
