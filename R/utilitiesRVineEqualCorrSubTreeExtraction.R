@@ -2,6 +2,7 @@
 
 extractSubTree = function(RVM, tree, copulaNumber, data)
 {
+  d <- dim(RVM$Matrix)[1]
   
   newMatrix = matrix(0,nrow=tree+1,ncol=tree+1)
   newFamily = matrix(0,nrow=tree+1,ncol=tree+1)
