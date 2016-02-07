@@ -8,7 +8,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   
   
   switch(GroupingMethod){
-    case 5: // SumMedian
+    case 3: // SumMedian
     {
       arma::mat Wsum = sum(Wdata,1);
       
@@ -18,7 +18,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wsum >= b );
       break;
     }
-    case 6: // SumThirdsI
+    case 4: // SumThirdsI
     {
       arma::mat Wsum = sum(Wdata,1);
       Wsum = Wsum(sort_index(Wsum));
@@ -30,7 +30,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
       break;
     }
-    case 7: // SumThirdsII
+    case 5: // SumThirdsII
     {
       arma::mat Wsum = sum(Wdata,1);
       Wsum = Wsum(sort_index(Wsum));
@@ -58,7 +58,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
 //      outPtrOnIndexVectors[2] = indCData.memptr(); outNObsPerGroup(2) = indCData.n_elem;
 //      break;
 //    }
-    case 8: // ProdMedian
+    case 6: // ProdMedian
     {
       arma::mat Wprod = prod(Wdata,1);
       
@@ -68,7 +68,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b );
       break;
     }
-    case 9: // ProdThirdsI
+    case 7: // ProdThirdsI
     {
       arma::mat Wprod = prod(Wdata,1);
       Wprod = Wprod(sort_index(Wprod));
@@ -80,7 +80,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
       break;
     }
-    case 10: // ProdThirdsII
+    case 8: // ProdThirdsII
     {
       arma::mat Wprod = prod(Wdata,1);
       Wprod = Wprod(sort_index(Wprod));
@@ -151,23 +151,9 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   
   switch(GroupingMethod){
     case 1: // TreeERC
+    case 2: // TreeEC
     {
-      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, 0, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
-      break;
-    }
-    case 2: // TreeERCchi2
-    {
-      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, 2, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
-      break;
-    }
-    case 3: // TreeERCchi2WithEstimation
-    {
-      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, 2, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
-      break;
-    }
-    case 4: // TreeEC
-    {
-      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, 1, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
     }
     default:
@@ -186,31 +172,18 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   arma::mat A_EC1;
   arma::mat A_EC2;
   
-  if (splitTestType == 0 || splitTestType == 1)
+  if (splitTestType == 1 )
   {
-  arma::uvec firstGroupInd = ind.submat(0,0,nObsPerGroup(0)-1,0);
-  arma::uvec secondGroupInd = ind.submat(0,1,nObsPerGroup(1)-1,1);
-  
-  if (splitTestType == 0)
-  {
-    //testStat = EqualRankCorrTestStat(Udata.rows(firstGroupInd), Udata.rows(secondGroupInd));
+    testStat = EqualRankCorrChi2TestStat(Udata, ind, nObsPerGroup);
   }
   else
   {
+    arma::uvec firstGroupInd = ind.submat(0,0,nObsPerGroup(0)-1,0);
+    arma::uvec secondGroupInd = ind.submat(0,1,nObsPerGroup(1)-1,1);
     A_EC1 = Udata.rows(firstGroupInd);
     A_EC2 = Udata.rows(secondGroupInd);
     testStat = EqualCopTestStat(A_EC1.begin(),A_EC2.begin(),A_EC1.n_rows,A_EC2.n_rows);
   }
-  }
-  else
-  {
-    if (splitTestType == 2)
-    {
-      testStat = EqualRankCorrChi2TestStat(Udata, ind, nObsPerGroup);
-    }
-  }
-  
-  
   
   return testStat;
   

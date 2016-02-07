@@ -496,7 +496,7 @@ CheckpacotestOptions = function(pacotestOptions)
   {
     CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC"  || pacotestOptions$grouping=="TreeERCchi2" || pacotestOptions$grouping=='TreeERCchi2WithEstimation' )
+    if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {

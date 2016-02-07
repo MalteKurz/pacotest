@@ -6,7 +6,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   
   if (pacotestOptions$testType=='ERC')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    grouping = which(pacotestOptions$grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
     
     if (!(pacotestOptions$withEstUncert))
     {
@@ -15,7 +15,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
-    if (grouping<4  && pacotestOptions$aggPvalsNumbRep > 1)
+    if (grouping<2  && pacotestOptions$aggPvalsNumbRep > 1)
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
@@ -30,7 +30,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     }
     else
     {
-      if (grouping > 4)
+      if (grouping > 2)
       {
         
         out = ERC(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData,0,1,1)
@@ -49,7 +49,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       {
         GroupedScatterplot(out$Xdata,out$Ydata)
       }
-      if (grouping<=4)
+      if (grouping<=2)
       {
         CondSetDim = ncol(W);
         out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
@@ -72,7 +72,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   else if (pacotestOptions$testType=='EC')
   {
     grouping = which(pacotestOptions$grouping==c('TreeERC','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
-    if (grouping > 4)
+    if (grouping > 2)
     {
       out = EC(Udata,W,pacotestOptions$numbBoot,grouping,1,1,1)
     }
@@ -87,7 +87,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     {
       GroupedScatterplot(out$Xdata,out$Ydata)
     }
-    if (grouping<=4)
+    if (grouping<=2)
     {
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
