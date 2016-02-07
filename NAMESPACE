@@ -8,4 +8,4 @@ importFrom(VineCopula, RVineMatrix)
 importFrom(VineCopula, RVineMatrixNormalize)
 
 useDynLib(pacotest)
-export(pacotest, pacotestset, pacotestRvineSeq)
+export(pacotest, pacotestset, pacotestRvineSeq, pacotestRvineSingleCopula)
