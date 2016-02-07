@@ -5,25 +5,27 @@ if(Nargs==0){
     cat('                   testType: [ EqualCop | EC | EqualRankCorr | ERC | VecIndep | VI ]\n\n')
     cat(' Options for testType = [ EqualCop | EC ]:\n')
     cat('                   numbBoot: [ positive scalar ]\n')
-    cat('                   grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n')
+    cat('                   grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII ]\n')
     cat('        groupedScatterplots: [ logical | 0 | 1 ]\n')
     cat('           decisionTreePlot: [ logical | 0 | 1 ]\n')
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('       trainingDataFraction: [ numeric between 0 and 1 ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n\n')
     cat(' Options for testType = [ EqualRankCorr | ERC ]:\n')
-    cat('                   grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n')
+    cat('                   grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII ]\n')
     cat('            aggPvalsNumbRep: [ positive scalar ]\n')
     cat('        groupedScatterplots: [ logical | 0 | 1 ]\n')
     cat('           decisionTreePlot: [ logical | 0 | 1 ]\n')
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('       trainingDataFraction: [ numeric between 0 and 1 ]\n')
-    cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n\n')
+    cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
     cat('              withEstUncert: [ logical | 0 | 1 ]\n')
-    cat('            finalComparison: [ pairwiseMax | all ]\n')
+    cat('            finalComparison: [ pairwiseMax | all ]\n\n')
     cat(' Options for testType = [ VecIndep | VI ]:\n')
     cat('                   numbBoot: [ positive scalar ]\n\n')
 }
+else
+{
 if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
 {
   if (nargs()==1 && is.character(pacotestOptions))
@@ -369,6 +371,7 @@ else
 pacotestOptions = CheckpacotestOptions(pacotestOptions)
 return(pacotestOptions)
 }
+}
 
 CheckPosScalar = function(Value,Fieldname)
 {
@@ -399,7 +402,7 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'TreeEC' || Value == 'TreeERC' || Value == 'TreeERCchi2' || Value == 'TreeERCchi2WithEstimation' ))
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'TreeEC' || Value == 'TreeERC' ))
   {
     stop(paste("The option grouping must be 'TreeEC', 'TreeERC', TreeERCchi2, 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
   }
@@ -430,7 +433,7 @@ CheckpacotestOptions = function(pacotestOptions)
   if (pacotestOptions$testType=="ERC")
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
-      if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" || pacotestOptions$grouping=="TreeERCchi2" || pacotestOptions$grouping=='TreeERCchi2WithEstimation' )
+      if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
       {
         if (exists('aggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$aggPvalsNumbRep >1 && exists('groupedScatterplots', where=pacotestOptions) && pacotestOptions$groupedScatterplots)
         {
@@ -468,7 +471,7 @@ CheckpacotestOptions = function(pacotestOptions)
         warning('The field aggPvalsNumbRep is set to NULL')
       }
     }
-    if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" || pacotestOptions$grouping=="TreeERCchi2" || pacotestOptions$grouping=='TreeERCchi2WithEstimation' )
+    if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {

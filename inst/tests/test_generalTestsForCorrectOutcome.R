@@ -22,11 +22,11 @@ test_that("unit tests for ERC", {
                                expMinSampleSize = NULL, trainingDataFraction = NULL,
                                aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
   
-  pacotestOptions6=pacotestset(testType='ERC',grouping = "ProdThirdsI", withEstUncert = FALSE,
+  pacotestOptions6=pacotestset(testType='ERC',grouping = "ProdThirdsII", withEstUncert = FALSE,
                                expMinSampleSize = NULL, trainingDataFraction = NULL,
                                aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
   
-  pacotestOptions7=pacotestset(testType='ERC',grouping = "SumThirdsII", withEstUncert = FALSE,
+  pacotestOptions7=pacotestset(testType='ERC',grouping = "SumThirdsIII", withEstUncert = FALSE,
                                expMinSampleSize = NULL, trainingDataFraction = NULL,
                                aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
   

@@ -6,7 +6,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   
   if (pacotestOptions$testType=='ERC')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    grouping = which(pacotestOptions$grouping==c('TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
     
     if (!(pacotestOptions$withEstUncert))
     {
