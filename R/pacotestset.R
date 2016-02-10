@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'pairwiseMax'),testType = 'ERC',grouping= 'TreeERC', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'pairwiseMax', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
+pacotestset = function(pacotestOptions=list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all'),testType = 'ERC',grouping= 'TreeERC', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -38,7 +38,7 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
   {
     if (testType=="ERC" || testType == "EqualRankCorr")
     {
-      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'pairwiseMax')
+      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -197,7 +197,7 @@ else
     
     if (testType=="ERC" || testType == "EqualRankCorr")
     {
-      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'pairwiseMax')
+      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
