@@ -5,6 +5,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   
   arma::uvec indXData;
   arma::uvec indYData;
+  arma::uvec indZData;
   
   
   switch(GroupingMethod){
@@ -28,6 +29,12 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       
       indXData = arma::find(Wsum < b1_3);
       indYData = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
+      indZData = arma::find(Wsum >= b2_3);
+      
+      nObsPerVector.set_size(3);
+      indexVectors.set_size(indexVectors.n_rows,3);
+      nObsPerVector(2) = indYData.n_elem;
+      indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
       break;
     }
     case 5: // SumThirdsII
@@ -39,26 +46,22 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
       
       indXData = arma::find(Wsum < b1_3);
+      indYData = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
+      break;
+    }
+    case 6: // SumThirdsIII
+    {
+      arma::mat Wsum = sum(Wdata,1);
+      Wsum = Wsum(sort_index(Wsum));
+      
+      double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
+      double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
+      
+      indXData = arma::find(Wsum < b1_3);
       indYData = arma::find(Wsum >= b2_3);
       break;
     }
-//    case 8: // SumThirdsIII
-//    {
-//      arma::mat Wsum = sum(Wdata,1);
-//      Wsum = Wsum(sort_index(Wsum));
-//      
-//      double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
-//      double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
-//      
-//      indXData = arma::find(Wsum < b1_3);
-//      indYData = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
-//      indCData = arma::find(Wsum >= b2_3);
-//      
-//      outNGroups = 3;
-//      outPtrOnIndexVectors[2] = indCData.memptr(); outNObsPerGroup(2) = indCData.n_elem;
-//      break;
-//    }
-    case 6: // ProdMedian
+    case 7: // ProdMedian
     {
       arma::mat Wprod = prod(Wdata,1);
       
@@ -68,7 +71,25 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b );
       break;
     }
-    case 7: // ProdThirdsI
+    case 8: // ProdThirdsI
+    {
+      arma::mat Wprod = prod(Wdata,1);
+      Wprod = Wprod(sort_index(Wprod));
+      
+      double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
+      double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
+      
+      indXData = arma::find(Wprod < b1_3);
+      indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
+      indZData = arma::find(Wprod >= b2_3);
+      
+      nObsPerVector.set_size(3);
+      indexVectors.set_size(indexVectors.n_rows,3);
+      nObsPerVector(2) = indYData.n_elem;
+      indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
+      break;
+    }
+    case 9: // ProdThirdsII
     {
       arma::mat Wprod = prod(Wdata,1);
       Wprod = Wprod(sort_index(Wprod));
@@ -80,7 +101,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
       break;
     }
-    case 8: // ProdThirdsII
+    case 10: // ProdThirdsIII
     {
       arma::mat Wprod = prod(Wdata,1);
       Wprod = Wprod(sort_index(Wprod));
@@ -92,22 +113,6 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b2_3);
       break;
     }
-//    case 12: // ProdThirdsIII
-//    {
-//      arma::mat Wprod = prod(Wdata,1);
-//      Wprod = Wprod(sort_index(Wprod));
-//      
-//      double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
-//      double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
-//      
-//      indXData = arma::find(Wprod < b1_3);
-//      indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
-//      indCData = arma::find(Wprod >= b2_3);
-//      
-//      outNGroups = 3;
-//      outPtrOnIndexVectors[2] = indCData.memptr(); outNObsPerGroup(2) = indCData.n_elem;
-//      break;
-//    }
     
   }
   
