@@ -10,13 +10,13 @@ test_that("unit tests for ERC", {
   
   
   # Define the test types
-  pacotestOptions1=pacotestset(testType='ERC', grouping = 'TreeERC')
+  pacotestOptions1=pacotestset(testType='ERC', grouping = 'TreeERC', finalComparison = 'pairwiseMax')
   
-  pacotestOptions2=pacotestset(testType='ERC', grouping = 'TreeERC',expMinSampleSize=56)
+  pacotestOptions2=pacotestset(testType='ERC', grouping = 'TreeERC',expMinSampleSize=56, finalComparison = 'pairwiseMax')
   
-  pacotestOptions3=pacotestset(testType='ERC', grouping = 'TreeERC',trainingDataFraction=0.34)
+  pacotestOptions3=pacotestset(testType='ERC', grouping = 'TreeERC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax')
   
-  pacotestOptions4=pacotestset(testType='ERC', grouping = 'TreeERC',aggInfo="meanPairwise")
+  pacotestOptions4=pacotestset(testType='ERC', grouping = 'TreeERC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax')
   
   pacotestOptions5=pacotestset(testType='ERC',grouping = "SumMedian", withEstUncert = FALSE,
                                expMinSampleSize = NULL, trainingDataFraction = NULL,
@@ -39,13 +39,13 @@ test_that("unit tests for ERC", {
   pacotestOptions11=pacotestset(testType='ERC', grouping = 'TreeERC', finalComparison = 'all',aggInfo="meanPairwise")
   
   
-  pacotestOptions12=pacotestset(testType='ERC', grouping = 'TreeEC')
+  pacotestOptions12=pacotestset(testType='ERC', grouping = 'TreeEC', finalComparison = 'pairwiseMax')
   
-  pacotestOptions13=pacotestset(testType='ERC', grouping = 'TreeEC',expMinSampleSize=56)
+  pacotestOptions13=pacotestset(testType='ERC', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax')
   
-  pacotestOptions14=pacotestset(testType='ERC', grouping = 'TreeEC',trainingDataFraction=0.34)
+  pacotestOptions14=pacotestset(testType='ERC', grouping = 'TreeEC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax')
   
-  pacotestOptions15=pacotestset(testType='ERC', grouping = 'TreeEC',aggInfo="meanPairwise")
+  pacotestOptions15=pacotestset(testType='ERC', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax')
   
   pacotestOptions16=pacotestset(testType='ERC', grouping = 'TreeEC', finalComparison = 'all')
   
