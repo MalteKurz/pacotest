@@ -191,12 +191,12 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
   sigma.zeros();
   
   // Variance of the mean estimators
-  sigma(0,0) = theta(0);
+  sigma(0,0) = theta(1);
   sigma(2,2) = theta(3);
   
   // Variance of the variance estimators
-  sigma(1,1) = mean(pow(cPit1-theta(1),4) - pow(theta(1),2));
-  sigma(3,3) = mean(pow(cPit2-theta(3),4) - pow(theta(3),2));
+  sigma(1,1) = mean(pow(cPit1-theta(0),4) - pow(theta(1),2));
+  sigma(3,3) = mean(pow(cPit2-theta(2),4) - pow(theta(3),2));
   
   
   arma::vec cPit1InGroup;
@@ -241,6 +241,10 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
   arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
   arma::mat rhos(1,nGroups);
   rhos = theta.subvec(4,3+nGroups);
+  
+  //arma::mat bla = diagvec(sigma);
+  //bla.print("Variances");
+  //rhos.print("Rhos:");
   
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
@@ -356,6 +360,10 @@ void EqualRankCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat 
   arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
   arma::mat rhos(1,nGroups);
   rhos = theta.subvec(4,3+nGroups);
+  
+  //arma::mat bla = diagvec(sigma);
+  //bla.print("Variances");
+  //rhos.print("Rhos:");
   
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
