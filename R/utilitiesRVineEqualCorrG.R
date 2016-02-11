@@ -201,12 +201,15 @@ getGinvD = function(data, svcmDataFrame)
   # First tree copulas (CPITs are not depending on parameters)
   for (jCopula in 1:(d-1))
   {
+    if (svcmDataFrame$nPar[jCopula])
+    {
     parameters = extractParametersToVectors(svcmDataFrame, jCopula)
     cPit1 = data[,svcmDataFrame$var1[jCopula]]
     cPit2 = data[,svcmDataFrame$var2[jCopula]]
     dInvUpperLeft[svcmDataFrame$parInd[[jCopula]],
                   svcmDataFrame$parInd[[jCopula]]] = 
       1/hessianLike(parameters$parCopula,cPit1,cPit2,svcmDataFrame$family[jCopula])
+    }
     
   }
   
@@ -217,10 +220,13 @@ getGinvD = function(data, svcmDataFrame)
   {
     for (jCopula in d:nCopulas)
     {
-      parameters = extractParametersToVectors(svcmDataFrame, jCopula)
-      xx = hessianLikeWithCpits(parameters$parCpits, data, svcmDataFrame, jCopula)
-      dLower[svcmDataFrame$parInd[[jCopula]]-nParametersFirstTree,
-        parameters$cPitsParInd] = xx #[((nrow(xx)-svcmDataFrame$nPar[jCopula]+1):nrow(xx)),]
+      if (svcmDataFrame$nPar[jCopula])
+      {
+        parameters = extractParametersToVectors(svcmDataFrame, jCopula)
+        xx = hessianLikeWithCpits(parameters$parCpits, data, svcmDataFrame, jCopula)
+        dLower[svcmDataFrame$parInd[[jCopula]]-nParametersFirstTree,
+               parameters$cPitsParInd] = xx #[((nrow(xx)-svcmDataFrame$nPar[jCopula]+1):nrow(xx)),]
+      }
     }
   }
   
@@ -234,7 +240,15 @@ getGinvD = function(data, svcmDataFrame)
     dLowerRight = matrix(0,0,0)
     dInvLowerRight = matrix(0,0,0)
   }
-  dLowerLeft = dLower[,1:nParametersFirstTree]
+  
+  if (nParametersFirstTree)
+  {
+    dLowerLeft = dLower[,1:nParametersFirstTree]
+  }
+  else
+  {
+    dLowerLeft = matrix(0,0,0)
+  }
   
   
   dInv = rbind(cbind(dInvUpperLeft,
@@ -282,19 +296,25 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
   
   J = matrix(0,nrow=4,ncol=nParameters)
   
-  # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
-  J[1,cPit1ParInd] =
-    deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-1)
-  # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
-  J[2,cPit1ParInd] =
-    deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-2*(cPit1-mu1))
+  if (length(cPit1ParInd))
+  {
+    # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
+    J[1,cPit1ParInd] =
+      deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-1)
+    # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
+    J[2,cPit1ParInd] =
+      deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-2*(cPit1-mu1))
+  }
   
+  if (length(cPit2ParInd))
+  {
   # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
   J[3,cPit2ParInd] =
     deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-1)
   # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
   J[4,cPit2ParInd] =
     deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-2*(cPit2-mu2))
+  }
   
   # Obtain the subsamples
   nGroups = length(indList)
@@ -307,7 +327,10 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
     cPit2InGroup = cPit2[indList[[iGroup]]]
     dataInGroup = data[indList[[iGroup]],]
     
-    C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
+    if (length(cPitsPairParInd))
+    {
+      C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
+    }
     
     C[iGroup,nParameters+1] = mean((cPit2InGroup-mu2)/sqrt(var1*var2))
     C[iGroup,nParameters+3] = mean((cPit1InGroup-mu1)/sqrt(var1*var2))
