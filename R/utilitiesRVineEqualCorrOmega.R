@@ -115,6 +115,7 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
 {
   
   d <- ncol(data)
+  nObs = nrow(data)
   nCopulas = d*(d-1)/2-1
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
@@ -137,25 +138,10 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
             mu2-cPit2,
             var2-(cPit2-mu2)^2)
   
-  aa = matrix(0,4,4)
-  
-  aa[1,1] = mean(a[,1]^2)
-  aa[2,2] = mean(a[,2]^2)
-  aa[3,3] = mean(a[,3]^2)
-  aa[4,4] = mean(a[,4]^2)
-  
-  aa[2,1] = mean(a[,2]*a[,1])
-  aa[3,1] = mean(a[,3]*a[,1])
-  aa[4,1] = mean(a[,4]*a[,1])
-  
-  aa[3,2] = mean(a[,3]*a[,2])
-  aa[4,2] = mean(a[,4]*a[,2])
-  
-  aa[4,3] = mean(a[,4]*a[,3])
+  aa = 1/nObs *(t(a) %*% a)
   
   # Obtain the subsamples
   nGroups = length(indList)
-  nObs = nrow(data)
   
   omega = matrix(0,nrow=nParameters+4+nGroups,ncol=nParameters+4+nGroups)
   bb = matrix(0,nGroups,4)
@@ -181,10 +167,7 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
                         mu2-cPit2InGroup,
                         var2-(cPit2InGroup-mu2)^2)
     
-    bb[iGroup,1] = mean(aInGroups[[iGroup]][,1]*bInGroups[[iGroup]])
-    bb[iGroup,2] = mean(aInGroups[[iGroup]][,2]*bInGroups[[iGroup]])
-    bb[iGroup,3] = mean(aInGroups[[iGroup]][,3]*bInGroups[[iGroup]])
-    bb[iGroup,4] = mean(aInGroups[[iGroup]][,4]*bInGroups[[iGroup]])
+    bb[iGroup,] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% bInGroups[[iGroup]])
     
     cc[iGroup,iGroup] = mean(bInGroups[[iGroup]]^2)/lambdaInGroup
     
