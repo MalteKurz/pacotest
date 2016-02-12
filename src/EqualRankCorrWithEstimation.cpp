@@ -173,6 +173,7 @@ double EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVector
 void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, double *testStat, arma::mat &sigma, arma::vec &theta)
 {
   int nGroups = nObsPerVector.n_elem;
+  double nObs = Udata.n_rows;
   
   arma::vec cPit1 = Udata.col(0);
   arma::vec cPit2 = Udata.col(1);
@@ -186,18 +187,23 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
   theta(2) = mean(cPit2); // Mu for the second CPIT
   theta(3) = mean(square(cPit2-theta(2))); // Variance for the second CPIT
   
+  //
+  arma::mat omega(nGroups+4,nGroups+4);
+  omega.zeros();
+  arma::mat gInv(nGroups+4,nGroups+4);
+  gInv.eye();
+  
+  arma::mat a(cPit1.n_rows,4);
+  a.col(0) = theta(0) - cPit1;
+  a.col(1) = theta(1) - square(cPit1-theta(0));
+  a.col(2) = theta(2) - cPit2;
+  a.col(3) = theta(3) - square(cPit2-theta(2));
+  
+  omega.submat(0,0,3,3) = 1/nObs *(a.t() * a);
+  
+  
   // Obtain the variance-covariance matrix without estimation uncertainty
   sigma.set_size(nGroups+4,nGroups+4);
-  sigma.zeros();
-  
-  // Variance of the mean estimators
-  sigma(0,0) = theta(1);
-  sigma(2,2) = theta(3);
-  
-  // Variance of the variance estimators
-  sigma(1,1) = mean(pow(cPit1-theta(0),4) - pow(theta(1),2));
-  sigma(3,3) = mean(pow(cPit2-theta(2),4) - pow(theta(3),2));
-  
   
   arma::vec cPit1InGroup;
   arma::vec cPit2InGroup;
@@ -208,8 +214,10 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
   //double rhoInGroup;
   double lambdaInGroup;
   
-  double nObs = Udata.n_rows;
   double nObsInGroup;
+  
+  arma::mat aInGroup;
+  arma::vec bInGroup;
   
   for (iGroup=0;iGroup<nGroups;iGroup++)
   {
@@ -227,24 +235,40 @@ void EqualRankCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors,
     nObsInGroup = cPit1InGroup.n_elem;
     
     // Place the correlation parameters in the parameter vector
-    theta(4+iGroup) = mean((cPit1InGroup-theta(0)) % (cPit2InGroup-theta(2))/sqrt(theta(1)*theta(3))); // Rho in the group
+    theta(4+iGroup) = mean(cPit1InGroupStandardized % cPit2InGroupStandardized); // Rho in the group
     
     lambdaInGroup = nObsInGroup/nObs;
     
-    sigma(4+iGroup,4+iGroup) = 1/lambdaInGroup*var(theta(4+iGroup)/2*(square(cPit2InGroupStandardized)+square(cPit1InGroupStandardized))-cPit2InGroupStandardized % cPit1InGroupStandardized);
+    aInGroup.set_size(nObsInGroup,4);
+    bInGroup.set_size(nObsInGroup);
+    
+    aInGroup.col(0) = theta(0) - cPit1InGroup;
+    aInGroup.col(1) = theta(1) - square(cPit1InGroup-theta(0));
+    aInGroup.col(2) = theta(2) - cPit2InGroup;
+    aInGroup.col(3) = theta(3) - square(cPit2InGroup-theta(2));
+    
+    bInGroup = theta(4+iGroup) - (cPit1InGroupStandardized % cPit2InGroupStandardized);
+    
+    omega.submat(0,4+iGroup,3,4+iGroup) = 1/nObsInGroup * (aInGroup.t() * bInGroup);
+    omega.submat(4+iGroup,0,4+iGroup,3) = omega.submat(0,4+iGroup,3,4+iGroup).t();
+    omega(4+iGroup,4+iGroup) = mean(square(bInGroup))/lambdaInGroup;
+    
+    
+    gInv(4+iGroup,0) = - mean((cPit2InGroup-theta(2))/sqrt(theta(1)*theta(3)));
+    gInv(4+iGroup,2) = - mean((cPit1InGroup-theta(0))/sqrt(theta(1)*theta(3)));
+    
+    gInv(4+iGroup,1) = - mean(0.5*(cPit1InGroup-theta(0)) % (cPit2InGroup-theta(2))/sqrt(pow(theta(1),3)*theta(3)));
+    gInv(4+iGroup,3) = - mean(0.5*(cPit1InGroup-theta(0)) % (cPit2InGroup-theta(2))/sqrt(theta(1)*pow(theta(3),3)));
     
   }
   
-  int nCol = sigma.n_cols;
+  sigma = gInv * omega * gInv.t();
   
+  int nCol = sigma.n_cols;
   
   arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
   arma::mat rhos(1,nGroups);
   rhos = theta.subvec(4,3+nGroups);
-  
-  //arma::mat bla = diagvec(sigma);
-  //bla.print("Variances");
-  //rhos.print("Rhos:");
   
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
@@ -360,10 +384,6 @@ void EqualRankCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat 
   arma::mat sigmaRhos = sigma.submat(nCol-nGroups,nCol-nGroups,nCol-1,nCol-1);
   arma::mat rhos(1,nGroups);
   rhos = theta.subvec(4,3+nGroups);
-  
-  //arma::mat bla = diagvec(sigma);
-  //bla.print("Variances");
-  //rhos.print("Rhos:");
   
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
