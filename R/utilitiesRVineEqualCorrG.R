@@ -273,15 +273,10 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
   cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
   cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
   
-  
-  # Obtain the estimated parameters
-  mu1 = theta[1]
-  var1 = theta[2]
-  mu2 = theta[3]
-  var2 = theta[4]
-  
-  
-  gInv = matrix(NA,nrow=nParameters+6,ncol=nParameters+6)
+  # Obtain the subsamples
+  nGroups = length(indList)
+  C = matrix(0,nrow=nGroups,ncol=nParameters + 4*nGroups)
+  J = matrix(0,nrow=4*nGroups,ncol=nParameters)
   
   dInv = getGinvD(data, svcmDataFrame)
   
@@ -294,31 +289,7 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
   cPit2ParInd = xx$cPit2ParInd
   cPitsPairParInd = xx$cPitsWithoutCopulaParInd
   
-  J = matrix(0,nrow=4,ncol=nParameters)
   
-  if (length(cPit1ParInd))
-  {
-    # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
-    J[1,cPit1ParInd] =
-      deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-1)
-    # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
-    J[2,cPit1ParInd] =
-      deriv1cPit1Mult(parCpit1, data,svcmDataFrame , copulaInd ,-2*(cPit1-mu1))
-  }
-  
-  if (length(cPit2ParInd))
-  {
-  # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
-  J[3,cPit2ParInd] =
-    deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-1)
-  # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
-  J[4,cPit2ParInd] =
-    deriv1cPit2Mult(parCpit2, data ,svcmDataFrame , copulaInd ,-2*(cPit2-mu2))
-  }
-  
-  # Obtain the subsamples
-  nGroups = length(indList)
-  C = matrix(NA,nrow=nGroups,ncol=nParameters+4)
   
   for (iGroup in 1:nGroups)
   {
@@ -327,24 +298,52 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
     cPit2InGroup = cPit2[indList[[iGroup]]]
     dataInGroup = data[indList[[iGroup]],]
     
+    # Obtain the estimated parameters
+    mu1 = theta[1 + 4*(iGroup-1)]
+    var1 = theta[2 + 4*(iGroup-1)]
+    mu2 = theta[3 + 4*(iGroup-1)]
+    var2 = theta[4 + 4*(iGroup-1)]
+    
+    if (length(cPit1ParInd))
+    {
+      # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
+      J[1 + 4*(iGroup-1),cPit1ParInd] =
+        deriv1cPit1Mult(parCpit1, dataInGroup,svcmDataFrame , copulaInd ,-1)
+      # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
+      J[2 + 4*(iGroup-1),cPit1ParInd] =
+        deriv1cPit1Mult(parCpit1, dataInGroup,svcmDataFrame , copulaInd ,-2*(cPit1InGroup-mu1))
+    }
+    
+    if (length(cPit2ParInd))
+    {
+      # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
+      J[3 + 4*(iGroup-1),cPit2ParInd] =
+        deriv1cPit2Mult(parCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-1)
+      # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
+      J[4 + 4*(iGroup-1),cPit2ParInd] =
+        deriv1cPit2Mult(parCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-2*(cPit2InGroup-mu2))
+    }
+    
+    
     if (length(cPitsPairParInd))
     {
       C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
     }
     
-    C[iGroup,nParameters+1] = mean((cPit2InGroup-mu2)/sqrt(var1*var2))
-    C[iGroup,nParameters+3] = mean((cPit1InGroup-mu1)/sqrt(var1*var2))
+    # Next to lines are zero by construction
+    #C[iGroup,nParameters+ 1 + 4*(iGroup-1)] = mean((cPit2InGroup-mu2)/sqrt(var1*var2))
+    #C[iGroup,nParameters+ 3 + 4*(iGroup-1)] = mean((cPit1InGroup-mu1)/sqrt(var1*var2))
     
-    C[iGroup,nParameters+2] = mean(0.5*(cPit1InGroup-mu1)*(cPit2InGroup-mu2)/sqrt(var1^3*var2))
-    C[iGroup,nParameters+4] = mean(0.5*(cPit1InGroup-mu1)*(cPit2InGroup-mu2)/sqrt(var1*var2^3))
+    C[iGroup,nParameters+ 2 + 4*(iGroup-1)] = mean(0.5*(cPit1InGroup-mu1)*(cPit2InGroup-mu2)/sqrt(var1^3*var2))
+    C[iGroup,nParameters+ 4 + 4*(iGroup-1)] = mean(0.5*(cPit1InGroup-mu1)*(cPit2InGroup-mu2)/sqrt(var1*var2^3))
     
   }
   
   
-  hInv = rbind(cbind(dInv,matrix(0,nrow=nParameters,ncol=4)),
-               cbind(-J%*%dInv,diag(4)))
+  hInv = rbind(cbind(dInv,matrix(0,nrow=nParameters,ncol=4*nGroups)),
+               cbind(-J%*%dInv,diag(4*nGroups)))
   
-  gInv = rbind(cbind(hInv,matrix(0,nrow=nParameters+4,ncol=nGroups)),
+  gInv = rbind(cbind(hInv,matrix(0,nrow=nParameters + 4*nGroups,ncol=nGroups)),
                cbind(-C%*%hInv,diag(nGroups)))
   
   return(gInv)

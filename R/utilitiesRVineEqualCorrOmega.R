@@ -43,6 +43,7 @@ getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, list
 {
   
   d <- ncol(data)
+  nObs = nrow(data)
   nCopulas = d*(d-1)/2-1
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
@@ -51,7 +52,7 @@ getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, list
   
   nGroups = length(indList)
   
-  E = matrix(0,nrow=4+nGroups,ncol=nParameters)
+  E = matrix(0,nrow=4*nGroups+nGroups,ncol=nParameters)
   
   for (jCopula in 1:nCopulas)
   {
@@ -92,14 +93,20 @@ getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, list
         }
       }
       
-      E[1,svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1,cPit2_1,family_1,listOfMultipliers$a[,1])
-      E[2,svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1,cPit2_1,family_1,listOfMultipliers$a[,2])
-      E[3,svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1,cPit2_1,family_1,listOfMultipliers$a[,3])
-      E[4,svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1,cPit2_1,family_1,listOfMultipliers$a[,4])
-      
       for (iGroup in 1:nGroups)
       {
-        E[(4+iGroup),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1_1[indList[[iGroup]]],cPit2_1[indList[[iGroup]]],family_1,listOfMultipliers$bInGroups[[iGroup]])
+        cPit1InGroup = cPit1_1[indList[[iGroup]]]
+        cPit2InGroup = cPit2_1[indList[[iGroup]]]
+        
+        nObsPerGroup = length(cPit1InGroup)
+        lambdaInGroup = nObsPerGroup/nObs
+        
+        E[1 + 4*(iGroup-1),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1InGroup,cPit2InGroup,family_1,listOfMultipliers$aInGroups[[iGroup]][,1])/lambdaInGroup 
+        E[2 + 4*(iGroup-1),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1InGroup,cPit2InGroup,family_1,listOfMultipliers$aInGroups[[iGroup]][,2])/lambdaInGroup
+        E[3 + 4*(iGroup-1),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1InGroup,cPit2InGroup,family_1,listOfMultipliers$aInGroups[[iGroup]][,3])/lambdaInGroup
+        E[4 + 4*(iGroup-1),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1InGroup,cPit2InGroup,family_1,listOfMultipliers$aInGroups[[iGroup]][,4])/lambdaInGroup
+        
+        E[(4*nGroups + iGroup),svcmDataFrame$parInd[[jCopula]]] = deriv1LikeMult(par_1,cPit1InGroup,cPit2InGroup,family_1,listOfMultipliers$bInGroups[[iGroup]])/lambdaInGroup
       }
     }
   }
@@ -126,25 +133,11 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
   cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
   cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
   
-  # Obtain the estimated parameters
-  mu1 = theta[1]
-  var1 = theta[2]
-  
-  mu2 = theta[3]
-  var2 = theta[4]
-  
-  a = cbind(mu1-cPit1,
-            var1-(cPit1-mu1)^2,
-            mu2-cPit2,
-            var2-(cPit2-mu2)^2)
-  
-  aa = 1/nObs *(t(a) %*% a)
-  
   # Obtain the subsamples
   nGroups = length(indList)
   
-  omega = matrix(0,nrow=nParameters+4+nGroups,ncol=nParameters+4+nGroups)
-  bb = matrix(0,nGroups,4)
+  omega = matrix(0,nrow=nParameters+4*nGroups+nGroups,ncol=nParameters+4*nGroups+nGroups)
+  bb = matrix(0,nGroups,4*nGroups)
   cc = matrix(0,nGroups,nGroups)
   
   aInGroups = vector("list",nGroups)
@@ -157,38 +150,45 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
     cPit2InGroup = cPit2[indList[[iGroup]]]
     dataInGroup = data[indList[[iGroup]],]
     
+    # Obtain the estimated parameters
+    mu1 = theta[(1 + 4*(iGroup-1))]
+    var1 = theta[(2 + 4*(iGroup-1))]
+    mu2 = theta[(3 + 4*(iGroup-1))]
+    var2 = theta[(4 + 4*(iGroup-1))]
+    
     nObsPerGroup = length(cPit1InGroup)
     lambdaInGroup = nObsPerGroup/nObs
     
-    bInGroups[[iGroup]] = theta[(4+iGroup)] - (cPit1InGroup - mu1) * (cPit2InGroup - mu2) / sqrt(var1*var2)
+    bInGroups[[iGroup]] = theta[(4*nGroups+iGroup)] - (cPit1InGroup - mu1) * (cPit2InGroup - mu2) / sqrt(var1*var2)
     
     aInGroups[[iGroup]] = cbind(mu1-cPit1InGroup,
                         var1-(cPit1InGroup-mu1)^2,
                         mu2-cPit2InGroup,
                         var2-(cPit2InGroup-mu2)^2)
     
-    bb[iGroup,] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% bInGroups[[iGroup]])
+    omega[(nParameters+1 + 4*(iGroup-1)):(nParameters+4 + 4*(iGroup-1)),
+          (nParameters+1 + 4*(iGroup-1)):(nParameters+4 + 4*(iGroup-1))] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% aInGroups[[iGroup]])/lambdaInGroup
+    
+    bb[iGroup,(1 + 4*(iGroup-1)):(4 + 4*(iGroup-1))] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% bInGroups[[iGroup]])/lambdaInGroup
     
     cc[iGroup,iGroup] = mean(bInGroups[[iGroup]]^2)/lambdaInGroup
     
   }
   
   
-  omega[(nParameters+1):(nParameters+4),(nParameters+1):(nParameters+4)] = aa
+  omega[(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups),(nParameters+1):(nParameters+4*nGroups)] = bb
   
-  omega[(nParameters+5):(nParameters+4+nGroups),(nParameters+1):(nParameters+4)] = bb
-  
-  omega[(nParameters+5):(nParameters+4+nGroups),(nParameters+5):(nParameters+4+nGroups)] = cc
+  omega[(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups),(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups)] = cc
   
 
-  listOfMultipliers = list(a=a,aInGroups=aInGroups,bInGroups=bInGroups)
+  listOfMultipliers = list(aInGroups=aInGroups,bInGroups=bInGroups)
 
   if (nParameters)
   {
     res = getOmegaWithLikes(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
     
     omega[1:nParameters,1:nParameters] = res$D
-    omega[(nParameters+1):(nParameters+4+nGroups),1:nParameters] = res$E
+    omega[(nParameters+1):(nParameters+4*nGroups+nGroups),1:nParameters] = res$E
   }
   
   
