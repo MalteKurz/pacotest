@@ -330,7 +330,7 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
       C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
     }
     
-    # Next to lines are zero by construction
+    # Next two lines are zero by construction
     #C[iGroup,nParameters+ 1 + 4*(iGroup-1)] = mean((cPit2InGroup-mu2)/sqrt(var1*var2))
     #C[iGroup,nParameters+ 3 + 4*(iGroup-1)] = mean((cPit1InGroup-mu1)/sqrt(var1*var2))
     
@@ -339,11 +339,92 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
     
   }
   
+  print(C)
   
   hInv = rbind(cbind(dInv,matrix(0,nrow=nParameters,ncol=4*nGroups)),
                cbind(-J%*%dInv,diag(4*nGroups)))
   
   gInv = rbind(cbind(hInv,matrix(0,nrow=nParameters + 4*nGroups,ncol=nGroups)),
+               cbind(-C%*%hInv,diag(nGroups)))
+  
+  return(gInv)
+}
+
+
+
+gInvRvineCov = function(data, svcmDataFrame, indList, cPitData, theta)
+{
+  d <- ncol(data)
+  
+  nCopulas = d*(d-1)/2-1
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  
+  # Obtain the cPits
+  copulaInd = nrow(svcmDataFrame)
+  cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
+  cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  # Obtain the subsamples
+  nGroups = length(indList)
+  C = matrix(0,nrow=nGroups,ncol=nParameters + 2*nGroups)
+  J = matrix(0,nrow=2*nGroups,ncol=nParameters)
+  
+  dInv = getGinvD(data, svcmDataFrame)
+  
+  xx = extractParametersToVectors(svcmDataFrame, copulaInd)
+  parCpit1 = xx$parCpit1
+  parCpit2 = xx$parCpit2
+  parCpitsPair = xx$parCpitsWithoutCopula
+  
+  cPit1ParInd = xx$cPit1ParInd
+  cPit2ParInd = xx$cPit2ParInd
+  cPitsPairParInd = xx$cPitsWithoutCopulaParInd
+  
+  
+  
+  for (iGroup in 1:nGroups)
+  {
+    # Obtain the subsample
+    cPit1InGroup = cPit1[indList[[iGroup]]]
+    cPit2InGroup = cPit2[indList[[iGroup]]]
+    dataInGroup = data[indList[[iGroup]],]
+    
+    # Obtain the estimated parameters
+    mu1 = theta[1 + 2*(iGroup-1)]
+    mu2 = theta[2 + 2*(iGroup-1)]
+    
+    if (length(cPit1ParInd))
+    {
+      # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
+      J[1 + 2*(iGroup-1),cPit1ParInd] =
+        deriv1cPit1Mult(parCpit1, dataInGroup,svcmDataFrame , copulaInd ,-1)
+    }
+    
+    if (length(cPit2ParInd))
+    {
+      # First moment of the second CPIT (row) meets likelihood (copula parameter) columns
+      J[2 + 2*(iGroup-1),cPit2ParInd] =
+        deriv1cPit2Mult(parCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-1)
+    }
+    
+    
+    if (length(cPitsPairParInd))
+    {
+      C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1)
+    }
+    
+    # Next two lines are zero by construction
+    #C[iGroup,nParameters+ 1 + 4*(iGroup-1)] = mean((cPit2InGroup-mu2))
+    #C[iGroup,nParameters+ 3 + 4*(iGroup-1)] = mean((cPit1InGroup-mu1))
+    
+  }
+  
+  print(C)
+  
+  hInv = rbind(cbind(dInv,matrix(0,nrow=nParameters,ncol=2*nGroups)),
+               cbind(-J%*%dInv,diag(2*nGroups)))
+  
+  gInv = rbind(cbind(hInv,matrix(0,nrow=nParameters + 2*nGroups,ncol=nGroups)),
                cbind(-C%*%hInv,diag(nGroups)))
   
   return(gInv)

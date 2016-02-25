@@ -283,9 +283,9 @@ else
     }
   }
   
-  if (pacotestOptions$testType=="ERC" || pacotestOptions$testType == "EqualRankCorr")
+  if (pacotestOptions$testType=="ERC" || pacotestOptions$testType == "EqualRankCorr" || pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECOVdiff")
   {
-    pacotestOptions$testType = "ERC"
+    #pacotestOptions$testType = "ERC"
     if (!(missing(grouping)))
     {
       pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -430,7 +430,7 @@ CheckFinalComparison = function(Value,Fieldname)
 CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (pacotestOptions$testType=="ERC")
+  if (pacotestOptions$testType=="ERC" || pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECOVdiff" )
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
       if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
