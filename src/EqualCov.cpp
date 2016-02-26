@@ -1,39 +1,6 @@
 #include <pacotest_header.h>
 
-void getMatrixForPairwiseComparison(int nGroups, arma::mat &A)
-{
-  
-  switch ( nGroups )
-  {
-    
-    case 2 : 
-    A.set_size(1,2);
-    
-    A(0,0) = 1; A(0,1) = -1;
-    break;
-    
-    case 3 : 
-    A.set_size(2,3);
-    A.zeros();
-    
-    A(0,0) = 1; A(0,1) = -1;
-    A(1,0) = 1; A(1,2) = -1;
-    break;
-    
-    default : 
-    A.set_size(3,4);
-    A.zeros();
-    
-    A(0,0) = 1; A(0,1) = -1;
-    A(1,1) = 1; A(1,2) = -1;
-    A(2,2) = 1; A(2,3) = -1;
-    
-  }
-  return;
-}
-
-
-void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert,int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod,int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   
   unsigned int n=Udata.n_rows;
@@ -53,16 +20,16 @@ void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMe
 }
 
 
-void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
     
-    EqualCovTest(Udata, Wdata, GroupingMethod, withEstUncert, finalComparisonMethod, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+    EqualCovTest(Udata, Wdata, GroupingMethod, finalComparisonMethod, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
 }
 
 
-void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
@@ -111,7 +78,7 @@ void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMe
 }
 
 
-void EqualCovChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
+void EqualCovChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat)
 {
   double nObs = ind.n_rows;
   int nGroups = ind.n_cols;
@@ -142,24 +109,22 @@ void EqualCovChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testS
   }
   // Maybe (depending on whether the function is callable from outside) add exception for nGroups>4
   
-  EqualCovChi2TestStat(Udata, indexVectors, nObsPerVector, testStat, sigma, theta);
+  EqualCovChi2TestStat(Udata, indexVectors, nObsPerVector, testStat);
   
 }
 
 
 double EqualCovChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector)
 {
-  arma::mat sigma;
-  arma::vec theta;
   double testStat;
   
-  EqualCovChi2TestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta);
+  EqualCovChi2TestStat(Udata, indexVectors, nObsPerVector, &testStat);
   
   return testStat;
 }
 
 
-void EqualCovChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, double *testStat, arma::mat &sigma, arma::vec &theta)
+void EqualCovChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, double *testStat)
 {
   int nGroups = nObsPerVector.n_elem;
   double nObs = Udata.n_rows;
@@ -168,11 +133,12 @@ void EqualCovChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arma
   arma::vec cPit2 = Udata.col(1);
   
   int iGroup;
-  theta.set_size( nGroups+2*nGroups );
+  arma::vec mus(2*nGroups);
+  arma::vec covs(nGroups);
   
   // variance-covariance matrix
-  sigma.set_size(nGroups,nGroups);
-  sigma.zeros();
+  arma::vec sigmas(nGroups);
+  sigmas.zeros();
   
   arma::vec cPit1InGroup;
   arma::vec cPit2InGroup;
@@ -197,39 +163,44 @@ void EqualCovChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arma
     cPit1InGroup = cPit1.elem(indInGroup);
     cPit2InGroup = cPit2.elem(indInGroup);
     
-    // Mean and variance in the subsample
-    theta(0 + 2*iGroup) = mean(cPit1InGroup); // Mu for the first CPIT
+    // Mean in the subsample
+    mus(0 + 2*iGroup) = mean(cPit1InGroup); // Mu for the first CPIT
     
-    theta(1 + 2*iGroup) = mean(cPit2InGroup); // Mu for the second CPIT
+    mus(1 + 2*iGroup) = mean(cPit2InGroup); // Mu for the second CPIT
   
     // Obtain standardized CPITs
-    cPit1InGroupDemeaned = (cPit1InGroup-theta(0 + 2*iGroup));
-    cPit2InGroupDemeaned = (cPit2InGroup-theta(1 + 2*iGroup));
+    cPit1InGroupDemeaned = (cPit1InGroup-mus(0 + 2*iGroup));
+    cPit2InGroupDemeaned = (cPit2InGroup-mus(1 + 2*iGroup));
     
     nObsInGroup = cPit1InGroup.n_elem;
     
-    // Place the correlation parameters in the parameter vector
-    theta(2*nGroups+iGroup) = mean(cPit1InGroupDemeaned  % cPit2InGroupDemeaned); // Rho in the group
+    // covariance in the group
+    covs(iGroup) = mean(cPit1InGroupDemeaned  % cPit2InGroupDemeaned);
     
     lambdaInGroup = nObsInGroup/nObs;
     bInGroup.set_size(nObsInGroup);
-    bInGroup = theta(2*nGroups+iGroup) - (cPit1InGroupDemeaned % cPit2InGroupDemeaned);
+    bInGroup = covs(iGroup) - (cPit1InGroupDemeaned % cPit2InGroupDemeaned);
     
-    sigma(iGroup,iGroup) = mean(square(bInGroup))/lambdaInGroup;
+    sigmas(iGroup) = mean(square(bInGroup))/lambdaInGroup;
   }
   
-  arma::mat rhos(1,nGroups);
-  rhos = theta.subvec(2*nGroups, 3*nGroups-1);
   
-  rhos.print("covs");
-  sigma.print("sigmaCovs");
+  arma::mat sigmaOfDifferences(nGroups-1,nGroups-1);
+  arma::mat covDifferences(1,nGroups-1);
   
-  arma::mat A;
-  getMatrixForPairwiseComparison(nGroups, A);
-  arma::mat bla =(A * sigma * trans(A));
-  bla.print("variance of difference NEW");
+  sigmaOfDifferences.zeros();
+  for (iGroup=0;iGroup<(nGroups-1);iGroup++)
+  {
+    covDifferences(0,iGroup) = covs(iGroup) - covs(iGroup+1);
+    sigmaOfDifferences(iGroup,iGroup) = sigmas(iGroup) + sigmas(iGroup+1);
+  }
+  for (iGroup=0;iGroup<(nGroups-2);iGroup++)
+  {
+    sigmaOfDifferences(iGroup,iGroup+1) = -sigmas(iGroup+1);
+    sigmaOfDifferences(iGroup+1,iGroup) = -sigmas(iGroup+1);
+  }
   
-  *testStat = arma::as_scalar(nObs * (trans(A*rhos) * inv(A * sigma * trans(A)) * A*rhos));
+  *testStat = arma::as_scalar(nObs * (covDifferences* inv(sigmaOfDifferences) * trans(covDifferences)));
   
   return;
   

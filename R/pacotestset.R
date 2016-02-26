@@ -1,25 +1,24 @@
-pacotestset = function(pacotestOptions=list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all'),testType = 'ERC',grouping= 'TreeERC', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
+pacotestset = function(pacotestOptions=list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", finalComparison = 'all'),testType = 'ECOV',grouping= 'TreeECOV', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', finalComparison = 'all', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
-    cat('                   testType: [ EqualCop | EC | EqualRankCorr | ERC | VecIndep | VI ]\n\n')
+    cat('                   testType: [ EqualCop | EC | EqualCovariance | ECOV | VecIndep | VI ]\n\n')
     cat(' Options for testType = [ EqualCop | EC ]:\n')
     cat('                   numbBoot: [ positive scalar ]\n')
-    cat('                   grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII ]\n')
+    cat('                   grouping: [ TreeECOV | TreeEC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII ]\n')
     cat('        groupedScatterplots: [ logical | 0 | 1 ]\n')
     cat('           decisionTreePlot: [ logical | 0 | 1 ]\n')
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('       trainingDataFraction: [ numeric between 0 and 1 ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n\n')
-    cat(' Options for testType = [ EqualRankCorr | ERC ]:\n')
-    cat('                   grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII ]\n')
+    cat(' Options for testType = [ EqualCovariance | ECOV ]:\n')
+    cat('                   grouping: [ TreeECOV | TreeEC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII ]\n')
     cat('            aggPvalsNumbRep: [ positive scalar ]\n')
     cat('        groupedScatterplots: [ logical | 0 | 1 ]\n')
     cat('           decisionTreePlot: [ logical | 0 | 1 ]\n')
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('       trainingDataFraction: [ numeric between 0 and 1 ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
-    cat('              withEstUncert: [ logical | 0 | 1 ]\n')
     cat('            finalComparison: [ pairwiseMax | all ]\n\n')
     cat(' Options for testType = [ VecIndep | VI ]:\n')
     cat('                   numbBoot: [ positive scalar ]\n\n')
@@ -38,9 +37,9 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
   }
   else
   {
-    if (testType=="ERC" || testType == "EqualRankCorr")
+    if (testType=="ECOV" || testType == "EqualCovariance")
     {
-      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
+      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", finalComparison = 'all')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -95,17 +94,6 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
         if (is.null(aggInfo))
         {
           pacotestOptions$aggInfo = NULL
-        }
-      }
-      if (!(missing(withEstUncert)) && !is.null(withEstUncert))
-      {
-        pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
-      }
-      else
-      {
-        if (is.null(withEstUncert))
-        {
-          pacotestOptions$withEstUncert = NULL
         }
       }
       if (!(missing(finalComparison)) && !is.null(finalComparison))
@@ -197,9 +185,9 @@ else
   {
     warning('After the change of the testType all options are set to their default values except the explicitly stated ones.')
     
-    if (testType=="ERC" || testType == "EqualRankCorr")
+    if (testType=="ECOV" || testType == "EqualCovariance")
     {
-      pacotestOptions = list(testType = 'ERC', grouping = 'TreeERC', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
+      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", finalComparison = 'all')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -227,10 +215,6 @@ else
       if (!(missing(aggInfo)))
       {
         pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
-      }
-      if (!(missing(withEstUncert)))
-      {
-        pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
       }
       if (!(missing(finalComparison)))
       {
@@ -283,9 +267,9 @@ else
     }
   }
   
-  if (pacotestOptions$testType=="ERC" || pacotestOptions$testType == "EqualRankCorr" || pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECOVdiff")
+  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType == "EqualCovariance")
   {
-    #pacotestOptions$testType = "ERC"
+    #pacotestOptions$testType = "ECOV"
     if (!(missing(grouping)))
     {
       pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -313,10 +297,6 @@ else
     if (!(missing(aggInfo)))
     {
       pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
-    }
-    if (!(missing(withEstUncert)))
-    {
-      pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
     }
     if (!(missing(finalComparison)))
     {
@@ -402,9 +382,9 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'TreeEC' || Value == 'TreeERC' ))
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'TreeEC' || Value == 'TreeECOV' ))
   {
-    stop(paste("The option grouping must be 'TreeEC', 'TreeERC', TreeERCchi2, 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
+    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
   }
   return(Value)
 }
@@ -430,10 +410,10 @@ CheckFinalComparison = function(Value,Fieldname)
 CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (pacotestOptions$testType=="ERC" || pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECOVdiff" )
+  if (pacotestOptions$testType=="ECOV")
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
-      if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
+      if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeEC" )
       {
         if (exists('aggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$aggPvalsNumbRep >1 && exists('groupedScatterplots', where=pacotestOptions) && pacotestOptions$groupedScatterplots)
         {
@@ -471,7 +451,7 @@ CheckpacotestOptions = function(pacotestOptions)
         warning('The field aggPvalsNumbRep is set to NULL')
       }
     }
-    if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
+    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeEC" )
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
@@ -485,10 +465,6 @@ CheckpacotestOptions = function(pacotestOptions)
       {
         CheckAggInfo(pacotestOptions$aggInfo,"aggInfo")
       }
-      if (exists('withEstUncert', where=pacotestOptions))
-      {
-        CheckLogical(pacotestOptions$withEstUncert,"withEstUncert")
-      }
       if (exists('finalComparison', where=pacotestOptions))
       {
         CheckFinalComparison(pacotestOptions$finalComparison,"finalComparison")
@@ -499,7 +475,7 @@ CheckpacotestOptions = function(pacotestOptions)
   {
     CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (pacotestOptions$grouping=="TreeERC" || pacotestOptions$grouping=="TreeEC" )
+    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeEC" )
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {

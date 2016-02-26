@@ -49,7 +49,7 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       Udata = cbind(cPit1,cPit2)
       W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
       
-      out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
+      out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions)
       
       if (illustration == 1) {
         message(oldRVM$Matrix[i, i],",",oldRVM$Matrix[k, i],
@@ -130,7 +130,7 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   Udata = cbind(cPit1,cPit2)
   W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
   
-  out = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
+  out = pacotest(Udata,W,pacotestOptions)
   
   return(out)
   
