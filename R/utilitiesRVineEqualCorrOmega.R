@@ -39,7 +39,7 @@ deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 }
 
 
-getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
+getOmegaWithLikesD = function(data, svcmDataFrame, cPitData)
 {
   
   d <- ncol(data)
@@ -49,10 +49,6 @@ getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, list
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
   
   D = matrix(0,nrow=nParameters,ncol=nParameters)
-  
-  nGroups = length(indList)
-  
-  E = matrix(0,nrow=4*nGroups+nGroups,ncol=nParameters)
   
   for (jCopula in 1:nCopulas)
   {
@@ -92,6 +88,45 @@ getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, list
                                                                                               par_2,cPit1_2,cPit2_2,family_2)
         }
       }
+    }
+  }
+  
+  
+  return(D)
+  
+  
+}
+
+
+
+getOmegaWithLikesE = function(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
+{
+  
+  d <- ncol(data)
+  nObs = nrow(data)
+  nCopulas = d*(d-1)/2-1
+  
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  nGroups = length(indList)
+  
+  E = matrix(0,nrow=4*nGroups+nGroups,ncol=nParameters)
+  
+  for (jCopula in 1:nCopulas)
+  {
+    if (svcmDataFrame$nPar[jCopula])
+    {
+      family_1 = svcmDataFrame$family[jCopula]
+      par_1 = svcmDataFrame$par[[jCopula]]
+      if (jCopula<d)
+      {
+        cPit1_1 = data[,svcmDataFrame$var1[jCopula]]
+        cPit2_1 = data[,svcmDataFrame$var2[jCopula]]
+      }
+      else
+      {
+        cPit1_1 = getCpit1(cPitData, svcmDataFrame, jCopula)
+        cPit2_1 = getCpit2(cPitData, svcmDataFrame, jCopula)
+      }
       
       for (iGroup in 1:nGroups)
       {
@@ -112,10 +147,11 @@ getOmegaWithLikes = function(data, svcmDataFrame, indList, cPitData, theta, list
   }
   
   
-  return(list(D=D,E=E))
+  return(E)
   
   
 }
+
 
 
 omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
@@ -185,10 +221,8 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
 
   if (nParameters)
   {
-    res = getOmegaWithLikes(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
-    
-    omega[1:nParameters,1:nParameters] = res$D
-    omega[(nParameters+1):(nParameters+4*nGroups+nGroups),1:nParameters] = res$E
+    omega[1:nParameters,1:nParameters] = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    omega[(nParameters+1):(nParameters+4*nGroups+nGroups),1:nParameters] = getOmegaWithLikesE(data, svcmDataFrame, indList, cPitData)
   }
   
   
