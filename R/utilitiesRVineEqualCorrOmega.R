@@ -234,7 +234,7 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
 }
 
 
-getOmegaWithLikesCov = function(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
+getOmegaWithLikesCovE = function(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
 {
   
   d <- ncol(data)
@@ -242,9 +242,6 @@ getOmegaWithLikesCov = function(data, svcmDataFrame, indList, cPitData, theta, l
   nCopulas = d*(d-1)/2-1
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
-  
-  D = matrix(0,nrow=nParameters,ncol=nParameters)
-  
   nGroups = length(indList)
   
   E = matrix(0,nrow=2*nGroups+nGroups,ncol=nParameters)
@@ -264,28 +261,6 @@ getOmegaWithLikesCov = function(data, svcmDataFrame, indList, cPitData, theta, l
       {
         cPit1_1 = getCpit1(cPitData, svcmDataFrame, jCopula)
         cPit2_1 = getCpit2(cPitData, svcmDataFrame, jCopula)
-      }
-      
-      for (lCopula in 1:jCopula)
-      {
-        if (svcmDataFrame$nPar[lCopula])
-        {
-          family_2 = svcmDataFrame$family[lCopula]
-          par_2 = svcmDataFrame$par[[lCopula]]
-          if (lCopula<d)
-          {
-            cPit1_2 = data[,svcmDataFrame$var1[lCopula]]
-            cPit2_2 = data[,svcmDataFrame$var2[lCopula]]
-          }
-          else
-          {
-            cPit1_2 = getCpit1(cPitData, svcmDataFrame, lCopula)
-            cPit2_2 = getCpit2(cPitData, svcmDataFrame, lCopula)
-          }
-          
-          D[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] = deriv2LikeMult(par_1,cPit1_1,cPit2_1,family_1,
-                                                                                              par_2,cPit1_2,cPit2_2,family_2)
-        }
       }
       
       for (iGroup in 1:nGroups)
@@ -374,10 +349,8 @@ omegaRvineCov = function(data, svcmDataFrame, indList, cPitData, theta)
   
   if (nParameters)
   {
-    res = getOmegaWithLikesCov(data, svcmDataFrame, indList, cPitData, theta, listOfMultipliers)
-    
-    omega[1:nParameters,1:nParameters] = res$D
-    omega[(nParameters+1):(nParameters+2*nGroups+nGroups),1:nParameters] = res$E
+    omega[1:nParameters,1:nParameters] = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    omega[(nParameters+1):(nParameters+2*nGroups+nGroups),1:nParameters] = getOmegaWithLikesCovE(data, svcmDataFrame, indList, cPitData)
   }
   
   
