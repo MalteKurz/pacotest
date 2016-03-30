@@ -1,4 +1,4 @@
-pacotest = function(Udata,W,pacotestOptions){
+pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
   pacotestOptions = pacotestset(pacotestOptions)
   Udata = as.matrix(Udata)
@@ -15,7 +15,7 @@ pacotest = function(Udata,W,pacotestOptions){
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
       
-      out = ECOV(Udata,W,grouping, finalComparison,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+      out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       
       
       CondSetDim = ncol(W);
@@ -26,7 +26,7 @@ pacotest = function(Udata,W,pacotestOptions){
       if (grouping > 2)
       {
         
-        out = ECOV(Udata,W,grouping, 1, 0, 1, 1)
+        out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
         
       }
       else
@@ -35,7 +35,7 @@ pacotest = function(Udata,W,pacotestOptions){
         
         W = addAggInfo(W,pacotestOptions$aggInfo);
         
-        out = ECOV(Udata,W,grouping, finalComparison,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+        out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
         
       }
       if (pacotestOptions$groupedScatterplots)

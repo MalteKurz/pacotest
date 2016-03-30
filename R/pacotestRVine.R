@@ -25,6 +25,7 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
   
   numbRejections = 0
   out = rep(list(), (d-2)*(d-1)/2)
+  pValues = vector(length = (d-2)*(d-1)/2)
   
   for (k in (d-1):2) {
     numbTests = sum((d-2):(k-1))
@@ -34,8 +35,8 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       
       subRVM = extractSubTree(RVM, tree = (d-k+1), copulaNumber = (k-i), data)
       
-      # The ind variable needs to be obtained from the grouping methods
-      svcmDataFrame = rVineDataFrameRep(subRVM$RVM)$variables
+      # Obtain the svcm data frame representation
+      svcmDataFrame = rVineDataFrameRep(subRVM$RVM)
       
       # Compute CPITs for the whole vine
       cPitData = getCpitsFromVine(subRVM$data, svcmDataFrame)
@@ -49,7 +50,9 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       Udata = cbind(cPit1,cPit2)
       W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
       
-      out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions)
+      out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
+      
+      pValues[(k-1)*(k-2)/2+i] = out[[(k-1)*(k-2)/2+i]]$pValue
       
       if (illustration == 1) {
         message(oldRVM$Matrix[i, i],",",oldRVM$Matrix[k, i],
@@ -75,10 +78,10 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
     if (numbRejections>0)
     {
       message("Stopped the sequential test due to a rejection")
-      return(out)
+      #return(out)
     }
   }
-  return(out)
+  return(list(out=out,pValues = pValues))
 }
 
 
@@ -115,8 +118,8 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   
   subRVM = extractSubTree(RVM, tree = tree, copulaNumber = copulaNumber, data)
   
-  # The ind variable needs to be obtained from the grouping methods
-  svcmDataFrame = rVineDataFrameRep(subRVM$RVM)$variables
+  # Obtain the svcm data frame representation
+  svcmDataFrame = rVineDataFrameRep(subRVM$RVM)
   
   # Compute CPITs for the whole vine
   cPitData = getCpitsFromVine(subRVM$data, svcmDataFrame)
@@ -130,7 +133,7 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   Udata = cbind(cPit1,cPit2)
   W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
   
-  out = pacotest(Udata,W,pacotestOptions)
+  out = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
   
   return(out)
   

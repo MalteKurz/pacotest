@@ -186,11 +186,18 @@ deriv1cPit1_mult_cPit2 = function(params, data, svcmDataFrame, copulaInd, mucPit
 }
 
 
-getGinvD = function(data, svcmDataFrame)
+getGinvD = function(data, svcmDataFrame, includeLastCopula = FALSE)
 {
   
   d <- ncol(data)
-  nCopulas = d*(d-1)/2-1
+  if (includeLastCopula)
+  {
+    nCopulas = d*(d-1)/2
+  }
+  else
+  {
+    nCopulas = d*(d-1)/2-1
+  }
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
   nParametersFirstTree = sum(svcmDataFrame$nPar[1:(d-1)])

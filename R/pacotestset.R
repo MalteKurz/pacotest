@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", finalComparison = 'all'),testType = 'ECOV',grouping= 'TreeECOV', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', finalComparison = 'all', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
+pacotestset = function(pacotestOptions=list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all'),testType = 'ECOV',grouping= 'TreeECOV', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -19,6 +19,7 @@ if(Nargs==0){
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('       trainingDataFraction: [ numeric between 0 and 1 ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
+    cat('              withEstUncert: [ logical | 0 | 1 ]\n')
     cat('            finalComparison: [ pairwiseMax | all ]\n\n')
     cat(' Options for testType = [ VecIndep | VI ]:\n')
     cat('                   numbBoot: [ positive scalar ]\n\n')
@@ -39,7 +40,7 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
   {
     if (testType=="ECOV" || testType == "EqualCovariance")
     {
-      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", finalComparison = 'all')
+      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -94,6 +95,17 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
         if (is.null(aggInfo))
         {
           pacotestOptions$aggInfo = NULL
+        }
+      }
+      if (!(missing(withEstUncert)) && !is.null(withEstUncert))
+      {
+        pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
+      }
+      else
+      {
+        if (is.null(withEstUncert))
+        {
+          pacotestOptions$withEstUncert = NULL
         }
       }
       if (!(missing(finalComparison)) && !is.null(finalComparison))
@@ -187,7 +199,7 @@ else
     
     if (testType=="ECOV" || testType == "EqualCovariance")
     {
-      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", finalComparison = 'all')
+      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -215,6 +227,10 @@ else
       if (!(missing(aggInfo)))
       {
         pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
+      }
+      if (!(missing(withEstUncert)))
+      {
+        pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
       }
       if (!(missing(finalComparison)))
       {
@@ -464,6 +480,10 @@ CheckpacotestOptions = function(pacotestOptions)
       if (exists('aggInfo', where=pacotestOptions))
       {
         CheckAggInfo(pacotestOptions$aggInfo,"aggInfo")
+      }
+      if (exists('withEstUncert', where=pacotestOptions))
+      {
+        CheckLogical(pacotestOptions$withEstUncert,"withEstUncert")
       }
       if (exists('finalComparison', where=pacotestOptions))
       {

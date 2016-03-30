@@ -219,7 +219,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   // Split the dataset randomly into two pices
   arma::uvec R(n);
   R = arma::linspace<arma::uvec>(0,n-1,n);
-  R.print("That's R:");
+  //R.print("That's R:");
   RandPerm(R); // RandPerm is defined in a way that it doesn't matter how it is initialized
   
   

@@ -39,12 +39,19 @@ deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 }
 
 
-getOmegaWithLikesD = function(data, svcmDataFrame, cPitData)
+getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula = FALSE)
 {
   
   d <- ncol(data)
   nObs = nrow(data)
-  nCopulas = d*(d-1)/2-1
+  if (includeLastCopula)
+  {
+    nCopulas = d*(d-1)/2
+  }
+  else
+  {
+    nCopulas = d*(d-1)/2-1
+  }
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
   
@@ -69,7 +76,8 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData)
       
       for (lCopula in 1:jCopula)
       {
-        if (svcmDataFrame$nPar[lCopula])
+        if (svcmDataFrame$nPar[lCopula] &&
+              ((lCopula == jCopula) || !any(svcmDataFrame$copulaInd[lCopula]==c(svcmDataFrame$cPit1CopulaInd[[jCopula]],svcmDataFrame$cPit2CopulaInd[[jCopula]]))))
         {
           family_2 = svcmDataFrame$family[lCopula]
           par_2 = svcmDataFrame$par[[lCopula]]

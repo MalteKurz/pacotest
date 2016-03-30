@@ -63,27 +63,18 @@ rVineDataFrameRep = function(rvm)
   parInd = rep(list(numeric(0)), nCopulas)
   for (jCopula in 1:nCopulas)
   {
-    if (family[jCopula] == 0)
+    nPar[jCopula] = getNumbOfParameters(family[jCopula])
+    
+    if (nPar[jCopula] == 1)
     {
-      nPar[jCopula] = 0
+      par[[jCopula]] = par1[jCopula]
+      parInd[[jCopula]] = sum(nPar[1:jCopula])+1
     }
-    else if (any(family[jCopula] == c(2,
-                                      7,17,27,37,
-                                      8,18,28,38,
-                                      9,19,29,39,
-                                      10,20,30,40,
-                                      104,114,124,134,
-                                      204,214,224,234)))
+    else if (nPar[jCopula] == 2)
     {
       par[[jCopula]] = c(par1[jCopula],par2[jCopula])
       parInd[[jCopula]] = seq(from=sum(nPar[1:jCopula])+1, by=1, length.out=2)
       nPar[jCopula] = 2
-    }
-    else
-    {
-      par[[jCopula]] = par1[jCopula]
-      parInd[[jCopula]] = sum(nPar[1:jCopula])+1
-      nPar[jCopula] = 1
     }
   }
   
@@ -143,16 +134,57 @@ rVineDataFrameRep = function(rvm)
   
   rownames = paste(paste("C",paste(var1, var2, sep=","),sep="_"), unlist(lapply(condset, paste, collapse=",")), sep = '; ')
   
-  variables = data.frame(copulaInd, tree, var1, var2, I(condset), family,
+  svcmDataFrame = data.frame(copulaInd, tree, var1, var2, I(condset), family,
                          I(par),nPar, I(parInd),
                          hfun, vfun,
                          cPit1Ind, cPit1hfun, I(cPit1CopulaInd), I(cPit1ParInd),
                          cPit2Ind, cPit2hfun, I(cPit2CopulaInd), I(cPit2ParInd),
                          row.names = rownames)
-   
-  svcm = list(structure = structureMatrix,variables = variables)
   
-  return(svcm)
+  return(svcmDataFrame)
   
 }
 
+
+
+RVineFromRVineDataFrameRep = function(svcm)
+{
+  
+  d = max(svcm$tree)+1
+  
+  rvmMatrix = matrix(0,d,d)
+  rvmFamilies = matrix(0,d,d)
+  rvmPars = matrix(0,d,d)
+  rvmPars2 = matrix(0,d,d)
+  
+  diag(rvmMatrix) = d:1
+  
+  for (i in d:2)
+  {
+    copulaIndInTree = svcm$copulaInd[svcm$tree==(d-i+1)]
+    
+    varInds = svcm$var2[copulaIndInTree]
+    families = svcm$family[copulaIndInTree]
+    rvmMatrix[i,1:(i-1)] = varInds[(i-1):1]
+    rvmFamilies[i,1:(i-1)] = families[(i-1):1]
+    
+    nPars = svcm$nPar[copulaIndInTree]
+    for (j in 1:(i-1))
+    {
+      if (nPars[(i-j)]==1)
+      {
+        rvmPars[i,j] = svcm$par[[copulaIndInTree[i-j]]]
+      }
+      else if (nPars[(i-j)]==2)
+      {
+        rvmPars[i,j] = svcm$par[[copulaIndInTree[i-j]]][1]
+        rvmPars2[i,j] = svcm$par[[copulaIndInTree[i-j]]][2]
+      }
+    }
+  }
+  
+  RVM =  getFromNamespace('RVineMatrix','VineCopula')(rvmMatrix,rvmFamilies,rvmPars,rvmPars2)
+  
+  return(RVM)
+  
+}
