@@ -170,6 +170,27 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   }
 }
 
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+{
+  
+  switch(GroupingMethod){
+    case 1: // TreeERC
+    case 2: // TreeEC
+    {
+      double TrainingDataFraction = 1;
+      int withTraining = 0;
+      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, withTraining);
+      break;
+    }
+    default:
+    {
+      Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod);
+      break;
+    }
+    
+  }
+}
+
 double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind, arma::uvec &nObsPerGroup)
 {
   
@@ -194,11 +215,25 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   
 }
 
-
 void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int splitTestType, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
+  int withTraining = 1;
+  TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, splitTestType, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, withTraining);
+}
+
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int splitTestType, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, int withTraining)
+{
+  double EvaluationDataFraction;
   
-  double EvaluationDataFraction = 1-TrainingDataFraction;
+  
+  if (withTraining == 1)
+  {
+    EvaluationDataFraction = 1-TrainingDataFraction;
+  }
+  else
+  {
+    EvaluationDataFraction = 1;
+  }
   
   unsigned int m;
   
@@ -215,24 +250,34 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   ind.fill(arma::datum::nan);
   nObsPerGroup.zeros();
   
-  
   // Split the dataset randomly into two pices
   arma::uvec R(n);
   R = arma::linspace<arma::uvec>(0,n-1,n);
-  //R.print("That's R:");
   RandPerm(R); // RandPerm is defined in a way that it doesn't matter how it is initialized
   
+  unsigned int n0;
+  arma::uvec R1;
+  arma::uvec R2;
   
-  unsigned int n0 = floor(n*TrainingDataFraction);
-  arma::uvec R1(n0);
+  if (withTraining == 1)
+  {
+    n0 = floor(n*TrainingDataFraction);
+    // Training data
+    R1 = R.subvec(0,n0-1);
+    
+    // Evaluation data
+    R2 = R.subvec(n0,n-1);
+  }
+  else
+  {
+    n0 = n;
+    // Training data
+    R1 = R;
+    
+    // Evaluation data
+    R2 = R;
+  }
   
-  arma::uvec R2(n-n0);
-  
-  // Training data
-  R1 = R.subvec(0,n0-1);
-  
-  // Evaluation data
-  R2 = R.subvec(n0,n-1);
   
   // Some helping matrices
   arma::mat A_EC1;

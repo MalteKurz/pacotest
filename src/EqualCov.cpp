@@ -93,6 +93,86 @@ void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMe
     
 }
 
+void EqualCovTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert,int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &Xdata, arma::mat &Ydata, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+{
+  
+  unsigned int n=Udata.n_rows;
+  arma::umat indexVectors(n,2);
+  arma::uvec nObsPerVector(2);
+  indexVectors.zeros();
+  nObsPerVector.zeros();
+  
+  
+  Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
+  
+  if (withEstUncert)
+  {
+    *TestStat = EqualCovChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData);
+  }
+  else
+  {
+    *TestStat = EqualCovChi2TestStat(Udata, indexVectors, nObsPerVector);
+  }
+  
+  int nGroups = indexVectors.n_cols;
+  double df = nGroups-1;
+  
+  if (GroupingMethod<=2)
+  {
+    unsigned int lastCol = Wdata.n_cols -1;
+    arma::uvec X = sort_index(Wdata.col(lastCol));
+    
+    arma::uvec J(5);
+    
+    J(0) = 0;
+    J(1) = floor(n/4)-1;
+    J(2) = floor(n/2)-1;
+    J(3) = floor(3*n/4)-1;
+    J(4) = n-1;
+    
+    arma::umat indexVectorsMedian(n,4);
+    arma::uvec nObsPerVectorMedian(4);
+    indexVectorsMedian.zeros();
+    
+    nObsPerVectorMedian(0) = J(1)-J(0)+1;
+    nObsPerVectorMedian(1) = J(2)-J(1);
+    nObsPerVectorMedian(2) = J(3)-J(2);
+    nObsPerVectorMedian(3) = J(4)-J(3);
+    
+    indexVectorsMedian.submat(0,0,nObsPerVectorMedian(0)-1,0) = X.subvec(J(0),J(1));
+    indexVectorsMedian.submat(0,1,nObsPerVectorMedian(1)-1,1) = X.subvec(J(1)+1,J(2));
+    indexVectorsMedian.submat(0,2,nObsPerVectorMedian(2)-1,2) = X.subvec(J(2)+1,J(3));
+    indexVectorsMedian.submat(0,3,nObsPerVectorMedian(3)-1,3) = X.subvec(J(3)+1,J(4));
+    
+    double n_double = (double) n;
+    double testStatMedianWithPenalty;
+    
+    if (withEstUncert)
+    {
+      testStatMedianWithPenalty = EqualCovChi2WithEstimationTestStat(Udata, indexVectorsMedian, nObsPerVectorMedian, data, svcmDataFrame, cPitData) + 0.1/sqrt(n_double);
+    }
+    else
+    {
+      testStatMedianWithPenalty = EqualCovChi2TestStat(Udata, indexVectorsMedian, nObsPerVectorMedian) + 0.1/sqrt(n_double);
+    }
+    
+    nGroups = 4;
+    df = 3;
+    *TestStat = max(*TestStat,testStatMedianWithPenalty);
+  }
+  
+  *pValue = 1-Chi2CDF(*TestStat, df);
+}
+
+
+void EqualCovTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+{
+    arma::mat Xdata;
+    arma::mat Ydata;
+    
+    EqualCovTestWithPenalty(Udata, Wdata, GroupingMethod, withEstUncert, finalComparisonMethod, TestStat, pValue, Xdata, Ydata, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+}
+
 
 void EqualCovChi2TestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta)
 {

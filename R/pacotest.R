@@ -1,12 +1,19 @@
 pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
-  pacotestOptions = pacotestset(pacotestOptions)
+  #pacotestOptions = pacotestset(pacotestOptions)
   Udata = as.matrix(Udata)
   W = as.matrix(W)
   
   if (pacotestOptions$testType=='ECOV')
   {
     grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
+    
+    if (!(pacotestOptions$withEstUncert))
+    {
+      data = matrix()
+      svcmDataFrame = data.frame()
+      cPitData = matrix()
+    }
     
     if (grouping<2  && pacotestOptions$aggPvalsNumbRep > 1)
     {
@@ -35,6 +42,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         W = addAggInfo(W,pacotestOptions$aggInfo);
         
+        
         out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
         
       }
@@ -57,6 +65,64 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
           {
             decisionTreePlot(out$DecisionTree)
           }
+        }
+      }
+    }
+    out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
+  }
+  else if (pacotestOptions$testType=='ECOVwithPenalty')
+  {
+    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
+    
+    if (!(pacotestOptions$withEstUncert))
+    {
+      data = matrix()
+      svcmDataFrame = data.frame()
+      cPitData = matrix()
+    }
+    
+    if (grouping > 2)
+    {
+      
+      out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 1)
+      
+    }
+    else
+    {
+      finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
+      
+      if (pacotestOptions$aggInfo=='meanAll')
+      {
+        W = addAggInfo(W,pacotestOptions$aggInfo);
+      }
+      else
+      {
+        W = addAggInfo(W,pacotestOptions$aggInfo);
+        W = addAggInfo(W,'meanAll');
+      }
+      
+      
+      out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize)
+      
+    }
+    if (pacotestOptions$groupedScatterplots)
+    {
+      GroupedScatterplot(out$Xdata,out$Ydata)
+    }
+    if (grouping<=2)
+    {
+      CondSetDim = ncol(W);
+      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+      if (pacotestOptions$decisionTreePlot)
+      {
+        if (!requireNamespace("plotrix", quietly = TRUE))
+        {
+          stop("plotrix needed to obtain decision tree plots. Please install it.",
+               call. = FALSE)
+        }
+        else
+        {
+          decisionTreePlot(out$DecisionTree)
         }
       }
     }

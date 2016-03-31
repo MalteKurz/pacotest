@@ -124,6 +124,43 @@ Rcpp::List ECOV(arma::mat Udata, arma::mat Wdata, double Grouping, double double
     }
 }
 
+// [[Rcpp::export]]
+Rcpp::List ECOVwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double ExpMinSampleSize = 50) {
+    try
+    {
+        
+        int grouping = (int) Grouping;
+        int intWithEstUncert = (int) doubleWithEstUncert;
+        
+        // Associate outputs
+        double pValue;
+        Rcpp::List out;
+        
+        double TestStat;
+        arma::mat Xdata(1,2);
+        arma::mat Ydata(1,2);
+        arma::uvec SplitVariable(4);
+        arma::uvec SplitQuantile(4);
+        arma::vec SplitThreshold(3);
+        SplitVariable.zeros();
+        SplitQuantile.zeros();
+        SplitThreshold.zeros();
+        
+        EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+        
+        out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+        
+        
+        return out;
+    }
+    catch( std::exception& __ex__ ) {
+        forward_exception_to_r( __ex__ );
+    }
+    catch(...) {
+        ::Rf_error( "c++ exception" );
+    }
+}
+
 
 // [[Rcpp::export]]
 Rcpp::List ERC(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep=0, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
