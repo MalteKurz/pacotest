@@ -9,7 +9,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   
   
   switch(GroupingMethod){
-    case 3: // SumMedian
+    case 4: // SumMedian
     {
       arma::mat Wsum = sum(Wdata,1);
       
@@ -17,15 +17,16 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       
       indXData = arma::find(Wsum < b);
       indYData = arma::find(Wsum >= b );
+      
       break;
     }
-    case 4: // SumThirdsI
+    case 5: // SumThirdsI
     {
       arma::mat Wsum = sum(Wdata,1);
-      Wsum = Wsum(sort_index(Wsum));
+      arma::mat WsumSorted = Wsum(sort_index(Wsum));
       
-      double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
-      double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
+      double b1_3 = arma::as_scalar(WsumSorted(ceil((double)Wsum.n_elem /3)));
+      double b2_3 = arma::as_scalar(WsumSorted(ceil(2* (double)Wsum.n_elem /3)));
       
       indXData = arma::find(Wsum < b1_3);
       indYData = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
@@ -37,31 +38,31 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
       break;
     }
-    case 5: // SumThirdsII
+    case 6: // SumThirdsII
     {
       arma::mat Wsum = sum(Wdata,1);
-      Wsum = Wsum(sort_index(Wsum));
+      arma::mat WsumSorted = Wsum(sort_index(Wsum));
       
-      double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
-      double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
+      double b1_3 = arma::as_scalar(WsumSorted(ceil((double)Wsum.n_elem /3)));
+      double b2_3 = arma::as_scalar(WsumSorted(ceil(2* (double)Wsum.n_elem /3)));
       
       indXData = arma::find(Wsum < b1_3);
       indYData = arma::find(Wsum >= b1_3 && Wsum  < b2_3);
       break;
     }
-    case 6: // SumThirdsIII
+    case 7: // SumThirdsIII
     {
       arma::mat Wsum = sum(Wdata,1);
-      Wsum = Wsum(sort_index(Wsum));
+      arma::mat WsumSorted = Wsum(sort_index(Wsum));
       
-      double b1_3 = arma::as_scalar(Wsum(ceil((double)Wsum.n_elem /3)));
-      double b2_3 = arma::as_scalar(Wsum(ceil(2* (double)Wsum.n_elem /3)));
+      double b1_3 = arma::as_scalar(WsumSorted(ceil((double)Wsum.n_elem /3)));
+      double b2_3 = arma::as_scalar(WsumSorted(ceil(2* (double)Wsum.n_elem /3)));
       
       indXData = arma::find(Wsum < b1_3);
       indYData = arma::find(Wsum >= b2_3);
       break;
     }
-    case 7: // ProdMedian
+    case 8: // ProdMedian
     {
       arma::mat Wprod = prod(Wdata,1);
       
@@ -71,13 +72,13 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b );
       break;
     }
-    case 8: // ProdThirdsI
+    case 9: // ProdThirdsI
     {
       arma::mat Wprod = prod(Wdata,1);
-      Wprod = Wprod(sort_index(Wprod));
+      arma::mat WprodSorted = Wprod(sort_index(Wprod));
       
-      double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
-      double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
+      double b1_3 = arma::as_scalar(WprodSorted(ceil((double)Wprod.n_elem /3)));
+      double b2_3 = arma::as_scalar(WprodSorted(ceil(2* (double)Wprod.n_elem /3)));
       
       indXData = arma::find(Wprod < b1_3);
       indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
@@ -89,25 +90,25 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
       break;
     }
-    case 9: // ProdThirdsII
+    case 10: // ProdThirdsII
     {
       arma::mat Wprod = prod(Wdata,1);
-      Wprod = Wprod(sort_index(Wprod));
+      arma::mat WprodSorted = Wprod(sort_index(Wprod));
       
-      double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
-      double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
+      double b1_3 = arma::as_scalar(WprodSorted(ceil((double)Wprod.n_elem /3)));
+      double b2_3 = arma::as_scalar(WprodSorted(ceil(2* (double)Wprod.n_elem /3)));
       
       indXData = arma::find(Wprod < b1_3);
       indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
       break;
     }
-    case 10: // ProdThirdsIII
+    case 11: // ProdThirdsIII
     {
       arma::mat Wprod = prod(Wdata,1);
-      Wprod = Wprod(sort_index(Wprod));
+      arma::mat WprodSorted = Wprod(sort_index(Wprod));
       
-      double b1_3 = arma::as_scalar(Wprod(ceil((double)Wprod.n_elem /3)));
-      double b2_3 = arma::as_scalar(Wprod(ceil(2* (double)Wprod.n_elem /3)));
+      double b1_3 = arma::as_scalar(WprodSorted(ceil((double)Wprod.n_elem /3)));
+      double b2_3 = arma::as_scalar(WprodSorted(ceil(2* (double)Wprod.n_elem /3)));
       
       indXData = arma::find(Wprod < b1_3);
       indYData = arma::find(Wprod >= b2_3);
@@ -155,8 +156,9 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
 {
   
   switch(GroupingMethod){
-    case 1: // TreeERC
-    case 2: // TreeEC
+    case 1: // TreeECOV
+    case 2: // TreeECORR
+    case 3: // TreeEC
     {
       TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
@@ -174,8 +176,9 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
 {
   
   switch(GroupingMethod){
-    case 1: // TreeERC
-    case 2: // TreeEC
+    case 1: // TreeECOV
+    case 2: // TreeECORR
+    case 3: // TreeEC
     {
       double TrainingDataFraction = 1;
       int withTraining = 0;
@@ -201,6 +204,10 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   if (splitTestType == 1 )
   {
     testStat = EqualCovChi2TestStat(Udata, ind, nObsPerGroup);
+  }
+  else if (splitTestType == 2 )
+  {
+    testStat = EqualCorrChi2TestStat(Udata, ind, nObsPerGroup);
   }
   else
   {
