@@ -346,7 +346,6 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
     
   }
   
-  print(C)
   
   hInv = rbind(cbind(dInv,matrix(0,nrow=nParameters,ncol=4*nGroups)),
                cbind(-J%*%dInv,diag(4*nGroups)))
