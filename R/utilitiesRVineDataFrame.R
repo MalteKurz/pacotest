@@ -68,13 +68,12 @@ rVineDataFrameRep = function(rvm)
     if (nPar[jCopula] == 1)
     {
       par[[jCopula]] = par1[jCopula]
-      parInd[[jCopula]] = sum(nPar[1:jCopula])+1
+      parInd[[jCopula]] = sum(nPar[1:jCopula])
     }
     else if (nPar[jCopula] == 2)
     {
       par[[jCopula]] = c(par1[jCopula],par2[jCopula])
-      parInd[[jCopula]] = seq(from=sum(nPar[1:jCopula])+1, by=1, length.out=2)
-      nPar[jCopula] = 2
+      parInd[[jCopula]] = seq(to=sum(nPar[1:jCopula]), by=1, length.out=2)
     }
   }
   
