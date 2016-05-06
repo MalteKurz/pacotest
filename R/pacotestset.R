@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all'),testType = 'ECOV',grouping= 'TreeECOV', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
+pacotestset = function(pacotestOptions=list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5)),testType = 'ECOV',grouping= 'TreeECOV', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -38,9 +38,16 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
   }
   else
   {
-    if (testType=="ECOV" || testType == "EqualCovariance")
+    if (testType=="ECOV" || testType == "EqualCovariance" || testType=="ECORR" || testType == "EqualCorrelation")
     {
-      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
+      if (testType=="ECOV" || testType == "EqualCovariance")
+      {
+        pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+      }
+      else
+      {
+        pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+      }
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -117,6 +124,28 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
         if (is.null(finalComparison))
         {
           pacotestOptions$finalComparison = NULL
+        }
+      }
+      if (!(missing(sizeKeepingMethod)) && !is.null(sizeKeepingMethod))
+      {
+        pacotestOptions$sizeKeepingMethod = CheckSizeKeepingMethod(sizeKeepingMethod,"sizeKeepingMethod")
+      }
+      else
+      {
+        if (is.null(sizeKeepingMethod))
+        {
+          pacotestOptions$sizeKeepingMethod = NULL
+        }
+      }
+      if (!(missing(penaltyParams)) && !is.null(penaltyParams))
+      {
+        pacotestOptions$penaltyParams = CheckPenaltyParams(penaltyParams,"penaltyParams")
+      }
+      else
+      {
+        if (is.null(penaltyParams))
+        {
+          pacotestOptions$penaltyParams = NULL
         }
       }
     }
@@ -197,9 +226,16 @@ else
   {
     warning('After the change of the testType all options are set to their default values except the explicitly stated ones.')
     
-    if (testType=="ECOV" || testType == "EqualCovariance")
+    if (testType=="ECOV" || testType == "EqualCovariance" || testType=="ECORR" || testType == "EqualCorrelation")
     {
-      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all')
+      if (testType=="ECOV" || testType == "EqualCovariance")
+      {
+        pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+      }
+      else
+      {
+        pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+      }
       if (!(missing(grouping)))
       {
         pacotestOptions$grouping = CheckGrouping(grouping,"grouping")
@@ -235,6 +271,14 @@ else
       if (!(missing(finalComparison)))
       {
         pacotestOptions$finalComparison = CheckFinalComparison(finalComparison,"finalComparison")
+      }
+      if (!(missing(sizeKeepingMethod)))
+      {
+        pacotestOptions$sizeKeepingMethod = CheckFinalComparison(sizeKeepingMethod,"sizeKeepingMethod")
+      }
+      if (!(missing(penaltyParams)))
+      {
+        pacotestOptions$penaltyParams = CheckFinalComparison(penaltyParams,"penaltyParams")
       }
     }
     else if (testType=="EC" || testType == "EqualCop")
@@ -283,7 +327,7 @@ else
     }
   }
   
-  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType == "EqualCovariance")
+  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType == "EqualCovariance" || pacotestOptions$testType=="ECORR" || pacotestOptions$testType == "EqualCorrelation")
   {
     #pacotestOptions$testType = "ECOV"
     if (!(missing(grouping)))
@@ -317,6 +361,14 @@ else
     if (!(missing(finalComparison)))
     {
       pacotestOptions$finalComparison = CheckFinalComparison(finalComparison,"finalComparison")
+    }
+    if (!(missing(sizeKeepingMethod)))
+    {
+      pacotestOptions$sizeKeepingMethod = ChecksizeKeepingMethod(sizeKeepingMethod,"sizeKeepingMethod")
+    }
+    if (!(missing(penaltyParams)))
+    {
+      pacotestOptions$penaltyParams = CheckPenaltyParams(penaltyParams,"penaltyParams")
     }
   }
   else if (pacotestOptions$testType=="EC" || pacotestOptions$testType == "EqualCop")
@@ -398,9 +450,9 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'TreeEC' || Value == 'TreeECOV' ))
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'TreeEC' || Value == 'TreeECOV' || Value == 'TreeECORR'))
   {
-    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
+    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeECORR', 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
   }
   return(Value)
 }
@@ -423,22 +475,75 @@ CheckFinalComparison = function(Value,Fieldname)
   return(Value)
 }
 
+CheckSizeKeepingMethod = function(Value,Fieldname)
+{
+  if (!(Value == 'splitTrainEvaluate' || Value == 'penalty' ))
+  {
+    stop(paste("The option sizeKeepingMethod must be 'splitTrainEvaluate' or 'penalty'"))
+  }
+  return(Value)
+}
+
+CheckPenaltyParams = function(Value,Fieldname)
+{
+  if (!(is.numeric(Value)) || !(is.vector(Value)) || !(length(Value)==2))
+  {
+    stop(paste("The option ", Fieldname, " must be a numeric vector of length two."))
+  }
+  
+  if (!(is.numeric(Value[1])) || (Value[1] <0) )
+  {
+    stop(paste("The first value of the penaltyParams must be a positive scalar."))
+  }
+  
+  if (!(is.numeric(Value[2])) || (Value[2] <0 || Value[2] >= 1))
+  {
+    stop(paste("The second value of the penaltyParams must be a numeric in the interval [0,1)."))
+  }
+  
+  return(Value)
+}
+
 CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (pacotestOptions$testType=="ECOV")
+  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECORR" )
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
-      if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeEC" )
+      if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
       {
-        if (exists('aggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$aggPvalsNumbRep >1 && exists('groupedScatterplots', where=pacotestOptions) && pacotestOptions$groupedScatterplots)
+        if (pacotestOptions$sizeKeepingMethod=="splitTrainEvaluate")
         {
-          pacotestOptions$groupedScatterplots = FALSE
-          warning('groupedScatterplots is set to FALSE as aggPvalsNumbRep is larger than one')
+          if (exists('aggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$aggPvalsNumbRep >1 && exists('groupedScatterplots', where=pacotestOptions) && pacotestOptions$groupedScatterplots)
+          {
+            pacotestOptions$groupedScatterplots = FALSE
+            warning('groupedScatterplots is set to FALSE as aggPvalsNumbRep is larger than one')
+          }
+          if (exists('aggPvalsNumbRep', where=pacotestOptions))
+          {
+            CheckPosScalar(pacotestOptions$aggPvalsNumbRep,"aggPvalsNumbRep")
+          }
+          
+          if (exists('penaltyParams', where=pacotestOptions) && !is.null(pacotestOptions$penaltyParams))
+          {
+            pacotestOptions$penaltyParams = NULL;
+            warning('The field penaltyParams is set to NULL')
+          }
+          
         }
-        if (exists('aggPvalsNumbRep', where=pacotestOptions))
+        else
         {
-          CheckPosScalar(pacotestOptions$aggPvalsNumbRep,"aggPvalsNumbRep")
+          if (exists('trainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$trainingDataFraction))
+          {
+            pacotestOptions$trainingDataFraction = NULL;
+            warning('The field trainingDataFraction is set to NULL')
+          }
+          
+          if (exists('aggPvalsNumbRep', where=pacotestOptions) && !is.null(pacotestOptions$aggPvalsNumbRep))
+          {
+            pacotestOptions$aggPvalsNumbRep = NULL;
+            warning('The field aggPvalsNumbRep is set to NULL')
+          }
         }
       }
     else
@@ -466,8 +571,20 @@ CheckpacotestOptions = function(pacotestOptions)
         pacotestOptions$aggPvalsNumbRep = NULL;
         warning('The field aggPvalsNumbRep is set to NULL')
       }
+      
+      if (exists('sizeKeepingMethod', where=pacotestOptions) && !is.null(pacotestOptions$sizeKeepingMethod))
+      {
+        pacotestOptions$sizeKeepingMethod = NULL;
+        warning('The field sizeKeepingMethod is set to NULL')
+      }
+      
+      if (exists('penaltyParams', where=pacotestOptions) && !is.null(pacotestOptions$penaltyParams))
+      {
+        pacotestOptions$penaltyParams = NULL;
+        warning('The field penaltyParams is set to NULL')
+      }
     }
-    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeEC" )
+    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
@@ -489,13 +606,21 @@ CheckpacotestOptions = function(pacotestOptions)
       {
         CheckFinalComparison(pacotestOptions$finalComparison,"finalComparison")
       }
+      if (exists('sizeKeepingMethod', where=pacotestOptions))
+      {
+        CheckSizeKeepingMethod(pacotestOptions$sizeKeepingMethod,"sizeKeepingMethod")
+      }
+      if (exists('penaltyParams', where=pacotestOptions))
+      {
+        CheckPenaltyParams(pacotestOptions$penaltyParams,"penaltyParams")
+      }
     }
   }
   else if (pacotestOptions$testType=="EC")
   {
     CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeEC" )
+    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {

@@ -4,9 +4,9 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   Udata = as.matrix(Udata)
   W = as.matrix(W)
   
-  if (pacotestOptions$testType=='ECOV')
+  if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
+    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeECORR','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
     
     if (!(pacotestOptions$withEstUncert))
     {
@@ -15,14 +15,21 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
-    if (grouping<2  && pacotestOptions$aggPvalsNumbRep > 1)
+    if (grouping<2  && pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate' && pacotestOptions$aggPvalsNumbRep > 1)
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
       W = addAggInfo(W,pacotestOptions$aggInfo);
       # third list element are the p-values that have been aggregated.
       
-      out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+      if (pacotestOptions$testType=='ECOV')
+      {
+        out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+      }
+      else
+      {
+        out = ECORR(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+      }
       
       
       CondSetDim = ncol(W);
@@ -33,17 +40,54 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       if (grouping > 2)
       {
         
-        out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
+        if (pacotestOptions$testType=='ECOV')
+        {
+          out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
+        }
+        else
+        {
+          out = ECORR(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
+        }
         
       }
       else
       {
         finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
         
+        if (pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate')
+        {
         W = addAggInfo(W,pacotestOptions$aggInfo);
         
-        
-        out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+        if (pacotestOptions$testType=='ECOV')
+        {
+          out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+        }
+        else
+        {
+          out = ECORR(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+        }
+        }
+        else if (pacotestOptions$sizeKeepingMethod=='penalty')
+        {
+          if (pacotestOptions$aggInfo=='meanAll')
+          {
+            W = addAggInfo(W,pacotestOptions$aggInfo);
+          }
+          else
+          {
+            W = addAggInfo(W,pacotestOptions$aggInfo);
+            W = addAggInfo(W,'meanAll');
+          }
+          
+          if (pacotestOptions$testType=='ECOV')
+          {
+            out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2])
+          }
+          else
+          {
+            out = ECORRwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2])
+          }
+        }
         
       }
       if (pacotestOptions$groupedScatterplots)
@@ -72,7 +116,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   }
   else if (pacotestOptions$testType=='ECOVwithPenalty')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
+    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeECORR','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
     
     if (!(pacotestOptions$withEstUncert))
     {
@@ -130,7 +174,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   }
   else if (pacotestOptions$testType=='EC')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeERCchi2','TreeERCchi2WithEstimation','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'),arr.ind=TRUE)
+    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeECORR','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
     if (grouping > 2)
     {
       out = EC(Udata,W,pacotestOptions$numbBoot,grouping,1,1,1)
