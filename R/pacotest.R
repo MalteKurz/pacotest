@@ -6,7 +6,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeECORR','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
+    grouping = partitionToNumber(pacotestOptions$grouping)
     
     if (!(pacotestOptions$withEstUncert))
     {
@@ -69,6 +69,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         }
         else if (pacotestOptions$sizeKeepingMethod=='penalty')
         {
+          gamma0Partition = partitionToNumber(pacotestOptions$gamma0Partition)
+          
           if (pacotestOptions$aggInfo=='meanAll')
           {
             W = addAggInfo(W,pacotestOptions$aggInfo);
@@ -81,11 +83,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
           
           if (pacotestOptions$testType=='ECOV')
           {
-            out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2])
+            out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
           }
           else
           {
-            out = ECORRwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2])
+            out = ECORRwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
           }
         }
         
@@ -114,67 +116,9 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
   }
-  else if (pacotestOptions$testType=='ECOVwithPenalty')
-  {
-    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeECORR','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
-    
-    if (!(pacotestOptions$withEstUncert))
-    {
-      data = matrix()
-      svcmDataFrame = data.frame()
-      cPitData = matrix()
-    }
-    
-    if (grouping > 2)
-    {
-      
-      out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 1)
-      
-    }
-    else
-    {
-      finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
-      
-      if (pacotestOptions$aggInfo=='meanAll')
-      {
-        W = addAggInfo(W,pacotestOptions$aggInfo);
-      }
-      else
-      {
-        W = addAggInfo(W,pacotestOptions$aggInfo);
-        W = addAggInfo(W,'meanAll');
-      }
-      
-      
-      out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize)
-      
-    }
-    if (pacotestOptions$groupedScatterplots)
-    {
-      GroupedScatterplot(out$Xdata,out$Ydata)
-    }
-    if (grouping<=2)
-    {
-      CondSetDim = ncol(W);
-      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
-      if (pacotestOptions$decisionTreePlot)
-      {
-        if (!requireNamespace("plotrix", quietly = TRUE))
-        {
-          stop("plotrix needed to obtain decision tree plots. Please install it.",
-               call. = FALSE)
-        }
-        else
-        {
-          decisionTreePlot(out$DecisionTree)
-        }
-      }
-    }
-    out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
-  }
   else if (pacotestOptions$testType=='EC')
   {
-    grouping = which(pacotestOptions$grouping==c('TreeECOV','TreeECORR','TreeEC','SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII'),arr.ind=TRUE)
+    grouping = partitionToNumber(pacotestOptions$grouping)
     if (grouping > 2)
     {
       out = EC(Udata,W,pacotestOptions$numbBoot,grouping,1,1,1)
@@ -236,6 +180,18 @@ addAggInfo = function(W,aggInfoType)
   
   return(W);
 }
+
+
+
+partitionToNumber = function(partitionIdentfier)
+{
+  partitionNumber = which(partitionIdentfier==c('TreeECOV','TreeECORR','TreeEC',
+                                                'SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','SumQuartiles',
+                                                'ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII','ProdQuartiles'),arr.ind=TRUE)
+  
+  return(partitionNumber)
+}
+
 
 GroupedScatterplot = function(Xdata,Ydata)
 {
@@ -352,6 +308,7 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
   
   return(DecisionTree)
 }
+
 
 
 decisionTreePlot = function(DecisionTree)

@@ -469,9 +469,9 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'TreeEC' || Value == 'TreeECOV' || Value == 'TreeECORR'))
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'SumQuartiles' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'ProdQuartiles' || Value == 'TreeEC' || Value == 'TreeECOV' || Value == 'TreeECORR'))
   {
-    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeECORR', 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
+    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeECORR', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
   return(Value)
 }
@@ -525,9 +525,9 @@ CheckPenaltyParams = function(Value,Fieldname)
 
 CheckGamma0Partition = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII'))
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'SumQuartiles' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'ProdQuartiles'))
   {
-    stop(paste("The option gamma0Partition must be 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII' or 'ProdThirdsII'"))
+    stop(paste("The option gamma0Partition must be 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
   
   return(Value)

@@ -6,6 +6,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   arma::uvec indXData;
   arma::uvec indYData;
   arma::uvec indZData;
+  arma::uvec indAData;
   
   
   switch(GroupingMethod){
@@ -62,7 +63,31 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wsum >= b2_3);
       break;
     }
-    case 8: // ProdMedian
+    case 8: // SumQuartiles
+    {
+      arma::mat Wsum = sum(Wdata,1);
+      arma::mat WsumSorted = Wsum(sort_index(Wsum));
+      
+      double b1_4 = arma::as_scalar(WsumSorted(ceil((double)Wsum.n_elem /4)));
+      double b1_2 = arma::as_scalar(WsumSorted(ceil((double)Wsum.n_elem /2)));
+      double b3_4 = arma::as_scalar(WsumSorted(ceil(3* (double)Wsum.n_elem /4)));
+      
+      indXData = arma::find(Wsum < b1_4);
+      indYData = arma::find(Wsum >= b1_4 && Wsum  < b1_2);
+      indZData = arma::find(Wsum >= b1_2 && Wsum  < b3_4);
+      indAData = arma::find(Wsum >= b3_4);
+      
+      nObsPerVector.set_size(4);
+      indexVectors.set_size(indexVectors.n_rows,4);
+      
+      nObsPerVector(2) = indZData.n_elem;
+      indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
+      
+      nObsPerVector(3) = indAData.n_elem;
+      indexVectors.submat(0,3,nObsPerVector(3)-1,3) = indAData;
+      break;
+    }
+    case 9: // ProdMedian
     {
       arma::mat Wprod = prod(Wdata,1);
       
@@ -72,7 +97,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b );
       break;
     }
-    case 9: // ProdThirdsI
+    case 10: // ProdThirdsI
     {
       arma::mat Wprod = prod(Wdata,1);
       arma::mat WprodSorted = Wprod(sort_index(Wprod));
@@ -86,11 +111,11 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       
       nObsPerVector.set_size(3);
       indexVectors.set_size(indexVectors.n_rows,3);
-      nObsPerVector(2) = indYData.n_elem;
+      nObsPerVector(2) = indZData.n_elem;
       indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
       break;
     }
-    case 10: // ProdThirdsII
+    case 11: // ProdThirdsII
     {
       arma::mat Wprod = prod(Wdata,1);
       arma::mat WprodSorted = Wprod(sort_index(Wprod));
@@ -102,7 +127,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       indYData = arma::find(Wprod >= b1_3 && Wprod  < b2_3);
       break;
     }
-    case 11: // ProdThirdsIII
+    case 12: // ProdThirdsIII
     {
       arma::mat Wprod = prod(Wdata,1);
       arma::mat WprodSorted = Wprod(sort_index(Wprod));
@@ -112,6 +137,30 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       
       indXData = arma::find(Wprod < b1_3);
       indYData = arma::find(Wprod >= b2_3);
+      break;
+    }
+    case 13: // ProdQuartiles
+    {
+      arma::mat Wprod = prod(Wdata,1);
+      arma::mat WprodSorted = Wprod(sort_index(Wprod));
+      
+      double b1_4 = arma::as_scalar(WprodSorted(ceil((double)Wprod.n_elem /4)));
+      double b1_2 = arma::as_scalar(WprodSorted(ceil((double)Wprod.n_elem /2)));
+      double b3_4 = arma::as_scalar(WprodSorted(ceil(3* (double)Wprod.n_elem /4)));
+      
+      indXData = arma::find(Wprod < b1_4);
+      indYData = arma::find(Wprod >= b1_4 && Wprod  < b1_2);
+      indZData = arma::find(Wprod >= b1_2 && Wprod  < b3_4);
+      indAData = arma::find(Wprod >= b3_4);
+      
+      nObsPerVector.set_size(4);
+      indexVectors.set_size(indexVectors.n_rows,4);
+      
+      nObsPerVector(2) = indZData.n_elem;
+      indexVectors.submat(0,2,nObsPerVector(2)-1,2) = indZData;
+      
+      nObsPerVector(3) = indAData.n_elem;
+      indexVectors.submat(0,3,nObsPerVector(3)-1,3) = indAData;
       break;
     }
     

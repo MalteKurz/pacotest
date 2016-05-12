@@ -125,12 +125,13 @@ Rcpp::List ECOV(arma::mat Udata, arma::mat Wdata, double Grouping, double double
 }
 
 // [[Rcpp::export]]
-Rcpp::List ECOVwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double ExpMinSampleSize = 50, double penaltyLevel = 1, double penaltyPower = 0.5) {
+Rcpp::List ECOVwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double ExpMinSampleSize = 50, double penaltyLevel = 1, double penaltyPower = 0.5, double Gamma0Partition = 4) {
     try
     {
         
         int grouping = (int) Grouping;
         int intWithEstUncert = (int) doubleWithEstUncert;
+        int gamma0Partition = (int) Gamma0Partition;
         
         // Associate outputs
         double pValue;
@@ -146,7 +147,7 @@ Rcpp::List ECOVwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, do
         SplitQuantile.zeros();
         SplitThreshold.zeros();
         
-        EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, penaltyLevel, penaltyPower, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+        EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         
         out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         
@@ -221,12 +222,13 @@ Rcpp::List ECORR(arma::mat Udata, arma::mat Wdata, double Grouping, double doubl
 }
 
 // [[Rcpp::export]]
-Rcpp::List ECORRwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double ExpMinSampleSize = 50, double penaltyLevel = 1, double penaltyPower = 0.5) {
+Rcpp::List ECORRwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert,double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double ExpMinSampleSize = 50, double penaltyLevel = 1, double penaltyPower = 0.5, double Gamma0Partition = 4) {
     try
     {
         
         int grouping = (int) Grouping;
         int intWithEstUncert = (int) doubleWithEstUncert;
+        int gamma0Partition = (int) Gamma0Partition;
         
         // Associate outputs
         double pValue;
@@ -242,7 +244,7 @@ Rcpp::List ECORRwithPenalty(arma::mat Udata, arma::mat Wdata, double Grouping, d
         SplitQuantile.zeros();
         SplitThreshold.zeros();
         
-        EqualCorrTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, penaltyLevel, penaltyPower, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+        EqualCorrTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, Xdata, Ydata, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         
         out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("Xdata")=Xdata,Rcpp::Named("Ydata")=Ydata,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
         
