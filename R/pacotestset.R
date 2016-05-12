@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5)),testType = 'ECOV',grouping= 'TreeECOV', aggPvalsNumbRep= 100, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = 1000){
+pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"),testType = 'ECORR',grouping= 'TreeECOV', aggPvalsNumbRep= NULL, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = 'none', withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian", groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = NULL){
 # Display possible values
   Nargs = nargs()
 if(Nargs==0){
@@ -42,11 +42,11 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
     {
       if (testType=="ECOV" || testType == "EqualCovariance")
       {
-        pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+        pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
       else
       {
-        pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+        pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
       if (!(missing(grouping)))
       {
@@ -148,6 +148,17 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
           pacotestOptions$penaltyParams = NULL
         }
       }
+      if (!(missing(gamma0Partition)) && !is.null(gamma0Partition))
+      {
+        pacotestOptions$gamma0Partition = CheckGamma0Partition(gamma0Partition,"gamma0Partition")
+      }
+      else
+      {
+        if (is.null(gamma0Partition))
+        {
+          pacotestOptions$gamma0Partition = NULL
+        }
+      }
     }
     else if (testType=="EC" || testType == "EqualCop")
     {
@@ -230,11 +241,11 @@ else
     {
       if (testType=="ECOV" || testType == "EqualCovariance")
       {
-        pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+        pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
       else
       {
-        pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5))
+        pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
       if (!(missing(grouping)))
       {
@@ -274,11 +285,15 @@ else
       }
       if (!(missing(sizeKeepingMethod)))
       {
-        pacotestOptions$sizeKeepingMethod = CheckFinalComparison(sizeKeepingMethod,"sizeKeepingMethod")
+        pacotestOptions$sizeKeepingMethod = CheckSizeKeepingMethod(sizeKeepingMethod,"sizeKeepingMethod")
       }
       if (!(missing(penaltyParams)))
       {
-        pacotestOptions$penaltyParams = CheckFinalComparison(penaltyParams,"penaltyParams")
+        pacotestOptions$penaltyParams = CheckPenaltyParams(penaltyParams,"penaltyParams")
+      }
+      if (!(missing(gamma0Partition)))
+      {
+        pacotestOptions$gamma0Partition = CheckGamma0Partition(gamma0Partition,"gamma0Partition")
       }
     }
     else if (testType=="EC" || testType == "EqualCop")
@@ -369,6 +384,10 @@ else
     if (!(missing(penaltyParams)))
     {
       pacotestOptions$penaltyParams = CheckPenaltyParams(penaltyParams,"penaltyParams")
+    }
+    if (!(missing(gamma0Partition)))
+    {
+      pacotestOptions$gamma0Partition = CheckGamma0Partition(gamma0Partition,"gamma0Partition")
     }
   }
   else if (pacotestOptions$testType=="EC" || pacotestOptions$testType == "EqualCop")
@@ -504,6 +523,16 @@ CheckPenaltyParams = function(Value,Fieldname)
   return(Value)
 }
 
+CheckGamma0Partition = function(Value,Fieldname)
+{
+  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII'))
+  {
+    stop(paste("The option gamma0Partition must be 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII' or 'ProdThirdsII'"))
+  }
+  
+  return(Value)
+}
+
 CheckpacotestOptions = function(pacotestOptions)
 {
   
@@ -528,6 +557,12 @@ CheckpacotestOptions = function(pacotestOptions)
           {
             pacotestOptions$penaltyParams = NULL;
             warning('The field penaltyParams is set to NULL')
+          }
+          
+          if (exists('gamma0Partition', where=pacotestOptions) && !is.null(pacotestOptions$gamma0Partition))
+          {
+            pacotestOptions$gamma0Partition = NULL;
+            warning('The field gamma0Partition is set to NULL')
           }
           
         }
@@ -583,6 +618,12 @@ CheckpacotestOptions = function(pacotestOptions)
         pacotestOptions$penaltyParams = NULL;
         warning('The field penaltyParams is set to NULL')
       }
+      
+      if (exists('gamma0Partition', where=pacotestOptions) && !is.null(pacotestOptions$gamma0Partition))
+      {
+        pacotestOptions$gamma0Partition = NULL;
+        warning('The field gamma0Partition is set to NULL')
+      }
     }
     if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
     {
@@ -613,6 +654,10 @@ CheckpacotestOptions = function(pacotestOptions)
       if (exists('penaltyParams', where=pacotestOptions))
       {
         CheckPenaltyParams(pacotestOptions$penaltyParams,"penaltyParams")
+      }
+      if (exists('gamma0Partition', where=pacotestOptions))
+      {
+        CheckGamma0Partition(pacotestOptions$gamma0Partition,"gamma0Partition")
       }
     }
   }
