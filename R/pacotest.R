@@ -1,8 +1,16 @@
 pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
   #pacotestOptions = pacotestset(pacotestOptions)
-  Udata = as.matrix(Udata)
-  W = as.matrix(W)
+  
+  if (!is.data.frame(Udata))
+  {
+    Udata = as.data.frame(Udata)
+  }
+  
+  if (!is.data.frame(W))
+  {
+    W = as.data.frame(W)
+  }
   
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR')
   {
@@ -20,20 +28,18 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
       W = addAggInfo(W,pacotestOptions$aggInfo);
-      # third list element are the p-values that have been aggregated.
       
       if (pacotestOptions$testType=='ECOV')
       {
-        out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+        out = ECOV(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       }
       else
       {
-        out = ECORR(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+        out = ECORR(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       }
       
-      
-      CondSetDim = ncol(W);
-      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+      condSetNames = names(W);
+      out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
     }
     else
     {
@@ -42,11 +48,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         if (pacotestOptions$testType=='ECOV')
         {
-          out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
+          out = ECOV(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
         }
         else
         {
-          out = ECORR(Udata,W,grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
+          out = ECORR(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
         }
         
       }
@@ -60,11 +66,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         if (pacotestOptions$testType=='ECOV')
         {
-          out = ECOV(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+          out = ECOV(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
         }
         else
         {
-          out = ECORR(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+          out = ECORR(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
         }
         }
         else if (pacotestOptions$sizeKeepingMethod=='penalty')
@@ -77,17 +83,30 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
           }
           else
           {
-            W = addAggInfo(W,pacotestOptions$aggInfo);
-            W = addAggInfo(W,'meanAll');
+            if (dim(W)[2]>2 && pacotestOptions$aggInfo=="meanPairwise")
+            {
+              # Add the information defined by pacotestOptions$aggInfo 
+              xx = addAggInfo(W,pacotestOptions$aggInfo)
+              yy = addAggInfo(W,'meanAll')
+              yyLastName = names(yy)[dim(yy)[2]]
+              
+              W = cbind(xx,yy[,yyLastName])
+              
+              names(W)[dim(W)[2]] = yyLastName
+            }
+            else
+            {
+              W = addAggInfo(W,'meanAll')
+            }
           }
           
           if (pacotestOptions$testType=='ECOV')
           {
-            out = ECOVwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
+            out = ECOVwithPenalty(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
           }
           else
           {
-            out = ECORRwithPenalty(Udata,W,grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
+            out = ECORRwithPenalty(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
           }
         }
         
@@ -98,8 +117,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       }
       if (grouping<=2)
       {
-        CondSetDim = ncol(W);
-        out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+        condSetNames = names(W)
+        out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
         if (pacotestOptions$decisionTreePlot)
         {
           if (!requireNamespace("plotrix", quietly = TRUE))
@@ -121,14 +140,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     grouping = partitionToNumber(pacotestOptions$grouping)
     if (grouping > 2)
     {
-      out = EC(Udata,W,pacotestOptions$numbBoot,grouping,1,1,1)
+      out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,1,1,1)
     }
     else
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
      
       W = addAggInfo(W,pacotestOptions$aggInfo);
-      out = EC(Udata,W,pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+      out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
     }
     if (pacotestOptions$groupedScatterplots)
     {
@@ -137,7 +156,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     if (grouping<=2)
     {
       CondSetDim = ncol(W);
-      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
+      
       if (pacotestOptions$decisionTreePlot)
       {
         if (!requireNamespace("plotrix", quietly = TRUE)) {
@@ -151,7 +171,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   }
   else if (pacotestOptions$testType=='VI')
   {
-    out = VI(Udata,W,pacotestOptions$numbBoot)
+    out = VI(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot)
   }
   else
   {
@@ -162,18 +182,26 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
 
 addAggInfo = function(W,aggInfoType)
 {
+  # Adding aggregated information within the conditioning set
+  
   aggInfo = which(aggInfoType==c('none','meanAll','meanPairwise'),arr.ind=TRUE)
   if (ncol(W)>1)
   {
     if (aggInfo==2)
     {
-      W = cbind(W,rowMeans(W));
+      xx = as.data.frame(rowMeans(W))
+      names(xx) = paste("Mean(", paste(names(W),collapse=", "), ")", sep="")
+      
+      W = cbind(W,xx)
     }
     else
     {
       if (aggInfo==3)
       {
-        W = cbind(W,combn(ncol(W), 2L, function(x) rowMeans(W[,x])));
+        xx = as.data.frame(combn(ncol(W), 2L, function(x) rowMeans(W[,x])))
+        names(xx) = combn(names(W),2, function(x) paste("Mean(",x[1],", ",x[2],")",sep=""))
+        
+        W = cbind(W,xx)
       }
     }
   }
@@ -203,7 +231,7 @@ GroupedScatterplot = function(Xdata,Ydata)
 }
 
 
-ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitThreshold)
+ExtractDecisionTree = function(condSetNames, SplitVariable, SplitQuantile, SplitThreshold, finalComparison)
 {
   
   Node = list(Variable=NULL,Quantile=NULL,Threshold=NULL)
@@ -213,14 +241,7 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
   for (i in 1:ncol(SplitVariable))
   {
     
-    if ((SplitVariable[1,i]+1) <= CondSetDim)
-    {
-      DecisionTree[[i]]$CentralNode$Variable = paste('W', SplitVariable[1,i]+1, sep = '')
-    }
-    else
-    {
-      DecisionTree[[i]]$CentralNode$Variable = 'Mean(W)';
-    }
+    DecisionTree[[i]]$CentralNode$Variable = condSetNames[SplitVariable[1,i]+1]
     DecisionTree[[i]]$CentralNode$Quantile = paste('Q', Quantiles[SplitQuantile[1,i]+1], sep = '')
     DecisionTree[[i]]$CentralNode$Threshold = SplitThreshold[1,i];
     
@@ -234,25 +255,11 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
       {
         
         
-        if ((SplitVariable[2,i]+1) <= CondSetDim)
-        {
-          DecisionTree[[i]]$LeftNode$Variable = paste('W', SplitVariable[2,i]+1, sep = '')
-        }
-        else
-        {
-          DecisionTree[[i]]$LeftNode$Variable = 'Mean(W)';
-        }
+        DecisionTree[[i]]$LeftNode$Variable = condSetNames[SplitVariable[2,i]+1]
         DecisionTree[[i]]$LeftNode$Quantile = paste('Q', Quantiles[SplitQuantile[2,i]+1], sep = '')
         DecisionTree[[i]]$LeftNode$Threshold = SplitThreshold[2,i];
         
-        if ((SplitVariable[3,i]+1) <= CondSetDim)
-        {
-          DecisionTree[[i]]$RightNode$Variable = paste('W', SplitVariable[3,i]+1, sep = '')
-        }
-        else
-        {
-          DecisionTree[[i]]$RightNode$Variable = 'Mean(W)';
-        }
+        DecisionTree[[i]]$RightNode$Variable = condSetNames[SplitVariable[3,i]+1]
         DecisionTree[[i]]$RightNode$Quantile = paste('Q', Quantiles[SplitQuantile[3,i]+1], sep = '')
         DecisionTree[[i]]$RightNode$Threshold = SplitThreshold[3,i];
         
@@ -265,14 +272,7 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
         if (SplitVariable[4,i]<13)
         {
           
-          if ((SplitVariable[2,i]+1) <= CondSetDim)
-          {
-            DecisionTree[[i]]$LeftNode$Variable = paste('W', SplitVariable[2,i]+1, sep = '')
-          }
-          else
-          {
-            DecisionTree[[i]]$LeftNode$Variable = 'Mean(W)';
-          }
+          DecisionTree[[i]]$LeftNode$Variable = condSetNames[SplitVariable[2,i]+1]
           DecisionTree[[i]]$LeftNode$Quantile = paste('Q', Quantiles[SplitQuantile[2,i]+1], sep = '')
           DecisionTree[[i]]$LeftNode$Threshold = SplitThreshold[2,i];
           
@@ -282,14 +282,7 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
         }
         else
         {
-          if ((SplitVariable[3,i]+1) <= CondSetDim)
-          {
-            DecisionTree[[i]]$RightNode$Variable = paste('W', SplitVariable[3,i]+1, sep = '')
-          }
-          else
-          {
-            DecisionTree[[i]]$RightNode$Variable = 'Mean(W)';
-          }
+          DecisionTree[[i]]$RightNode$Variable = condSetNames[SplitVariable[3,i]+1]
           DecisionTree[[i]]$RightNode$Quantile = paste('Q', Quantiles[SplitQuantile[3,i]+1], sep = '')
           DecisionTree[[i]]$RightNode$Threshold = SplitThreshold[3,i];
           
@@ -299,9 +292,15 @@ ExtractDecisionTree = function(CondSetDim, SplitVariable, SplitQuantile, SplitTh
         }
       }
     }
+    
+    if (finalComparison=="all")
+    {
+      DecisionTree[[i]]$LeavesForFinalComparison = "all"
+    }
+    
   }
   
-  if (nrow(SplitVariable) == 1)
+  if (ncol(SplitVariable) == 1)
   {
     DecisionTree = DecisionTree[[1]]
   }
