@@ -44,6 +44,21 @@ testStatEqualCorrWithEstimation = function(data, svcmDataFrame, ind)
   nGroups = ncol(ind)
   nObs = nrow(data)
   
+  indexVectors = matrix(0, nrow = nObs, ncol = nGroups)
+  nObsPerVector = vector(length = nGroups)
+  
+  inds = seq(from = 0,to = (nObs-1), by = 1)
+  
+  for (iGroup in 1:nGroups)
+  {
+    xx = inds[ind[,iGroup]]
+    nObsPerVector[iGroup] = length(xx)
+    
+    indexVectors[1:nObsPerVector[iGroup],iGroup] = xx
+  }
+  
+  
+  
   # Compute CPITs for the whole vine
   cPitData = getCpitsFromVine(data, svcmDataFrame)
   
@@ -52,7 +67,7 @@ testStatEqualCorrWithEstimation = function(data, svcmDataFrame, ind)
   cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
   cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
   
-  out = testStatEqualCorrWithEstimationCpp(ind, cbind(cPit1,cPit2), data, svcmDataFrame, cPitData)
+  out = testStatEqualCorrWithEstimationCpp(indexVectors, nObsPerVector, cbind(cPit1,cPit2), data, svcmDataFrame, cPitData)
   
   out$pValue = 1 - pchisq(out$testStat,nGroups-1)
   
@@ -80,6 +95,19 @@ testStatEqualCorrWithoutEstimation = function(data, svcmDataFrame, ind)
   nGroups = ncol(ind)
   nObs = nrow(data)
   
+  indexVectors = matrix(0, nrow = nObs, ncol = nGroups)
+  nObsPerVector = vector(length = nGroups)
+  
+  inds = seq(from = 0,to = (nObs-1), by = 1)
+  
+  for (iGroup in 1:nGroups)
+  {
+    xx = inds[ind[,iGroup]]
+    nObsPerVector[iGroup] = length(xx)
+    
+    indexVectors[1:nObsPerVector[iGroup],iGroup] = xx
+  }
+  
   # Compute CPITs for the whole vine
   cPitData = getCpitsFromVine(data, svcmDataFrame)
   
@@ -88,7 +116,7 @@ testStatEqualCorrWithoutEstimation = function(data, svcmDataFrame, ind)
   cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
   cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
   
-  out = testStatEqualCorrWithoutEstimationCpp(ind, cbind(cPit1,cPit2))
+  out = testStatEqualCorrWithoutEstimationCpp(indexVectors, nObsPerVector, cbind(cPit1,cPit2))
   
   out$pValue = 1 - pchisq(out$testStat,nGroups-1)
   
