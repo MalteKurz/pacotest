@@ -23,7 +23,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
-    if (grouping<2  && pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate' && pacotestOptions$aggPvalsNumbRep > 1)
+    if (grouping<3  && pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate' && pacotestOptions$aggPvalsNumbRep > 1)
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
@@ -39,11 +39,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       }
       
       condSetNames = names(W);
-      out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold)
+      out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
     }
     else
     {
-      if (grouping > 2)
+      if (grouping > 3)
       {
         
         if (pacotestOptions$testType=='ECOV')

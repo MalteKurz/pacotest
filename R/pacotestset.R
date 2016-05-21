@@ -543,6 +543,15 @@ CheckpacotestOptions = function(pacotestOptions)
       {
         if (pacotestOptions$sizeKeepingMethod=="splitTrainEvaluate")
         {
+          if (!(exists('aggPvalsNumbRep', where=pacotestOptions)))
+          {
+            pacotestOptions$aggPvalsNumbRep = 100
+          }
+          if (!(exists('trainingDataFraction', where=pacotestOptions)))
+          {
+            pacotestOptions$trainingDataFraction = 0.5
+          }
+          
           if (exists('aggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$aggPvalsNumbRep >1 && exists('groupedScatterplots', where=pacotestOptions) && pacotestOptions$groupedScatterplots)
           {
             pacotestOptions$groupedScatterplots = FALSE
