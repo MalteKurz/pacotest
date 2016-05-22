@@ -426,7 +426,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
     
     // Declare some variables
     arma::umat I1(n1,m);
-    arma::umat J1;
+    arma::umat J1(4,1);
     arma::uvec R1_1_1;
     arma::uvec R1_1_2;
     
@@ -436,25 +436,24 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       unsigned int N1;
       if ((SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
       {
-        N1 = 1;
-        J1.set_size(2,1);
-        
-        J1(0,0) = 0;
-        J1(1,0) = floor(n1/2)-1;
+        iStart = 1;
+        iEnd = 2;
       }
       else
       {
-        N1 = 3;
-        J1.set_size(4,1);
-        
-        J1(0,0) = 0;
-        J1(1,0) = floor(n1/4)-1;
-        J1(2,0) = floor(n1/2)-1;
-        J1(3,0) = floor(3*n1/4)-1;
+        iStart = 0;
+        iEnd = 3;
       }
       
+      
+      J1(0,0) = 0;
+      J1(1,0) = floor(n1/4)-1;
+      J1(2,0) = floor(n1/2)-1;
+      J1(3,0) = floor(3*n1/4)-1;
+      
       // Learn the second split
-      arma::mat a1(m,N1);
+      arma::mat a1(m,3);
+      a1.zeros();
       arma::uvec X1(n1);
       
       for (j=0;j<m;j++)
@@ -466,7 +465,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       
       for (j=0;j<m;j++)
       {
-        for (i=0;i<N1;i++)
+        for (i=iStart;i<iEnd;i++)
         {
           ind.submat(0,0,J1(i+1,0),0) = I1.submat(0,j,J1(i+1,0),j);
           ind.submat(0,1,n1-J1(i+1,0)-2,1) = I1.submat(J1(i+1,0)+1,j,n1-1,j);
@@ -496,7 +495,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
     
     // Declare some variables
     arma::umat I2(n2,m);
-    arma::umat J2;
+    arma::umat J2(4,1);
     arma::uvec R1_2_1;
     arma::uvec R1_2_2;
     
@@ -507,25 +506,23 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       unsigned int N2;
       if ((SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
       {
-        N2 = 1;
-        J2.set_size(2,1);
-        
-        J2(0,0) = 0;
-        J2(1,0) = floor(n2/2)-1;
+        iStart = 1;
+        iEnd = 2;
       }
       else
       {
-        N2 = 3;
-        J2.set_size(4,1);
-        
-        J2(0,0) = 0;
-        J2(1,0) = floor(n2/4)-1;
-        J2(2,0) = floor(n2/2)-1;
-        J2(3,0) = floor(3*n2/4)-1;
+        iStart = 0;
+        iEnd = 3;
       }
       
+      J2(0,0) = 0;
+      J2(1,0) = floor(n2/4)-1;
+      J2(2,0) = floor(n2/2)-1;
+      J2(3,0) = floor(3*n2/4)-1;
+      
       // Learn the second split
-      arma::mat a2(m,N2);
+      arma::mat a2(m,3);
+      a2.zeros();
       arma::uvec X2(n2);
       
       for (j=0;j<m;j++)
@@ -537,7 +534,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       
       for (j=0;j<m;j++)
       {
-        for (i=0;i<N2;i++)
+        for (i=iStart;i<iEnd;i++)
         {
           ind.submat(0,0,J2(i+1,0),0) = I2.submat(0,j,J2(i+1,0),j);
           ind.submat(0,1,n2-J2(i+1,0)-2,1) = I2.submat(J2(i+1,0)+1,j,n2-1,j);
