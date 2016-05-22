@@ -56,6 +56,40 @@ test_that("unit tests for ECORR", {
   pacotestOptions19=pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
   
   
+  pacotestOptions20=pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions21=pacotestset(testType='ECORR', grouping = 'TreeECORR',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
+  
+  pacotestOptions22=pacotestset(testType='ECORR', grouping = 'TreeECORR',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions23=pacotestset(testType='ECORR', grouping = 'TreeECORR',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions24=pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions25=pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions26=pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions27=pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  
+  pacotestOptions28=pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions29=pacotestset(testType='ECORR', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
+  
+  pacotestOptions30=pacotestset(testType='ECORR', grouping = 'TreeEC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions31=pacotestset(testType='ECORR', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions32=pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions33=pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions34=pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions35=pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  
   set.seed(3131)
   # Simulate first data set
   N = 1000
@@ -392,6 +426,183 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData3Test19,2.4579371649124936994e-08)
   expect_equal(resultData4Test19,0.23685230605856111286)
   
+  ##
+  resultData1Test20 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions20)$pValue
+  resultData2Test20 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions20)$pValue
+  resultData3Test20 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions20)$pValue
+  resultData4Test20 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions20)$pValue
+  
+  expect_equal(resultData1Test20,0)
+  expect_equal(resultData2Test20,0.38342942676277114167)
+  expect_equal(resultData3Test20,1.4357270927689569362e-10)
+  expect_equal(resultData4Test20,0.98048071162180483462)
+  
+  ##
+  resultData1Test21 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions21)$pValue
+  resultData2Test21 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions21)$pValue
+  resultData3Test21 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions21)$pValue
+  resultData4Test21 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions21)$pValue
+  
+  expect_equal(resultData1Test21,0)
+  expect_equal(resultData2Test21,0.38342942676277114167)
+  expect_equal(resultData3Test21,1.4357270927689569362e-10)
+  expect_equal(resultData4Test21,0.98048071162180483462)
+  
+  ##
+  resultData1Test22 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions22)$pValue
+  resultData2Test22 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions22)$pValue
+  resultData3Test22 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions22)$pValue
+  resultData4Test22 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions22)$pValue
+  
+  expect_equal(resultData1Test22,0)
+  expect_equal(resultData2Test22,0.55145510054908453146)
+  expect_equal(resultData3Test22,2.2204460492503130808e-16)
+  expect_equal(resultData4Test22,0.053177235107229048339)
+  
+  ##
+  resultData1Test23 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions23)$pValue
+  resultData2Test23 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions23)$pValue
+  resultData3Test23 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions23)$pValue
+  resultData4Test23 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions23)$pValue
+  
+  expect_equal(resultData1Test23,0)
+  expect_equal(resultData2Test23,0.38342942676277114167)
+  expect_equal(resultData3Test23,1.4357270927689569362e-10)
+  expect_equal(resultData4Test23,0.98048071162180483462)
+  
+  ##
+  resultData1Test24 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions24)$pValue
+  resultData2Test24 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions24)$pValue
+  resultData3Test24 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions24)$pValue
+  resultData4Test24 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions24)$pValue
+  
+  expect_equal(resultData1Test24,0)
+  expect_equal(resultData2Test24,0.38342942676277114167)
+  expect_equal(resultData3Test24,1.4357270927689569362e-10)
+  expect_equal(resultData4Test24,0.98048071162180483462)
+  
+  ##
+  resultData1Test25 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions25)$pValue
+  resultData2Test25 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions25)$pValue
+  resultData3Test25 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions25)$pValue
+  resultData4Test25 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions25)$pValue
+  
+  expect_equal(resultData1Test25,0)
+  expect_equal(resultData2Test25,0.38342942676277114167)
+  expect_equal(resultData3Test25,1.4357270927689569362e-10)
+  expect_equal(resultData4Test25,0.98048071162180483462)
+  
+  ##
+  resultData1Test26 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions26)$pValue
+  resultData2Test26 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions26)$pValue
+  resultData3Test26 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions26)$pValue
+  resultData4Test26 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions26)$pValue
+  
+  expect_equal(resultData1Test26,0)
+  expect_equal(resultData2Test26,0.55145510054908453146)
+  expect_equal(resultData3Test26,2.2204460492503130808e-16)
+  expect_equal(resultData4Test26,0.053177235107229048339)
+  
+  ##
+  resultData1Test27 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions27)$pValue
+  resultData2Test27 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions27)$pValue
+  resultData3Test27 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions27)$pValue
+  resultData4Test27 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions27)$pValue
+  
+  expect_equal(resultData1Test27,0)
+  expect_equal(resultData2Test27,0.38342942676277114167)
+  expect_equal(resultData3Test27,1.4357270927689569362e-10)
+  expect_equal(resultData4Test27,0.98048071162180483462)
+  
+  ##
+  resultData1Test28 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions28)$pValue
+  resultData2Test28 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions28)$pValue
+  resultData3Test28 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions28)$pValue
+  resultData4Test28 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions28)$pValue
+  
+  expect_equal(resultData1Test28,0)
+  expect_equal(resultData2Test28,0.38342942676277114167)
+  expect_equal(resultData3Test28,1.4357270927689569362e-10)
+  expect_equal(resultData4Test28,0.98048071162180483462)
+  
+  ##
+  resultData1Test29 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions29)$pValue
+  resultData2Test29 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions29)$pValue
+  resultData3Test29 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions29)$pValue
+  resultData4Test29 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions29)$pValue
+  
+  expect_equal(resultData1Test29,0)
+  expect_equal(resultData2Test29,0.38342942676277114167)
+  expect_equal(resultData3Test29,1.4357270927689569362e-10)
+  expect_equal(resultData4Test29,0.98048071162180483462)
+  
+  ##
+  resultData1Test30 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions30)$pValue
+  resultData2Test30 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions30)$pValue
+  resultData3Test30 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions30)$pValue
+  resultData4Test30 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions30)$pValue
+  
+  expect_equal(resultData1Test30,0)
+  expect_equal(resultData2Test30,0.55145510054908453146)
+  expect_equal(resultData3Test30,2.2204460492503130808e-16)
+  expect_equal(resultData4Test30,0.053177235107229048339)
+  
+  ##
+  resultData1Test31 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions31)$pValue
+  resultData2Test31 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions31)$pValue
+  resultData3Test31 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions31)$pValue
+  resultData4Test31 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions31)$pValue
+  
+  expect_equal(resultData1Test31,0)
+  expect_equal(resultData2Test31,0.38342942676277114167)
+  expect_equal(resultData3Test31,1.4357270927689569362e-10)
+  expect_equal(resultData4Test31,0.98048071162180483462)
+  
+  ##
+  resultData1Test32 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions32)$pValue
+  resultData2Test32 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions32)$pValue
+  resultData3Test32 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions32)$pValue
+  resultData4Test32 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions32)$pValue
+  
+  expect_equal(resultData1Test32,0)
+  expect_equal(resultData2Test32,0.38342942676277114167)
+  expect_equal(resultData3Test32,1.4357270927689569362e-10)
+  expect_equal(resultData4Test32,0.98048071162180483462)
+  
+  ##
+  resultData1Test33 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions33)$pValue
+  resultData2Test33 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions33)$pValue
+  resultData3Test33 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions33)$pValue
+  resultData4Test33 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions33)$pValue
+  
+  expect_equal(resultData1Test33,0)
+  expect_equal(resultData2Test33,0.38342942676277114167)
+  expect_equal(resultData3Test33,1.4357270927689569362e-10)
+  expect_equal(resultData4Test33,0.98048071162180483462)
+  
+  ##
+  resultData1Test34 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions34)$pValue
+  resultData2Test34 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions34)$pValue
+  resultData3Test34 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions34)$pValue
+  resultData4Test34 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions34)$pValue
+  
+  expect_equal(resultData1Test34,0)
+  expect_equal(resultData2Test34,0.55145510054908453146)
+  expect_equal(resultData3Test34,2.2204460492503130808e-16)
+  expect_equal(resultData4Test34,0.053177235107229048339)
+  
+  ##
+  resultData1Test35 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions35)$pValue
+  resultData2Test35 = pacotest(data2[,c(1,5)],data2[,c(2,3,4)],pacotestOptions35)$pValue
+  resultData3Test35 = pacotest(data3[,c(2,3)],data3[,1],pacotestOptions35)$pValue
+  resultData4Test35 = pacotest(data4[,c(2,3)],data4[,1],pacotestOptions35)$pValue
+  
+  expect_equal(resultData1Test35,0)
+  expect_equal(resultData2Test35,0.38342942676277114167)
+  expect_equal(resultData3Test35,1.4357270927689569362e-10)
+  expect_equal(resultData4Test35,0.98048071162180483462)
+  
+  
   
   
   set.seed(51312)
@@ -445,6 +656,23 @@ test_that("unit tests for ECORR", {
   pacotestOptions18 = pacotestset(pacotestOptions18, withEstUncert = TRUE, aggPvalsNumbRep = 1)
   pacotestOptions19 = pacotestset(pacotestOptions19, withEstUncert = TRUE, aggPvalsNumbRep = 1)
   
+  pacotestOptions20 = pacotestset(pacotestOptions20, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions21 = pacotestset(pacotestOptions21, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions22 = pacotestset(pacotestOptions22, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions23 = pacotestset(pacotestOptions23, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions24 = pacotestset(pacotestOptions24, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions25 = pacotestset(pacotestOptions25, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions26 = pacotestset(pacotestOptions26, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions27 = pacotestset(pacotestOptions27, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions28 = pacotestset(pacotestOptions28, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions29 = pacotestset(pacotestOptions29, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions30 = pacotestset(pacotestOptions30, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions31 = pacotestset(pacotestOptions31, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions32 = pacotestset(pacotestOptions32, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions33 = pacotestset(pacotestOptions33, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions34 = pacotestset(pacotestOptions34, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions35 = pacotestset(pacotestOptions35, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  
   
   
   resultData6Test1 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions1, 3, 1)$pValue
@@ -467,6 +695,23 @@ test_that("unit tests for ECORR", {
   resultData6Test18 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions18, 3, 1)$pValue
   resultData6Test19 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions19, 3, 1)$pValue
   
+  resultData6Test20 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions20, 3, 1)$pValue
+  resultData6Test21 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions21, 3, 1)$pValue
+  resultData6Test22 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions22, 3, 1)$pValue
+  resultData6Test23 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions23, 3, 1)$pValue
+  resultData6Test24 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions24, 3, 1)$pValue
+  resultData6Test25 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions25, 3, 1)$pValue
+  resultData6Test26 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions26, 3, 1)$pValue
+  resultData6Test27 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions27, 3, 1)$pValue
+  resultData6Test28 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions28, 3, 1)$pValue
+  resultData6Test29 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions29, 3, 1)$pValue
+  resultData6Test30 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions30, 3, 1)$pValue
+  resultData6Test31 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions31, 3, 1)$pValue
+  resultData6Test32 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions32, 3, 1)$pValue
+  resultData6Test33 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions33, 3, 1)$pValue
+  resultData6Test34 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions34, 3, 1)$pValue
+  resultData6Test35 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions35, 3, 1)$pValue
+  
   expect_equal(resultData6Test1,0.7616097837018107608)
   expect_equal(resultData6Test2,0.25689682268935032372)
   expect_equal(resultData6Test3,0.46754118033759028972)
@@ -486,6 +731,23 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData6Test17,0.1164354048339920622)
   expect_equal(resultData6Test18,0.8407410989303726323)
   expect_equal(resultData6Test19,0.13122934519427853495)
+  
+  expect_equal(resultData6Test20,0.97358975668844760509)
+  expect_equal(resultData6Test21,0.97358975668844760509)
+  expect_equal(resultData6Test22,0.97681339893325080936)
+  expect_equal(resultData6Test23,0.97358975668844760509)
+  expect_equal(resultData6Test24,0.97358975668844760509)
+  expect_equal(resultData6Test25,0.97358975668844760509)
+  expect_equal(resultData6Test26,0.97681339893325080936)
+  expect_equal(resultData6Test27,0.97358975668844760509)
+  expect_equal(resultData6Test28,0.97358975668844760509)
+  expect_equal(resultData6Test29,0.97358975668844760509)
+  expect_equal(resultData6Test30,0.97681339893325080936)
+  expect_equal(resultData6Test31,0.97358975668844760509)
+  expect_equal(resultData6Test32,0.97358975668844760509)
+  expect_equal(resultData6Test33,0.97358975668844760509)
+  expect_equal(resultData6Test34,0.97681339893325080936)
+  expect_equal(resultData6Test35,0.97358975668844760509)
   
   
 })
