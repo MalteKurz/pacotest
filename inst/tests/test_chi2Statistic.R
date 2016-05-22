@@ -38,7 +38,7 @@ test_that("unit tests for ERC", {
   U = RVineSim(N,rvm)
   rvmHat = RVineSeqEst(U,rvm)$RVM
   
-  svcmDataFrameHat = pacotest:::rVineDataFrameRep(rvmHat)$variables
+  svcmDataFrameHat = pacotest:::rVineDataFrameRep(rvmHat)
   
   ind = matrix(NA,N,2)
   ind[,1] = c(rep(TRUE,N/2),rep(FALSE,N/2))
@@ -48,11 +48,11 @@ test_that("unit tests for ERC", {
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
   
-  expect_equal(res$testStat,0.64034211409376129431)
-  expect_equal(res$pValue,0.4235869398574387823)
+  expect_equal(res$testStat,0.83383352525331200233)
+  expect_equal(res$pValue,0.36116636240337429697)
   
-  expect_equal(resWithEstimation$testStat,0.56509311895736236142)
-  expect_equal(resWithEstimation$pValue,0.45221539535817567579)
+  expect_equal(resWithEstimation$testStat,0.84785692959644609612)
+  expect_equal(resWithEstimation$pValue,0.35715930974148979438)
   
   
   ind = matrix(NA,N,3)
@@ -64,11 +64,11 @@ test_that("unit tests for ERC", {
   res = pacotest:::testStatEqualCorrWithoutEstimation(U, svcmDataFrameHat, ind)
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
-  expect_equal(res$testStat,1.5582520864971858288)
-  expect_equal(res$pValue,0.45880681345004847849)
+  expect_equal(res$testStat,2.454766624833430555)
+  expect_equal(res$pValue,0.29305841758446760092)
   
-  expect_equal(resWithEstimation$testStat,1.4640687567395958002)
-  expect_equal(resWithEstimation$pValue,0.4809296014258914731)
+  expect_equal(resWithEstimation$testStat,2.7602023114432685524)
+  expect_equal(resWithEstimation$pValue,0.25155310573676692432)
   
   
   ind = matrix(NA,N,4)
@@ -81,11 +81,11 @@ test_that("unit tests for ERC", {
   res = pacotest:::testStatEqualCorrWithoutEstimation(U, svcmDataFrameHat, ind)
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
-  expect_equal(res$testStat,1.7839860580917361599)
-  expect_equal(res$pValue,0.61842593405983881105)
+  expect_equal(res$testStat,2.7721624555651458444)
+  expect_equal(res$pValue,0.42810299746943947241)
   
-  expect_equal(resWithEstimation$testStat,1.6479933841949565565)
-  expect_equal(resWithEstimation$pValue,0.64855725616395010213)
+  expect_equal(resWithEstimation$testStat,2.9912498147485870881)
+  expect_equal(resWithEstimation$pValue,0.39297625116189294214)
   
   
   
@@ -117,7 +117,7 @@ test_that("unit tests for ERC", {
   U2 = RVineSim(N,rvm2)
   rvmHat2 = RVineSeqEst(U2,rvm2)$RVM
   
-  svcmDataFrameHat2 = pacotest:::rVineDataFrameRep(rvmHat2)$variables
+  svcmDataFrameHat2 = pacotest:::rVineDataFrameRep(rvmHat2)
   
   ind = matrix(NA,N,2)
   ind[,1] = c(rep(TRUE,N/2),rep(FALSE,N/2))
@@ -127,11 +127,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,1.6752839226413402951)
-  expect_equal(res2$pValue,0.19555228871052821038)
+  expect_equal(res2$testStat,1.1630787964924615974)
+  expect_equal(res2$pValue,0.28082793910460845943)
   
-  expect_equal(resWithEstimation2$testStat,0.70330445282512621397)
-  expect_equal(resWithEstimation2$pValue,0.40167557291709143907)
+  expect_equal(resWithEstimation2$testStat,1.1486998581351295368)
+  expect_equal(resWithEstimation2$pValue,0.28382148028243781024)
   
   
   ind = matrix(NA,N,3)
@@ -143,11 +143,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,2.9299666079825024134)
-  expect_equal(res2$pValue,0.23108184958970501288)
+  expect_equal(res2$testStat,1.8312662134969845962)
+  expect_equal(res2$pValue,0.40026313656338963209)
   
-  expect_equal(resWithEstimation2$testStat,1.3106905960240724518)
-  expect_equal(resWithEstimation2$pValue,0.51926273123862976)
+  expect_equal(resWithEstimation2$testStat,1.8236835598401168745)
+  expect_equal(resWithEstimation2$pValue,0.40178354529346393953)
   
   
   ind = matrix(NA,N,4)
@@ -160,11 +160,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,2.9721148561868826476)
-  expect_equal(res2$pValue,0.3959445289661274181)
+  expect_equal(res2$testStat,2.704885100069900794)
+  expect_equal(res2$pValue,0.43939776104000616286)
   
-  expect_equal(resWithEstimation2$testStat,1.331820494912132169)
-  expect_equal(resWithEstimation2$pValue,0.72159121006110882313)
+  expect_equal(resWithEstimation2$testStat,2.9090013927664419846)
+  expect_equal(resWithEstimation2$pValue,0.40586921002370979217)
   
 })
 
