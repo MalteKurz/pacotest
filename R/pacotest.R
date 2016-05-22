@@ -62,16 +62,16 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         if (pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate')
         {
-        W = addAggInfo(W,pacotestOptions$aggInfo);
-        
-        if (pacotestOptions$testType=='ECOV')
-        {
-          out = ECOV(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
-        }
-        else
-        {
-          out = ECORR(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
-        }
+          W = addAggInfo(W,pacotestOptions$aggInfo);
+          
+          if (pacotestOptions$testType=='ECOV')
+          {
+            out = ECOV(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+          }
+          else
+          {
+            out = ECORR(as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+          }
         }
         else if (pacotestOptions$sizeKeepingMethod=='penalty')
         {
@@ -145,7 +145,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     else
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
-     
+      
       W = addAggInfo(W,pacotestOptions$aggInfo);
       out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
     }
@@ -224,6 +224,11 @@ partitionToNumber = function(partitionIdentfier)
 
 GroupedScatterplot = function(Udata, W, decisionTree)
 {
+  if (!requireNamespace("ggplot2", quietly = TRUE) || !requireNamespace("gridExtra", quietly = TRUE))
+  {
+    stop("ggplot2 and gridExtra needed to obtain grouped scatter plots. Please install it.",
+         call. = FALSE)
+  }
   
   dataLabels = names(Udata)
   
@@ -245,122 +250,36 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     theme(panel.margin = unit(4, "lines"), legend.position = "none")
   
   
-  indCentralSplit = W[,decisionTree$CentralNode$Variable]<=decisionTree$CentralNode$Threshold
+  xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
   
-  centralSplit = vector(length=length(indCentralSplit))
-  levelNames = vector(length=2)
-  
-  rho = momentBasedCorr(Udata[indCentralSplit==1,])
-  levelNames[1] = paste(decisionTree$CentralNode$Variable, " <= ", format(decisionTree$CentralNode$Threshold,dig=4),
-                        "\nrho = ", format(rho,dig=4))
-  centralSplit[indCentralSplit==1] = levelNames[1]
-  
-  rho = momentBasedCorr(Udata[indCentralSplit==0,])
-  levelNames[2] = paste(decisionTree$CentralNode$Variable, " > ", format(decisionTree$CentralNode$Threshold,dig=4),
-                        "\nrho = ", format(rho,dig=4))
-  centralSplit[indCentralSplit==0] = levelNames[2]
-  
-  centralSplit = factor(centralSplit, levelNames)
-  
-  
-  data = transform(Udata, centralSplit = centralSplit)
-  
-  
-  p2 = ggplot(data,
-              aes(V1, V2, colour=centralSplit)) +
-    geom_point() +
+  indCentralSplit = xx$indVector
+  p2 = xx$p + 
     scale_colour_manual(values = cbbPalette[2:3]) + 
-    scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(dataLabels[1]) + 
-    ylab(dataLabels[2]) + 
-    coord_fixed() +
-    facet_wrap(~centralSplit) +
-    theme_grey(base_size = 20) + 
     theme(panel.margin = unit(15, "lines"), legend.position = "none")
-  
-  
-  
   
   p3 = ggplot()
   p4 = ggplot()
   
   if (!is.null(decisionTree$LeftNode))
   {
+    xx = getGroupedPlot(Udata[indCentralSplit==1,],
+                        W[indCentralSplit==1,],
+                        decisionTree$LeftNode$Variable, decisionTree$LeftNode$Threshold, dataLabels)
     
-    indLeftSplit = W[indCentralSplit==1,decisionTree$LeftNode$Variable]<=decisionTree$LeftNode$Threshold
-    
-    leftSplit = vector(length=length(indLeftSplit))
-    levelNames = vector(length=2)
-    
-    xx = Udata[indCentralSplit==1,]
-    rho = momentBasedCorr(xx[indLeftSplit==1,])
-    levelNames[1] = paste(decisionTree$LeftNode$Variable, " <= ", format(decisionTree$LeftNode$Threshold,dig=4),
-                          "\nrho = ", format(rho,dig=4))
-    leftSplit[indLeftSplit==1] = levelNames[1]
-    
-    rho = momentBasedCorr(xx[indLeftSplit==0,])
-    levelNames[2] = paste(decisionTree$LeftNode$Variable, " > ", format(decisionTree$LeftNode$Threshold,dig=4),
-                          "\nrho = ", format(rho,dig=4))
-    leftSplit[indLeftSplit==0] = levelNames[2]
-    
-    leftSplit = factor(leftSplit, levelNames)
-    
-    leftData = transform(Udata[indCentralSplit==1,], leftSplit = leftSplit)
-    row.names(leftData) = NULL
-    
-    p3 = ggplot(leftData,
-                aes(V1, V2, colour=leftSplit)) +
-      geom_point() +
+    p3 = xx$p + 
       scale_colour_manual(values = cbbPalette[4:5]) + 
-      scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-      scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-      xlab(dataLabels[1]) + 
-      ylab(dataLabels[2]) + 
-      coord_fixed() +
-      facet_wrap(~leftSplit) +
-      theme_grey(base_size = 20) + 
       theme(panel.margin = unit(2, "lines"), legend.position = "none")
-    
     
   }
   
   if (!is.null(decisionTree$RightNode))
   {
+    xx = getGroupedPlot(Udata[indCentralSplit==0,],
+                        W[indCentralSplit==0,],
+                        decisionTree$RightNode$Variable, decisionTree$RightNode$Threshold, dataLabels)
     
-    indRightSplit = W[indCentralSplit==0,decisionTree$RightNode$Variable]<=decisionTree$RightNode$Threshold
-    
-    rightSplit = vector(length=length(indRightSplit))
-    levelNames = vector(length=2)
-    
-    xx = Udata[indCentralSplit==0,]
-    rho = momentBasedCorr(xx[indRightSplit==1,])
-    levelNames[1] = paste(decisionTree$RightNode$Variable, " <= ", format(decisionTree$RightNode$Threshold,dig=4),
-                          "\nrho = ", format(rho,dig=4))
-    rightSplit[indRightSplit==1] = levelNames[1]
-    
-    rho = momentBasedCorr(xx[indRightSplit==0,])
-    levelNames[2] = paste(decisionTree$RightNode$Variable, " > ", format(decisionTree$RightNode$Threshold,dig=4),
-                          "\nrho = ", format(rho,dig=4))
-    rightSplit[indRightSplit==0] = levelNames[2]
-    
-    rightSplit = factor(rightSplit, levelNames)
-    
-    rightData = transform(Udata[indCentralSplit==0,], rightSplit = rightSplit)
-    row.names(rightData) = NULL
-    
-    
-    p4 = ggplot(rightData,
-                aes(V1, V2, colour=rightSplit)) +
-      geom_point() +
+    p4 = xx$p + 
       scale_colour_manual(values = cbbPalette[6:7]) + 
-      scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-      scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-      xlab(dataLabels[1]) + 
-      ylab(dataLabels[2]) + 
-      coord_fixed() +
-      facet_wrap(~rightSplit) +
-      theme_grey(base_size = 20) + 
       theme(panel.margin = unit(2, "lines"), legend.position = "none")
     
   }
@@ -371,6 +290,47 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   lM[3,1] = 3
   lM[3,2] = 4
   grid.arrange(p1, p2, p3, p4, layout_matrix = lM)
+  
+}
+
+
+getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
+{
+  indVector = W[,variable]<=threshold
+  
+  split = vector(length=length(indVector))
+  levelNames = vector(length=2)
+  
+  rho = momentBasedCorr(Udata[indVector==1,])
+  levelNames[1] = paste(variable, " <= ", format(threshold,dig=4),
+                        "\nrho = ", format(rho,dig=4))
+  split[indVector==1] = levelNames[1]
+  
+  rho = momentBasedCorr(Udata[indVector==0,])
+  levelNames[2] = paste(variable, " > ", format(threshold,dig=4),
+                        "\nrho = ", format(rho,dig=4))
+  split[indVector==0] = levelNames[2]
+  
+  split = factor(split, levelNames)
+  
+  
+  data = transform(Udata, split = split)
+  
+  
+  p = ggplot(data,
+             aes(V1, V2, colour=split)) +
+    geom_point() +
+    scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    xlab(dataLabels[1]) + 
+    ylab(dataLabels[2]) + 
+    coord_fixed() +
+    facet_wrap(~split) +
+    theme_grey(base_size = 20)
+  
+  
+  return(list(p=p, indVector = indVector))
+  
 }
 
 momentBasedCorr = function(data)
@@ -388,8 +348,8 @@ momentBasedCorr = function(data)
   return(rho)
 }
 
-  
-  
+
+
 # GroupedScatterplot = function(Xdata,Ydata)
 # {
 #   par(mfrow=c(2,2))
@@ -648,6 +608,5 @@ decisionTreePlot = function(DecisionTree)
   
 }
 
-  
-  
-  
+
+
