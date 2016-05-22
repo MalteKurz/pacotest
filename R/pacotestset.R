@@ -373,6 +373,10 @@ else
     {
       pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
     }
+    if (!(missing(withEstUncert)))
+    {
+      pacotestOptions$withEstUncert = CheckLogical(withEstUncert,"withEstUncert")
+    }
     if (!(missing(finalComparison)))
     {
       pacotestOptions$finalComparison = CheckFinalComparison(finalComparison,"finalComparison")
