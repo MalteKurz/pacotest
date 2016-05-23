@@ -130,9 +130,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       
       if (pacotestOptions$decisionTreePlot)
       {
-        if (!requireNamespace("plotrix", quietly = TRUE)) {
+        if (!requireNamespace("plotrix", quietly = TRUE))
+        {
           stop("plotrix needed to obtain decision tree plots. Please install it.",
                call. = FALSE)
+        }
+        else
+        {
           decisionTreePlot(out$DecisionTree)
         }
       }
