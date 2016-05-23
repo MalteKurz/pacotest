@@ -288,7 +288,7 @@ getOmegaWithLikesCovE = function(data, svcmDataFrame, indList, cPitData, listOfM
   }
   
   
-  return(list(D=D,E=E))
+  return(E)
   
   
 }
