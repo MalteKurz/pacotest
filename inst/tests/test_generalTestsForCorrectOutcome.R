@@ -752,3 +752,150 @@ test_that("unit tests for ECORR", {
   
 })
 
+
+test_that("unit tests for ECOV, EC and VI", {
+  
+  library("pacotest")
+  library("testthat")
+  library("VineCopula")
+  library("numDeriv")
+  
+  
+  
+  # Define the test types
+  pacotestOptions1=pacotestset(testType='VI')
+  pacotestOptions2=pacotestset(testType='EC',grouping = "SumMedian")
+  
+  pacotestOptions3=pacotestset(testType='EC',grouping = "ProdThirdsII")
+  
+  pacotestOptions4=pacotestset(testType='EC',grouping = "SumThirdsIII")
+  
+  pacotestOptions5=pacotestset(testType='ECOV',grouping = "SumMedian", withEstUncert = FALSE,
+                               expMinSampleSize = NULL, trainingDataFraction = NULL,
+                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  
+  pacotestOptions6=pacotestset(testType='ECOV',grouping = "ProdThirdsII", withEstUncert = FALSE,
+                               expMinSampleSize = NULL, trainingDataFraction = NULL,
+                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  
+  pacotestOptions7=pacotestset(testType='ECOV',grouping = "SumThirdsIII", withEstUncert = FALSE,
+                               expMinSampleSize = NULL, trainingDataFraction = NULL,
+                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  
+  pacotestOptions8=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions9=pacotestset(testType='ECOV', grouping = 'TreeECOV',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
+  
+  pacotestOptions10=pacotestset(testType='ECOV', grouping = 'TreeECOV',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions11=pacotestset(testType='ECOV', grouping = 'TreeECOV',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions12=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions13=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions14=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+  
+  pacotestOptions15=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+  pacotestOptions16 = pacotestset(pacotestOptions5, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions17 = pacotestset(pacotestOptions6, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions18 = pacotestset(pacotestOptions7, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions19 = pacotestset(pacotestOptions8, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions20 = pacotestset(pacotestOptions10, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions21 = pacotestset(pacotestOptions11, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions22 = pacotestset(pacotestOptions12, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions23 = pacotestset(pacotestOptions13, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions24 = pacotestset(pacotestOptions14, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions25 = pacotestset(pacotestOptions15, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  
+  set.seed(51312)
+  # Data set 6
+  N= 768
+  # Four-dimensional D-vine
+  structure = matrix(c(4,0,0,0,
+                       1,3,2,0,
+                       2,1,2,0,
+                       3,2,1,1),4,4,TRUE)
+  
+  families = array(3,dim=dim(structure))
+  families  = matrix(c(0,0,0,0,
+                       5,0,0,0,
+                       1,1,0,0,
+                       2,2,2,0),4,4,TRUE)
+  par2  = matrix(c(0,0,0,0,
+                   0,0,0,0,
+                   0,0,0,0,
+                   2.5,8,6,0),4,4,TRUE)
+  par  = matrix(c(0,0,0,0,
+                  5,0,0,0,
+                  0.4,0.3,0,0,
+                  0.5,0.8,0.6,0),4,4,TRUE)
+  names = c("V1", "V2", "V3","V4")
+  
+  rvm = RVineMatrix(structure,families,par,par2,names)
+  rvm = RVineMatrixNormalize(rvm)
+  
+  U = RVineSim(N,rvm)
+  
+  rvmHat = RVineSeqEst(U,rvm)$RVM
+
+  
+  resultData6Test1 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions1, 3, 1)$pValue
+  
+  resultData6Test2 = pacotest:::pacotestRvineSingleCopula(U[1:341,], rvmHat, pacotestOptions2, 3, 1)$pValue
+  resultData6Test3 = pacotest:::pacotestRvineSingleCopula(U[1:341,], rvmHat, pacotestOptions3, 3, 1)$pValue
+  resultData6Test4 = pacotest:::pacotestRvineSingleCopula(U[1:341,], rvmHat, pacotestOptions4, 3, 1)$pValue
+  
+  resultData6Test5 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions5, 3, 1)$pValue
+  resultData6Test6 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions6, 3, 1)$pValue
+  resultData6Test7 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions7, 3, 1)$pValue
+  resultData6Test8 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions8, 3, 1)$pValue
+  resultData6Test9 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions9, 3, 1)$pValue
+  resultData6Test10 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions10, 3, 1)$pValue
+  resultData6Test11 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions11, 3, 1)$pValue
+  resultData6Test12 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions12, 3, 1)$pValue
+  resultData6Test13 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions13, 3, 1)$pValue
+  resultData6Test14 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions14, 3, 1)$pValue
+  resultData6Test15 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions15, 3, 1)$pValue
+  
+  resultData6Test16 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions16, 3, 1)$pValue
+  resultData6Test17 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions17, 3, 1)$pValue
+  resultData6Test18 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions18, 3, 1)$pValue
+  resultData6Test19 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions19, 3, 1)$pValue
+  resultData6Test20 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions20, 3, 1)$pValue
+  resultData6Test21 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions21, 3, 1)$pValue
+  resultData6Test22 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions22, 3, 1)$pValue
+  resultData6Test23 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions23, 3, 1)$pValue
+  resultData6Test24 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions24, 3, 1)$pValue
+  resultData6Test25 = pacotest:::pacotestRvineSingleCopula(U, rvmHat, pacotestOptions25, 3, 1)$pValue
+  
+  expect_equal(resultData6Test1,0.70699999999999996181)
+  expect_equal(resultData6Test2,0.57099999999999995204)
+  expect_equal(resultData6Test3,0.8329999999999999627)
+  expect_equal(resultData6Test4,0.35899999999999998579)
+  expect_equal(resultData6Test5,0.4697714112048757551)
+  expect_equal(resultData6Test6,0.32018336201425989795)
+  expect_equal(resultData6Test7,0.85306274124527348146)
+  expect_equal(resultData6Test8,0.46977141120487586612)
+  expect_equal(resultData6Test9,0.46977141120487586612)
+  expect_equal(resultData6Test10,0.84799768664968644405)
+  expect_equal(resultData6Test11,0.46977141120487586612)
+  expect_equal(resultData6Test12,0.46977141120487586612)
+  expect_equal(resultData6Test13,0.46977141120487586612)
+  expect_equal(resultData6Test14,0.84799768664968644405)
+  expect_equal(resultData6Test15,0.46977141120487586612)
+  expect_equal(resultData6Test16,0.50070969489726790957)
+  expect_equal(resultData6Test17,0.31251998961408167244)
+  expect_equal(resultData6Test18,0.8636715705286200917)
+  expect_equal(resultData6Test19,0.50070969489726846469)
+  expect_equal(resultData6Test20,0.86678889065076192288)
+  expect_equal(resultData6Test21,0.50070969489726846469)
+  expect_equal(resultData6Test22,0.50070969489726846469)
+  expect_equal(resultData6Test23,0.50070969489726846469)
+  expect_equal(resultData6Test24,0.86678889065076192288)
+  expect_equal(resultData6Test25,0.50070969489726846469)
+  
+  
+})
+
