@@ -746,6 +746,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
         }
         indexVectors.set_size(n,4);
         nObsPerVector.set_size(4);
+        
+        // Set fourth indicator for correct export
+        SplitVariable(3) = 0;
       }
       else
       {
@@ -761,6 +764,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           }
           indexVectors.set_size(n,3);
           nObsPerVector.set_size(3);
+          
+          // Set fourth indicator for correct export
+          SplitVariable(3) = 13;
         }
         
         if (R1_2_1.is_empty() && R1_2_2.is_empty())
@@ -775,6 +781,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           }
           indexVectors.set_size(n,3);
           nObsPerVector.set_size(3);
+          
+          // Set fourth indicator for correct export
+          SplitVariable(3) = 10;
         }
         
       }
