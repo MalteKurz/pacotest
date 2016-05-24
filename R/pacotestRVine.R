@@ -48,7 +48,13 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
       
       Udata = cbind(cPit1,cPit2)
-      W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
+      cPit1Name = paste(dimnames(subRVM$data)[[2]][svcmDataFrame$var1[copulaInd]],
+                        paste(dimnames(subRVM$data)[[2]][svcmDataFrame$condset[[copulaInd]]], collapse=","), sep="|")
+      cPit2Name = paste(dimnames(subRVM$data)[[2]][svcmDataFrame$var2[copulaInd]],
+                        paste(dimnames(subRVM$data)[[2]][svcmDataFrame$condset[[copulaInd]]], collapse=","), sep="|")
+      dimnames(Udata)[[2]] = c(cPit1Name, cPit2Name)
+      
+      W = subRVM$data[,svcmDataFrame$condset[[copulaInd]], drop=FALSE]
       
       out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
       
@@ -131,7 +137,13 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
   
   Udata = cbind(cPit1,cPit2)
-  W = subRVM$data[,svcmDataFrame$condset[[copulaInd]]]
+  cPit1Name = paste(dimnames(subRVM$data)[[2]][svcmDataFrame$var1[copulaInd]],
+                    paste(dimnames(subRVM$data)[[2]][svcmDataFrame$condset[[copulaInd]]], collapse=","), sep="|")
+  cPit2Name = paste(dimnames(subRVM$data)[[2]][svcmDataFrame$var2[copulaInd]],
+                    paste(dimnames(subRVM$data)[[2]][svcmDataFrame$condset[[copulaInd]]], collapse=","), sep="|")
+  dimnames(Udata)[[2]] = c(cPit1Name, cPit2Name)
+  
+  W = subRVM$data[,svcmDataFrame$condset[[copulaInd]], drop=FALSE]
   
   out = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
   
