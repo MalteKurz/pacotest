@@ -91,15 +91,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
         if (pacotestOptions$decisionTreePlot)
         {
-          if (!requireNamespace("plotrix", quietly = TRUE))
-          {
-            stop("plotrix needed to obtain decision tree plots. Please install it.",
-                 call. = FALSE)
-          }
-          else
-          {
-            decisionTreePlot(out$DecisionTree)
-          }
+          pDecTree = decisionTreePlot(out$DecisionTree)
+          print(pDecTree)
         }
       }
     }
@@ -130,15 +123,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       
       if (pacotestOptions$decisionTreePlot)
       {
-        if (!requireNamespace("plotrix", quietly = TRUE))
-        {
-          stop("plotrix needed to obtain decision tree plots. Please install it.",
-               call. = FALSE)
-        }
-        else
-        {
-          decisionTreePlot(out$DecisionTree)
-        }
+        pDecTree = decisionTreePlot(out$DecisionTree)
+        print(pDecTree)
       }
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
@@ -209,11 +195,12 @@ testTypeToNumber = function(partitionIdentfier)
 
 GroupedScatterplot = function(Udata, W, decisionTree)
 {
-  if (!requireNamespace("ggplot2", quietly = TRUE) || !requireNamespace("gridExtra", quietly = TRUE))
-  {
-    stop("ggplot2 and gridExtra needed to obtain grouped scatter plots. Please install it.",
-         call. = FALSE)
-  }
+#   if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("gridExtra", quietly = TRUE))
+#   {
+#     stop("ggplot2 and gridExtra needed to obtain grouped scatter plots. Please install it.",
+#          call. = FALSE)
+#   }
+#   else{
   
   dataLabels = names(Udata)
   
@@ -240,11 +227,14 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   indCentralSplit = xx$indVector
   p2 = xx$p + 
     scale_colour_manual(values = cbbPalette[2:3]) + 
-    theme(panel.margin = unit(15, "lines"), legend.position = "none")
+    theme(panel.margin = unit(30, "lines"), legend.position = "none")
+  
+  p2<-ggplotGrob(p2)
+  p2[[1]]$axis_l2 = p2[[1]]$axis_l1
   
   p3 = ggplot()
   p4 = ggplot()
-  
+    
   if (!is.null(decisionTree$LeftNode))
   {
     xx = getGroupedPlot(Udata[indCentralSplit==1,],
@@ -253,7 +243,10 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     
     p3 = xx$p + 
       scale_colour_manual(values = cbbPalette[4:5]) + 
-      theme(panel.margin = unit(2, "lines"), legend.position = "none")
+      theme(panel.margin = unit(10, "lines"), legend.position = "none")
+    
+    p3<-ggplotGrob(p3)
+    p3[[1]]$axis_l2 = p3[[1]]$axis_l1
     
   }
   
@@ -265,16 +258,57 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     
     p4 = xx$p + 
       scale_colour_manual(values = cbbPalette[6:7]) + 
-      theme(panel.margin = unit(2, "lines"), legend.position = "none")
+      theme(panel.margin = unit(10, "lines"), legend.position = "none")
+    
+    p4<-ggplotGrob(p4)
+    p4[[1]]$axis_l2 = p4[[1]]$axis_l1
     
   }
   
-  lM = matrix(NA, nrow=3, ncol=2)
-  lM[1,] = 1
-  lM[2,] = 2
-  lM[3,1] = 3
-  lM[3,2] = 4
-  grid.arrange(p1, p2, p3, p4, layout_matrix = lM)
+    
+  if (is.null(decisionTree$LeftNode) && is.null(decisionTree$RightNode))
+  {
+    lM = matrix(NA, nrow=2, ncol=2)
+    lM[1,] = 1
+    lM[2,] = 2
+    grid.arrange(p1, p2, layout_matrix = lM)
+  }
+  else
+  {
+    if (is.null(decisionTree$LeftNode))
+    {
+      lM = matrix(NA, nrow=3, ncol=2)
+      lM[1,] = 1
+      lM[2,] = 2
+      lM[3,1] = NA
+      lM[3,2] = 3
+      grid.arrange(p1, p2, p4, layout_matrix = lM)
+    }
+    else
+    {
+      if (is.null(decisionTree$RightNode))
+      {
+        lM = matrix(NA, nrow=3, ncol=2)
+        lM[1,] = 1
+        lM[2,] = 2
+        lM[3,1] = 3
+        lM[3,2] = NA
+        grid.arrange(p1, p2, p3, layout_matrix = lM)
+      }
+      else
+      {
+        lM = matrix(NA, nrow=3, ncol=2)
+        lM[1,] = 1
+        lM[2,] = 2
+        lM[3,1] = 3
+        lM[3,2] = 4
+        grid.arrange(p1, p2, p3, p4, layout_matrix = lM)
+      }
+    }
+  }
+  
+
+  #}
   
 }
 
@@ -304,13 +338,14 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
   
   p = ggplot(data,
              aes(V1, V2, colour=split)) +
-    geom_point() +
+    geom_point(data = transform(data, split = NULL), colour = "grey85") + 
+    geom_point() +  
+    facet_wrap(~split, scales="fixed") +
+    coord_equal() +
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(dataLabels[1]) + 
-    ylab(dataLabels[2]) + 
-    coord_fixed() +
-    facet_wrap(~split) +
+    xlab("") + 
+    ylab("") + 
     theme_grey(base_size = 20)
   
   
@@ -426,170 +461,93 @@ ExtractDecisionTree = function(condSetNames, SplitVariable, SplitQuantile, Split
 
 decisionTreePlot = function(DecisionTree)
 {
-  plot.new()
-  par(mfrow=c(1,1))
   
-  PossibleLeaves = c('LL vs LR','LL vs RL','LL vs RR','LR vs RL','LR vs RR','RL vs RR','L vs RL','L vs RR','LL vs R','LR vs R')
+  p  = ggplot()
   
-  plotrix::textbox(c(0.425,0.575), 1, DecisionTree$CentralNode$Variable,col="blue",lwd=2,justify='c')
   
-  plotrix::textbox(c(0.1,0.3), 0.8, paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
+  p = p + annotate("text",label=DecisionTree$CentralNode$Variable, x=0.5, y= 0.9, size=20) + 
+    annotate("rect", xmin = 0.3, xmax = 0.7, ymin = 0.8, ymax = 1, color="black", alpha=0.2) 
   
-  plotrix::textbox(c(0.7,0.9), 0.8, paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
+  
+  p = p + annotate("text", x=-0.05, y= 0.5, size=20,
+                   label=paste('<=',format(DecisionTree$CentralNode$Threshold,digits=4),sep='')) +
+    annotate("segment", x = 0.5, xend = -0.1, y = 0.8, yend = 0.2, colour = "black")
+  
+  p = p + annotate("text", x=1.05, y= 0.5, size=20,
+                   label=paste('>',format(DecisionTree$CentralNode$Threshold,digits=4),sep='')) +
+    annotate("segment", x = 0.5, xend = 1.1, y = 0.8, yend = 0.2, colour = "black")
+  
   
   
   if (!is.null(DecisionTree$LeftNode))
   {
-    if (grepl('LL',DecisionTree$LeavesForFinalComparison) || grepl('LR',DecisionTree$LeavesForFinalComparison))
-    {
-      plotrix::textbox(c(0.125,0.275), 0.5, DecisionTree$LeftNode$Variable,col="blue",lwd=2,justify='c')
-      lines(c(0.5,0.2),c(0.95,0.5),lwd=2)
-    }
-    else
-    {
-      plotrix::textbox(c(0.125,0.275), 0.6, DecisionTree$LeftNode$Variable,justify='c')
-      lines(c(0.5,0.2),c(0.95,0.5))
-    }
+    p = p + annotate("text",label=DecisionTree$LeftNode$Variable, x=-0.1, y= 0.1, size=20) + 
+      annotate("rect", xmin = -0.3, xmax = 0.1, ymin = 0, ymax = 0.2, color="black", alpha=0.2) 
     
-    plotrix::textbox(c(-0.025,0.125), 0.3, paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
     
-    plotrix::textbox(c(0.275,0.475), 0.3, paste('>',format(DecisionTree$LeftNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
+    p = p + annotate("text", x=-0.3, y= -0.3, size=20,
+                     label=paste('<=',format(DecisionTree$LeftNode$Threshold,digits=4),sep='')) +
+      annotate("segment", x = -0.1, xend = -0.35, y = 0, yend = -0.6, colour = "black")
     
-    if (grepl('LL',DecisionTree$LeavesForFinalComparison))
-    {
-      plotrix::textbox(c(-0.025,0.125), 0.05, 'Group1',col="blue",lwd=2,justify='c')
-      lines(c(0.2,0.05),c(0.45,0.05),lwd=2)
-    }
-    else
-    {
-      plotrix::textbox(c(-0.025,0.125), 0.05, 'Group1',justify='c')
-      lines(c(0.2,0.05),c(0.45,0.05))
-    }
+    p = p + annotate("text", x=0.1, y= -0.3, size=20,
+                     label=paste('>',format(DecisionTree$LeftNode$Threshold,digits=4),sep='')) +
+      annotate("segment", x = -0.1, xend = 0.15, y = 0, yend = -0.6, colour = "black")
     
-    if (grepl('LR',DecisionTree$LeavesForFinalComparison))
-    {
-      plotrix::textbox(c(0.275,0.425), 0.05, 'Group2',col="blue",lwd=2,justify='c')
-      lines(c(0.2,0.35),c(0.45,0.05),lwd=2)
-    }
-    else
-    {
-      plotrix::textbox(c(0.275,0.425), 0.05, 'Group2',justify='c')
-      lines(c(0.2,0.35),c(0.45,0.05))
-    }
+    
+    p = p + annotate("text",label='Omega["(0,l,l)"]', x=-0.35, y= -0.7, size=20, parse=T) + 
+      annotate("rect", xmin = -0.55, xmax = -0.15, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
+    
+    p = p + annotate("text",label='Omega["(0,l,r)"]', x=0.15, y= -0.7, size=20, parse=T) + 
+      annotate("rect", xmin = -0.05, xmax = 0.35, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
+    
   }
   else
   {
-    if (grepl('L',DecisionTree$LeavesForFinalComparison))
-    {
-      plotrix::textbox(c(0.125,0.275), 0.5, 'Group1',col="blue",lwd=2,justify='c')
-      lines(c(0.5,0.2),c(0.95,0.5),lwd=2)
-    }
-    else
-    {
-      plotrix::textbox(c(0.125,0.275), 0.5, 'Group1',justify='c')
-      lines(c(0.5,0.2),c(0.95,0.5))
-    }
+    p = p + annotate("text",label='Omega["(0,l)"]', x=-0.1, y= 0.1, size=20, parse=T) + 
+      annotate("rect", xmin = -0.3, xmax = 0.1, ymin = 0, ymax = 0.2, color="black", alpha=0.2)
+    
   }
   
   if (!is.null(DecisionTree$RightNode))
   {
-    if (grepl('RL',DecisionTree$LeavesForFinalComparison) || grepl('RR',DecisionTree$LeavesForFinalComparison))
-    {
-      plotrix::textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,col="blue",lwd=2,justify='c')
-      lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
-    }
-    else
-    {
-      plotrix::textbox(c(0.725,0.875), 0.5, DecisionTree$RightNode$Variable,justify='c')
-      lines(c(0.5,0.8),c(0.95,0.5))
-    }
     
-    plotrix::textbox(c(0.525,0.725), 0.3, paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='r')
+    p = p + annotate("text",label=DecisionTree$RightNode$Variable, x=1.1, y= 0.1, size=20) + 
+      annotate("rect", xmin = 0.9, xmax = 1.3, ymin = 0, ymax = 0.2, color="black", alpha=0.2)
     
-    plotrix::textbox(c(0.875,1.075), 0.3, paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep=''),box=FALSE,justify='l')
+    p = p + annotate("text", x= 0.9, y= -0.3, size=20,
+                     label=paste('<=',format(DecisionTree$RightNode$Threshold,digits=4),sep='')) +
+      annotate("segment", x = 1.1, xend = 0.85, y = 0, yend = -0.6, colour = "black")
     
-    if (!is.null(DecisionTree$RightNode))
-    {
-      if (grepl('RL',DecisionTree$LeavesForFinalComparison))
-      {
-        plotrix::textbox(c(0.575,0.725), 0.05, 'Group3',col="blue",lwd=2,justify='c')
-        lines(c(0.8,0.65),c(0.45,0.05),lwd=2)
-      }
-      else
-      {
-        plotrix::textbox(c(0.575,0.725), 0.05, 'Group3',justify='c')
-        lines(c(0.8,0.65),c(0.45,0.05))
-      }
-      
-      if (grepl('RR',DecisionTree$LeavesForFinalComparison))
-      {
-        plotrix::textbox(c(0.875,1.025), 0.05, 'Group4',col="blue",lwd=2,justify='c')
-        lines(c(0.8,0.95),c(0.45,0.05),lwd=2)
-      }
-      else
-      {
-        plotrix::textbox(c(0.875,1.025), 0.05, 'Group4',justify='c')
-        lines(c(0.8,0.95),c(0.45,0.05))
-      }
-    }
-    else
-    {
-      if (grepl('RL',DecisionTree$LeavesForFinalComparison))
-      {
-        plotrix::textbox(c(0.575,0.725), 0.05, 'Group2',col="blue",lwd=2,justify='c')
-        lines(c(0.8,0.65),c(0.45,0.05),lwd=2)
-      }
-      else
-      {
-        plotrix::textbox(c(0.575,0.725), 0.05, 'Group2',justify='c')
-        lines(c(0.8,0.65),c(0.45,0.05))
-      }
-      
-      if (grepl('RR',DecisionTree$LeavesForFinalComparison))
-      {
-        plotrix::textbox(c(0.875,1.025), 0.05, 'Group3',col="blue",lwd=2,justify='c')
-        lines(c(0.8,0.95),c(0.45,0.05),lwd=2)
-      }
-      else
-      {
-        plotrix::textbox(c(0.875,1.025), 0.05, 'Group3',justify='c')
-        lines(c(0.8,0.95),c(0.45,0.05))
-      }
-    }
+    p = p + annotate("text", x=1.3, y= -0.3, size=20,
+                     label=paste('>',format(DecisionTree$RightNode$Threshold,digits=4),sep='')) +
+      annotate("segment", x = 1.1, xend = 1.35, y = 0, yend = -0.6, colour = "black")
+    
+    
+    p = p + annotate("text",label='Omega["(0,r,l)"]', x=0.85, y= -0.7, size=20, parse=T) + 
+      annotate("rect", xmin = 0.65, xmax = 1.05, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
+    
+    p = p + annotate("text",label='Omega["(0,r,r)"]', x=1.35, y= -0.7, size=20, parse=T) + 
+      annotate("rect", xmin = 1.15, xmax = 1.55, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
   }
-  
   else
   {
-    if (!is.null(DecisionTree$LeftNode))
-    {
-      if (grepl('R',DecisionTree$LeavesForFinalComparison))
-      {
-        plotrix::textbox(c(0.725,0.875), 0.5, 'Group3',col="blue",lwd=2,justify='c')
-        lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
-      }
-      else
-      {
-        plotrix::textbox(c(0.725,0.875), 0.5, 'Group3',justify='c')
-        lines(c(0.5,0.8),c(0.95,0.5))
-      }
-    }
     
-    else
-    {
-      if (grepl('R',DecisionTree$LeavesForFinalComparison))
-      {
-        plotrix::textbox(c(0.725,0.875), 0.5, 'Group2',col="blue",lwd=2,justify='c')
-        lines(c(0.5,0.8),c(0.95,0.5),lwd=2)
-      }
-      else
-      {
-        plotrix::textbox(c(0.725,0.875), 0.5, 'Group2',justify='c')
-        lines(c(0.5,0.8),c(0.95,0.5))
-      }
-      
-    }
-    
+    p = p + annotate("text",label='Omega["(0,r)"]', x=1.1, y= 0.1, size=20, parse=T) + 
+      annotate("rect", xmin = 0.9, xmax = 1.3, ymin = 0, ymax = 0.2, color="black", alpha=0.2)
   }
+  
+  p = p + xlim(-0.75, 1.75) + ylim(-1,1.2) + 
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_blank(),
+          axis.text.x=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())
+  
+  return(p)
   
 }
 
