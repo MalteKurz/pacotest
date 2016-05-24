@@ -1,6 +1,6 @@
 pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
-  #pacotestOptions = pacotestset(pacotestOptions)
+  pacotestOptions = pacotestset(pacotestOptions)
   
   if (!is.data.frame(Udata))
   {
