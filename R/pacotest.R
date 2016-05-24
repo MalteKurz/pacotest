@@ -89,11 +89,18 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       {
         condSetNames = names(W)
         out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
-        if (pacotestOptions$decisionTreePlot)
-        {
-          pDecTree = decisionTreePlot(out$DecisionTree)
-          print(pDecTree)
-        }
+      }
+      else
+      {
+        xx = decTreeFromFixedGrouping(pacotestOptions$grouping, W)
+        out$DecisionTree = xx$decisionTree
+        W = xx$W
+        
+      }
+      if (pacotestOptions$decisionTreePlot)
+      {
+        pDecTree = decisionTreePlot(out$DecisionTree)
+        print(pDecTree)
       }
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
@@ -121,11 +128,18 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       CondSetDim = ncol(W);
       out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
       
-      if (pacotestOptions$decisionTreePlot)
-      {
-        pDecTree = decisionTreePlot(out$DecisionTree)
-        print(pDecTree)
-      }
+    }
+    else
+    {
+      xx = decTreeFromFixedGrouping(pacotestOptions$grouping, W)
+      out$DecisionTree = xx$decisionTree
+      W = xx$W
+      
+    }
+    if (pacotestOptions$decisionTreePlot)
+    {
+      pDecTree = decisionTreePlot(out$DecisionTree)
+      print(pDecTree)
     }
     out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
     if (pacotestOptions$groupedScatterplots)
@@ -271,5 +285,106 @@ ExtractDecisionTree = function(condSetNames, SplitVariable, SplitQuantile, Split
 }
 
 
-
+decTreeFromFixedGrouping = function(grouping, W)
+{
+  
+  Node = list(Variable=NULL,Quantile=NULL,Threshold=NULL)
+  decisionTree = list(CentralNode=Node,LeftNode=NULL,RightNode=NULL,LeavesForFinalComparison=NULL)
+  
+  if (grepl('Sum',pacotestOptions$grouping))
+  {
+    
+    if (dim(W)[2] > 1)
+    {
+      varName = paste("Sum(", paste(names(W),collapse=", "), ")", sep="")
+      
+      xx = as.data.frame(rowMeans(W))
+      names(xx) = varName
+      
+      W = cbind(W,xx)
+    }
+    else
+    {
+      varName = names(W)
+    }
+  }
+  
+  if (grepl('Prod',pacotestOptions$grouping))
+  {
+    
+    if (dim(W)[2] > 1)
+    {
+      varName = paste("Prod(", paste(names(W),collapse=", "), ")", sep="")
+      
+      xx = as.data.frame(apply(W, 1, prod))
+      names(xx) = varName
+      
+      W = cbind(W,xx)
+    }
+    else
+    {
+      varName = names(W)
+    }
+  }
+  
+  decisionTree$CentralNode$Variable = varName
+  
+  if (grepl('Median',pacotestOptions$grouping))
+  {
+    decisionTree$CentralNode$Quantile = "Q50"
+    decisionTree$CentralNode$Threshold = quantile(W[,varName], 0.5)
+    
+    decisionTree$LeavesForFinalComparison = "L vs R"
+    
+  }
+  
+  if (grepl('Thirds',pacotestOptions$grouping))
+  {
+    decisionTree$CentralNode$Quantile = "Q33.33"
+    decisionTree$CentralNode$Threshold = quantile(W[,varName], 1/3)
+    
+    decisionTree$RightNode$Variable = varName
+    decisionTree$RightNode$Quantile = "Q50"
+    decisionTree$RightNode$Threshold = quantile(W[,varName], 2/3)
+    
+  }
+    
+  if (grouping == 'SumThirdsI' || grouping == 'ProdThirdsI')
+  {
+    decisionTree$LeavesForFinalComparison = "all"
+    
+  }
+  
+  if (grouping == 'SumThirdsII' || grouping == 'ProdThirdsII')
+  {
+    decisionTree$LeavesForFinalComparison = "L vs RL"
+    
+  }
+  
+  if (grouping == 'SumThirdsIII' || grouping == 'ProdThirdsIII')
+  {
+    decisionTree$LeavesForFinalComparison = "L vs RR"
+    
+  }
+  
+  if(grouping == 'SumQuartiles' || grouping == 'ProdQuartiles')
+  {
+    decisionTree$CentralNode$Quantile = "Q50"
+    decisionTree$CentralNode$Threshold = quantile(W[,varName], 1/2)
+    
+    decisionTree$LeftNode$Variable = varName
+    decisionTree$LeftNode$Quantile = "Q50"
+    decisionTree$LeftNode$Threshold = quantile(W[,varName], 1/4)
+    
+    decisionTree$RightNode$Variable = varName
+    decisionTree$RightNode$Quantile = "Q50"
+    decisionTree$RightNode$Threshold = quantile(W[,varName], 3/4)
+    
+    decisionTree$LeavesForFinalComparison = "all"
+    
+  }
+  
+  return(list(decisionTree = decisionTree, W = W))
+  
+}
 
