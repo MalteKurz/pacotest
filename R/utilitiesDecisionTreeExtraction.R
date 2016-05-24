@@ -83,7 +83,7 @@ decTreeFromFixedGrouping = function(grouping, W)
   Node = list(Variable=NULL,Quantile=NULL,Threshold=NULL)
   decisionTree = list(CentralNode=Node,LeftNode=NULL,RightNode=NULL,LeavesForFinalComparison=NULL)
   
-  if (grepl('Sum',pacotestOptions$grouping))
+  if (grepl('Sum',grouping))
   {
     
     if (dim(W)[2] > 1)
@@ -101,7 +101,7 @@ decTreeFromFixedGrouping = function(grouping, W)
     }
   }
   
-  if (grepl('Prod',pacotestOptions$grouping))
+  if (grepl('Prod',grouping))
   {
     
     if (dim(W)[2] > 1)
@@ -121,7 +121,7 @@ decTreeFromFixedGrouping = function(grouping, W)
   
   decisionTree$CentralNode$Variable = varName
   
-  if (grepl('Median',pacotestOptions$grouping))
+  if (grepl('Median',grouping))
   {
     decisionTree$CentralNode$Quantile = "Q50"
     decisionTree$CentralNode$Threshold = quantile(W[,varName], 0.5)
@@ -130,7 +130,7 @@ decTreeFromFixedGrouping = function(grouping, W)
     
   }
   
-  if (grepl('Thirds',pacotestOptions$grouping))
+  if (grepl('Thirds',grouping))
   {
     decisionTree$CentralNode$Quantile = "Q33.33"
     decisionTree$CentralNode$Threshold = quantile(W[,varName], 1/3)
