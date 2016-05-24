@@ -15,15 +15,20 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   # Prepare variables to be transfered to C++
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR' || pacotestOptions$testType=='EC')
   {
-  # Add aggregated information to the conditioning vector
-  W = addAggInfo(W,pacotestOptions$aggInfo, pacotestOptions$sizeKeepingMethod)
-  
-  # Transfer (character) variables to numbers
-  grouping = partitionToNumber(pacotestOptions$grouping)
-  testTypeNumber = testTypeToNumber(pacotestOptions$testType)
-  
-  finalComparison = finalComparisonToNumber(pacotestOptions$finalComparison)
-  
+    # Add aggregated information to the conditioning vector
+    W = addAggInfo(W,pacotestOptions$aggInfo, pacotestOptions$sizeKeepingMethod)
+    
+    # Transfer (character) variables to numbers
+    grouping = partitionToNumber(pacotestOptions$grouping)
+    testTypeNumber = testTypeToNumber(pacotestOptions$testType)
+    
+    finalComparison = finalComparisonToNumber(pacotestOptions$finalComparison)
+    gamma0Partition = partitionToNumber(pacotestOptions$gamma0Partition)
+    
+    aggPvalsNumbRep = aggPvalsNumbRepToNumber(pacotestOptions$aggPvalsNumbRep)
+    expMinSampleSize = expMinSampleSizeToNumber(pacotestOptions$expMinSampleSize)
+    trainingDataFraction = trainingDataFractionToNumber(pacotestOptions$trainingDataFraction)
+    
   }
   
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR')
@@ -36,49 +41,21 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
-    if (grouping<3  && pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate' && pacotestOptions$aggPvalsNumbRep > 1)
+    if (is.null(pacotestOptions$sizeKeepingMethod) || pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate')
     {
-      out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
+      out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData, aggPvalsNumbRep, expMinSampleSize, trainingDataFraction)
       
     }
-    else
+    else if (pacotestOptions$sizeKeepingMethod=='penalty')
     {
-      if (grouping > 3)
-      {
-        out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, 1, data, svcmDataFrame, cPitData, 0, 1, 1)
-        
-      }
-      else
-      {
-        if (pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate')
-        {
-          out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
-          
-        }
-        else if (pacotestOptions$sizeKeepingMethod=='penalty')
-        {
-          gamma0Partition = partitionToNumber(pacotestOptions$gamma0Partition)
-          
-          out = ecorrOrEcovWithPenalty(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
-          
-        }
-        
-      }
+      out = ecorrOrEcovWithPenalty(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData, expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
+      
     }
+    
   }
   else if (pacotestOptions$testType=='EC')
   {
-    grouping = partitionToNumber(pacotestOptions$grouping)
-    if (grouping > 2)
-    {
-      out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,1,1,1)
-      
-    }
-    else
-    {
-      out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
-      
-    }
+    out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,finalComparison,expMinSampleSize,trainingDataFraction)
     
   }
   else if (pacotestOptions$testType=='VI')
@@ -128,13 +105,18 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
 }
 
 
-
-
 partitionToNumber = function(partitionIdentifier)
 {
-  partitionNumber = which(partitionIdentifier==c('TreeECOV','TreeECORR','TreeEC',
-                                                'SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','SumQuartiles',
-                                                'ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII','ProdQuartiles'),arr.ind=TRUE)
+  if (is.null(partitionIdentifier))
+  {
+    partitionNumber = 'NA'
+  }
+  else
+  {
+    partitionNumber = which(partitionIdentifier==c('TreeECOV','TreeECORR','TreeEC',
+                                                   'SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','SumQuartiles',
+                                                   'ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII','ProdQuartiles'),arr.ind=TRUE)
+  }
   
   return(partitionNumber)
 }
@@ -160,4 +142,36 @@ finalComparisonToNumber = function(finalComparisonIdentifier = NULL)
   return(finalComparison)
 }
 
+
+aggPvalsNumbRepToNumber = function(aggPvalsNumbRep = NULL)
+{
+  if (is.null(aggPvalsNumbRep) || aggPvalsNumbRep == 1)
+  {
+    aggPvalsNumbRep = 0
+  }
+  
+  return(aggPvalsNumbRep)
+}
+
+
+expMinSampleSizeToNumber = function(expMinSampleSize = NULL)
+{
+  if (is.null(expMinSampleSize))
+  {
+    expMinSampleSize = NA
+  }
+  
+  return(expMinSampleSize)
+}
+
+
+trainingDataFractionToNumber = function(trainingDataFraction = NULL)
+{
+  if (is.null(trainingDataFraction))
+  {
+    trainingDataFraction = NA
+  }
+  
+  return(trainingDataFraction)
+}
 
