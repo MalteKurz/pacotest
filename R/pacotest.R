@@ -12,6 +12,9 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     W = as.data.frame(W)
   }
   
+  # Add aggregated information to the conditioning vector
+  W = addAggInfo(W,pacotestOptions$aggInfo, pacotestOptions$sizeKeepingMethod)
+  
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR')
   {
     grouping = partitionToNumber(pacotestOptions$grouping)
@@ -28,12 +31,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
-      W = addAggInfo(W,pacotestOptions$aggInfo);
-      
       out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       
-      condSetNames = names(W);
-      out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
     }
     else
     {
@@ -48,8 +47,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         
         if (pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate')
         {
-          W = addAggInfo(W,pacotestOptions$aggInfo);
-          
           out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
           
         }
@@ -57,56 +54,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
         {
           gamma0Partition = partitionToNumber(pacotestOptions$gamma0Partition)
           
-          if (pacotestOptions$aggInfo=='meanAll')
-          {
-            W = addAggInfo(W,pacotestOptions$aggInfo);
-          }
-          else
-          {
-            if (dim(W)[2]>2 && pacotestOptions$aggInfo=="meanPairwise")
-            {
-              # Add the information defined by pacotestOptions$aggInfo 
-              xx = addAggInfo(W,pacotestOptions$aggInfo)
-              yy = addAggInfo(W,'meanAll')
-              yyLastName = names(yy)[dim(yy)[2]]
-              
-              W = cbind(xx,yy[,yyLastName])
-              
-              names(W)[dim(W)[2]] = yyLastName
-            }
-            else
-            {
-              W = addAggInfo(W,'meanAll')
-            }
-          }
-          
           out = ecorrOrEcovWithPenalty(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$expMinSampleSize, pacotestOptions$penaltyParams[1], pacotestOptions$penaltyParams[2], gamma0Partition)
           
         }
         
       }
-      if (grouping<=2)
-      {
-        condSetNames = names(W)
-        out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
-      }
-      else
-      {
-        xx = decTreeFromFixedGrouping(pacotestOptions$grouping, W)
-        out$DecisionTree = xx$decisionTree
-        W = xx$W
-        
-      }
-      if (pacotestOptions$decisionTreePlot)
-      {
-        pDecTree = decisionTreePlot(out$DecisionTree)
-        print(pDecTree)
-      }
-    }
-    out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
-    if (pacotestOptions$groupedScatterplots)
-    {
-      GroupedScatterplot(Udata, W, out$DecisionTree)
     }
   }
   else if (pacotestOptions$testType=='EC')
@@ -115,36 +67,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     if (grouping > 2)
     {
       out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,1,1,1)
+      
     }
     else
     {
       finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
       
-      W = addAggInfo(W,pacotestOptions$aggInfo);
       out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
-    }
-    if (grouping<=2)
-    {
-      CondSetDim = ncol(W);
-      out$DecisionTree = ExtractDecisionTree(CondSetDim, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
       
-    }
-    else
-    {
-      xx = decTreeFromFixedGrouping(pacotestOptions$grouping, W)
-      out$DecisionTree = xx$decisionTree
-      W = xx$W
-      
-    }
-    if (pacotestOptions$decisionTreePlot)
-    {
-      pDecTree = decisionTreePlot(out$DecisionTree)
-      print(pDecTree)
-    }
-    out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
-    if (pacotestOptions$groupedScatterplots)
-    {
-      GroupedScatterplot(Udata, W, out$DecisionTree)
     }
     
   }
@@ -156,10 +86,83 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   {
     stop('Unknown testType')
   }
+  
+  # Export/generate the decision tree and the illustrative plots
+  if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR' || pacotestOptions$testType=='EC')
+  {
+    # Extract decision tree(s)
+    if (grouping<=2)
+    {
+      condSetNames = names(W)
+      out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
+      out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
+      
+    }
+    else
+    {
+      xx = decTreeFromFixedGrouping(pacotestOptions$grouping, W)
+      out$DecisionTree = xx$decisionTree
+      W = xx$W
+      
+    }
+    
+    # Generate plots
+    if (pacotestOptions$decisionTreePlot)
+    {
+      pDecTree = decisionTreePlot(out$DecisionTree)
+      print(pDecTree)
+      
+    }
+    if (pacotestOptions$groupedScatterplots)
+    {
+      GroupedScatterplot(Udata, W, out$DecisionTree)
+      
+    }
+    
+  }
+  
   return(out)
 }
 
-addAggInfo = function(W,aggInfoType)
+addAggInfo = function(W, aggInfoType=NULL, sizeKeepingMethod=NULL)
+{
+  if (!is.null(aggInfoType))
+  {
+    if (is.null(sizeKeepingMethod) || sizeKeepingMethod == 'splitTrainEvaluate')
+    {
+      W = cbindAggInfo(W, aggInfoType)
+    }
+    else
+    {
+      if (sizeKeepingMethod == 'penalty')
+      {
+        if (dim(W)[2]>2 && aggInfoType=="meanPairwise")
+        {
+          # Add the information defined aggInfoType
+          xx = addAggInfo(W,aggInfoType)
+          yy = addAggInfo(W,'meanAll')
+          yyLastName = names(yy)[dim(yy)[2]]
+          
+          W = cbind(xx,yy[,yyLastName])
+          
+          names(W)[dim(W)[2]] = yyLastName
+        }
+        else
+        {
+          W = addAggInfo(W,'meanAll')
+        }
+      }
+      else
+      {
+        stop('addAggInfo error')
+      }
+    }
+  }
+  
+  return(W)
+}
+
+cbindAggInfo = function(W, aggInfoType)
 {
   # Adding aggregated information within the conditioning set
   
