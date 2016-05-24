@@ -12,13 +12,22 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     W = as.data.frame(W)
   }
   
+  # Prepare variables to be transfered to C++
+  if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR' || pacotestOptions$testType=='EC')
+  {
   # Add aggregated information to the conditioning vector
   W = addAggInfo(W,pacotestOptions$aggInfo, pacotestOptions$sizeKeepingMethod)
   
+  # Transfer (character) variables to numbers
+  grouping = partitionToNumber(pacotestOptions$grouping)
+  testTypeNumber = testTypeToNumber(pacotestOptions$testType)
+  
+  finalComparison = finalComparisonToNumber(pacotestOptions$finalComparison)
+  
+  }
+  
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR')
   {
-    grouping = partitionToNumber(pacotestOptions$grouping)
-    testTypeNumber = testTypeToNumber(pacotestOptions$testType)
     
     if (!(pacotestOptions$withEstUncert))
     {
@@ -29,8 +38,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     
     if (grouping<3  && pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate' && pacotestOptions$aggPvalsNumbRep > 1)
     {
-      finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
-      
       out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,pacotestOptions$aggPvalsNumbRep,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       
     }
@@ -43,8 +50,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       }
       else
       {
-        finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
-        
         if (pacotestOptions$sizeKeepingMethod=='splitTrainEvaluate')
         {
           out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),grouping, pacotestOptions$withEstUncert, finalComparison, data, svcmDataFrame, cPitData,0,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
@@ -71,8 +76,6 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     }
     else
     {
-      finalComparison = which(pacotestOptions$finalComparison==c('pairwiseMax','all'))
-      
       out = EC(as.matrix(Udata), as.matrix(W),pacotestOptions$numbBoot,grouping,finalComparison,pacotestOptions$expMinSampleSize,pacotestOptions$trainingDataFraction)
       
     }
@@ -91,7 +94,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='ECORR' || pacotestOptions$testType=='EC')
   {
     # Extract decision tree(s)
-    if (grouping<=2)
+    if (grouping<=3)
     {
       condSetNames = names(W)
       out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
@@ -127,20 +130,34 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
 
 
 
-partitionToNumber = function(partitionIdentfier)
+partitionToNumber = function(partitionIdentifier)
 {
-  partitionNumber = which(partitionIdentfier==c('TreeECOV','TreeECORR','TreeEC',
+  partitionNumber = which(partitionIdentifier==c('TreeECOV','TreeECORR','TreeEC',
                                                 'SumMedian','SumThirdsI','SumThirdsII','SumThirdsIII','SumQuartiles',
                                                 'ProdMedian','ProdThirdsI','ProdThirdsII','ProdThirdsIII','ProdQuartiles'),arr.ind=TRUE)
   
   return(partitionNumber)
 }
 
-testTypeToNumber = function(partitionIdentfier)
+testTypeToNumber = function(partitionIdentifier)
 {
-  testTypeNumber = which(partitionIdentfier==c('ECOV', 'ECORR', 'VI', 'EC'),arr.ind=TRUE)
+  testTypeNumber = which(partitionIdentifier==c('ECOV', 'ECORR', 'VI', 'EC'),arr.ind=TRUE)
   
   return(testTypeNumber)
+}
+
+finalComparisonToNumber = function(finalComparisonIdentifier = NULL)
+{
+  if (is.null(finalComparisonIdentifier))
+  {
+    finalComparison = NA
+  }
+  else
+  {
+    finalComparison = which(finalComparisonIdentifier==c('pairwiseMax','all'))
+  }
+  
+  return(finalComparison)
 }
 
 
