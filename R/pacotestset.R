@@ -38,9 +38,9 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
   }
   else
   {
-    if (testType=="ECOV" || testType == "EqualCovariance" || testType=="ECORR" || testType == "EqualCorrelation")
+    if (testType=="ECOV" || testType=="ECORR")
     {
-      if (testType=="ECOV" || testType == "EqualCovariance")
+      if (testType=="ECOV")
       {
         pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
@@ -160,7 +160,7 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
         }
       }
     }
-    else if (testType=="EC" || testType == "EqualCop")
+    else if (testType=="EC")
     {
       pacotestOptions = list(testType = 'EC', numbBoot = 1000, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
       if (!(missing(numbBoot)))
@@ -213,7 +213,7 @@ if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
         }
       }
     }
-    else if (testType=="VI" || testType == "VecIndep")
+    else if (testType=="VI")
     {
       pacotestOptions = list(testType = 'VI',numbBoot=1000)
       if (!(missing(numbBoot)))
@@ -342,7 +342,7 @@ else
     }
   }
   
-  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType == "EqualCovariance" || pacotestOptions$testType=="ECORR" || pacotestOptions$testType == "EqualCorrelation")
+  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECORR")
   {
     #pacotestOptions$testType = "ECOV"
     if (!(missing(grouping)))
@@ -394,7 +394,7 @@ else
       pacotestOptions$gamma0Partition = CheckGamma0Partition(gamma0Partition,"gamma0Partition")
     }
   }
-  else if (pacotestOptions$testType=="EC" || pacotestOptions$testType == "EqualCop")
+  else if (pacotestOptions$testType=="EC")
   {
     pacotestOptions$testType = "EC"
     if (!(missing(numbBoot)))
@@ -426,7 +426,7 @@ else
       pacotestOptions$aggInfo = CheckAggInfo(aggInfo,"aggInfo")
     }
   }
-  else if (pacotestOptions$testType=="VI" || pacotestOptions$testType == "VecIndep")
+  else if (pacotestOptions$testType=="VI")
   {
     pacotestOptions$testType = "VI"
     if (!(missing(numbBoot)))
