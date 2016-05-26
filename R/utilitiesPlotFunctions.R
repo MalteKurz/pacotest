@@ -17,7 +17,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     xlab(dataLabels[1]) + 
     ylab(dataLabels[2]) + 
     coord_fixed() +
-    theme_grey(base_size = 20) + 
+    theme_grey(base_size = 15) + 
     theme(panel.margin = unit(4, "lines"), legend.position = "none")
   
   
@@ -145,7 +145,7 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab("") + 
     ylab("") + 
-    theme_grey(base_size = 20)
+    theme_grey(base_size = 15)
   
   
   return(list(p=p, indVector = indVector))
