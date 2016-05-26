@@ -18,17 +18,11 @@ test_that("unit tests for ECORR", {
   
   pacotestOptions4=pacotestset(testType='ECORR', grouping = 'TreeECORR',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
   
-  pacotestOptions5=pacotestset(testType='ECORR',grouping = "SumMedian", withEstUncert = FALSE,
-                               expMinSampleSize = NULL, trainingDataFraction = NULL,
-                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  pacotestOptions5=pacotestset(testType='ECORR',grouping = "SumMedian", withEstUncert = FALSE)
   
-  pacotestOptions6=pacotestset(testType='ECORR',grouping = "ProdThirdsII", withEstUncert = FALSE,
-                               expMinSampleSize = NULL, trainingDataFraction = NULL,
-                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  pacotestOptions6=pacotestset(testType='ECORR',grouping = "ProdThirdsII", withEstUncert = FALSE)
   
-  pacotestOptions7=pacotestset(testType='ECORR',grouping = "SumThirdsIII", withEstUncert = FALSE,
-                               expMinSampleSize = NULL, trainingDataFraction = NULL,
-                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  pacotestOptions7=pacotestset(testType='ECORR',grouping = "SumThirdsIII", withEstUncert = FALSE)
   
   pacotestOptions8=pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
   
@@ -656,22 +650,22 @@ test_that("unit tests for ECORR", {
   pacotestOptions18 = pacotestset(pacotestOptions18, withEstUncert = TRUE, aggPvalsNumbRep = 1)
   pacotestOptions19 = pacotestset(pacotestOptions19, withEstUncert = TRUE, aggPvalsNumbRep = 1)
   
-  pacotestOptions20 = pacotestset(pacotestOptions20, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions21 = pacotestset(pacotestOptions21, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions22 = pacotestset(pacotestOptions22, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions23 = pacotestset(pacotestOptions23, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions24 = pacotestset(pacotestOptions24, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions25 = pacotestset(pacotestOptions25, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions26 = pacotestset(pacotestOptions26, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions27 = pacotestset(pacotestOptions27, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions28 = pacotestset(pacotestOptions28, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions29 = pacotestset(pacotestOptions29, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions30 = pacotestset(pacotestOptions30, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions31 = pacotestset(pacotestOptions31, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions32 = pacotestset(pacotestOptions32, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions33 = pacotestset(pacotestOptions33, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions34 = pacotestset(pacotestOptions34, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions35 = pacotestset(pacotestOptions35, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions20 = pacotestset(pacotestOptions20, withEstUncert = TRUE)
+  pacotestOptions21 = pacotestset(pacotestOptions21, withEstUncert = TRUE)
+  pacotestOptions22 = pacotestset(pacotestOptions22, withEstUncert = TRUE)
+  pacotestOptions23 = pacotestset(pacotestOptions23, withEstUncert = TRUE)
+  pacotestOptions24 = pacotestset(pacotestOptions24, withEstUncert = TRUE)
+  pacotestOptions25 = pacotestset(pacotestOptions25, withEstUncert = TRUE)
+  pacotestOptions26 = pacotestset(pacotestOptions26, withEstUncert = TRUE)
+  pacotestOptions27 = pacotestset(pacotestOptions27, withEstUncert = TRUE)
+  pacotestOptions28 = pacotestset(pacotestOptions28, withEstUncert = TRUE)
+  pacotestOptions29 = pacotestset(pacotestOptions29, withEstUncert = TRUE)
+  pacotestOptions30 = pacotestset(pacotestOptions30, withEstUncert = TRUE)
+  pacotestOptions31 = pacotestset(pacotestOptions31, withEstUncert = TRUE)
+  pacotestOptions32 = pacotestset(pacotestOptions32, withEstUncert = TRUE)
+  pacotestOptions33 = pacotestset(pacotestOptions33, withEstUncert = TRUE)
+  pacotestOptions34 = pacotestset(pacotestOptions34, withEstUncert = TRUE)
+  pacotestOptions35 = pacotestset(pacotestOptions35, withEstUncert = TRUE)
   
   
   
@@ -770,17 +764,11 @@ test_that("unit tests for ECOV, EC and VI", {
   
   pacotestOptions4=pacotestset(testType='EC',grouping = "SumThirdsIII")
   
-  pacotestOptions5=pacotestset(testType='ECOV',grouping = "SumMedian", withEstUncert = FALSE,
-                               expMinSampleSize = NULL, trainingDataFraction = NULL,
-                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  pacotestOptions5=pacotestset(testType='ECOV',grouping = "SumMedian", withEstUncert = FALSE)
   
-  pacotestOptions6=pacotestset(testType='ECOV',grouping = "ProdThirdsII", withEstUncert = FALSE,
-                               expMinSampleSize = NULL, trainingDataFraction = NULL,
-                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  pacotestOptions6=pacotestset(testType='ECOV',grouping = "ProdThirdsII", withEstUncert = FALSE)
   
-  pacotestOptions7=pacotestset(testType='ECOV',grouping = "SumThirdsIII", withEstUncert = FALSE,
-                               expMinSampleSize = NULL, trainingDataFraction = NULL,
-                               aggPvalsNumbRep = NULL, aggInfo = NULL, finalComparison = NULL)
+  pacotestOptions7=pacotestset(testType='ECOV',grouping = "SumThirdsIII", withEstUncert = FALSE)
   
   pacotestOptions8=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
   
@@ -798,16 +786,16 @@ test_that("unit tests for ECOV, EC and VI", {
   
   pacotestOptions15=pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
-  pacotestOptions16 = pacotestset(pacotestOptions5, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions17 = pacotestset(pacotestOptions6, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions18 = pacotestset(pacotestOptions7, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions19 = pacotestset(pacotestOptions8, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions20 = pacotestset(pacotestOptions10, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions21 = pacotestset(pacotestOptions11, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions22 = pacotestset(pacotestOptions12, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions23 = pacotestset(pacotestOptions13, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions24 = pacotestset(pacotestOptions14, withEstUncert = TRUE, aggPvalsNumbRep = 1)
-  pacotestOptions25 = pacotestset(pacotestOptions15, withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  pacotestOptions16 = pacotestset(pacotestOptions5, withEstUncert = TRUE)
+  pacotestOptions17 = pacotestset(pacotestOptions6, withEstUncert = TRUE)
+  pacotestOptions18 = pacotestset(pacotestOptions7, withEstUncert = TRUE)
+  pacotestOptions19 = pacotestset(pacotestOptions8, withEstUncert = TRUE)
+  pacotestOptions20 = pacotestset(pacotestOptions10, withEstUncert = TRUE)
+  pacotestOptions21 = pacotestset(pacotestOptions11, withEstUncert = TRUE)
+  pacotestOptions22 = pacotestset(pacotestOptions12, withEstUncert = TRUE)
+  pacotestOptions23 = pacotestset(pacotestOptions13, withEstUncert = TRUE)
+  pacotestOptions24 = pacotestset(pacotestOptions14, withEstUncert = TRUE)
+  pacotestOptions25 = pacotestset(pacotestOptions15, withEstUncert = TRUE)
   
   set.seed(51312)
   # Data set 6
