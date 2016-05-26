@@ -116,27 +116,27 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
 {
   indVector = W[,variable]<=threshold
   
-  split = vector(length=length(indVector))
+  splitFactorVec = vector(length=length(indVector))
   levelNames = vector(length=2)
   
   rho = momentBasedCorr(Udata[indVector==1,])
   levelNames[1] = paste(variable, " <= ", format(threshold,dig=4),
                         "\nrho = ", format(rho,dig=4))
-  split[indVector==1] = levelNames[1]
+  splitFactorVec[indVector==1] = levelNames[1]
   
   rho = momentBasedCorr(Udata[indVector==0,])
   levelNames[2] = paste(variable, " > ", format(threshold,dig=4),
                         "\nrho = ", format(rho,dig=4))
-  split[indVector==0] = levelNames[2]
+  splitFactorVec[indVector==0] = levelNames[2]
   
-  split = factor(split, levelNames)
+  splitFactorVec = factor(splitFactorVec, levelNames)
   
   
-  data = transform(Udata, split = split)
+  data = transform(Udata, split = splitFactorVec)
   
   
   p = ggplot(data,
-             aes_string("V1", "V2", colour=split)) +
+             aes_string("V1", "V2", colour="split")) +
     geom_point(data = transform(data, split = NULL), colour = "grey85") + 
     geom_point() +  
     facet_wrap(~split, scales="fixed") +
