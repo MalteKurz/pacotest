@@ -1,11 +1,5 @@
 GroupedScatterplot = function(Udata, W, decisionTree)
 {
-  #   if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("gridExtra", quietly = TRUE))
-  #   {
-  #     stop("ggplot2 and gridExtra needed to obtain grouped scatter plots. Please install it.",
-  #          call. = FALSE)
-  #   }
-  #   else{
   
   dataLabels = names(Udata)
   
@@ -15,7 +9,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
   
   p1 = ggplot(Udata,
-              aes(V1, V2)) +
+              aes_string("V1", "V2")) +
     geom_point() +
     scale_colour_manual(values = cbbPalette[1]) + 
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
@@ -142,7 +136,7 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
   
   
   p = ggplot(data,
-             aes(V1, V2, colour=split)) +
+             aes_string("V1", "V2", colour=split)) +
     geom_point(data = transform(data, split = NULL), colour = "grey85") + 
     geom_point() +  
     facet_wrap(~split, scales="fixed") +
@@ -177,7 +171,6 @@ momentBasedCorr = function(data)
 
 decisionTreePlot = function(DecisionTree)
 {
-  
   p  = ggplot()
   
   
