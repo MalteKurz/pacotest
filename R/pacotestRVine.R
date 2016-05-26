@@ -117,11 +117,10 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   if (!(copulaNumber > 0 && copulaNumber <= (d-tree)))
     stop("Invalid copula number")
   
-  if (any(o != length(o):1))
-    stop("The RVM Matrix needs to be provided in normalized form")
-  
-  
-  out = list()
+  if (any(o != length(o):1)) {
+    RVM <- getFromNamespace('normalizeRVineMatrix','VineCopula')(RVM)
+    data <- data[, o[length(o):1]]
+  }
   
   subRVM = extractSubTree(RVM, tree = tree, copulaNumber = copulaNumber, data)
   
@@ -146,9 +145,9 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   
   W = subRVM$data[,svcmDataFrame$condset[[copulaInd]], drop=FALSE]
   
-  out = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
+  pacotestResultList = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
   
-  return(out)
+  return(pacotestResultList)
   
 }
 
