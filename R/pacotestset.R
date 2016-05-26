@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"),testType = NA_character_, grouping= NA_character_, aggPvalsNumbRep= NA_real_, expMinSampleSize = NA_real_, trainingDataFraction = NA_real_, aggInfo = NA_character_, withEstUncert = FALSE, finalComparison = NA_character_, sizeKeepingMethod = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = FALSE, decisionTreePlot = FALSE, numbBoot = NA_real_)
+pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"),testType = NA_character_, grouping= NA_character_, aggPvalsNumbRep= NA_real_, expMinSampleSize = NA_real_, trainingDataFraction = NA_real_, aggInfo = NA_character_, withEstUncert = NA, finalComparison = NA_character_, sizeKeepingMethod = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_)
   {
   # Display possible values
   Nargs = nargs()
@@ -235,7 +235,7 @@ checkAndAssignOptionsEC = function(pacotestOptions, argList)
   
   if (exists('numbBoot', argList))
   {
-    pacotestOptions$numbBoot = CheckPosScalar(numbBoot,"numbBoot")
+    pacotestOptions$numbBoot = CheckPosScalar(argList$numbBoot,"numbBoot")
   }
   
   if (exists('grouping', argList))
@@ -297,7 +297,7 @@ checkAndAssignOptionsVI = function(pacotestOptions, argList)
 {
   if (exists('numbBoot', argList))
   {
-    pacotestOptions$numbBoot = CheckPosScalar(numbBoot,"numbBoot")
+    pacotestOptions$numbBoot = CheckPosScalar(argList$numbBoot,"numbBoot")
   }
   
   return(pacotestOptions)
