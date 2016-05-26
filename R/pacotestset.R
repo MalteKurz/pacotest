@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = NULL, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = NULL, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"),testType = NA_character_, grouping= NA_character_, aggPvalsNumbRep= NA_real_, expMinSampleSize = NA_real_, trainingDataFraction = NA_real_, aggInfo = NA_character_, withEstUncert = NA, finalComparison = NA_character_, sizeKeepingMethod = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_)
+pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
   {
   # Display possible values
   Nargs = nargs()
@@ -28,8 +28,21 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
   else
   {
     # Get a list of input arguments
-    argList = as.list(environment(), all=TRUE)
+    if (length(list(...)) > 0)
+    {
+      e = list2env(list(...),environment())
+    }
+    else
+    {
+      e = environment()
+    }
+    argList = as.list(e, all=TRUE)
+    argList$... = NULL
+    argList$e = NULL
     argList = argList[unlist(lapply(argList, function(x) !all(is.na(x))))]
+    #xx = list(...)
+    #argList = c(argList, xx)
+    
     
     if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
     {
@@ -43,7 +56,7 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
       }
       else
       {
-        pacotestOptions = getDefaultPacotestOptions(testType, sizeKeepingMethod)
+        pacotestOptions = getDefaultPacotestOptions(testType, ...)
         
         pacotestOptions = checkAndAssignOptions(testType, pacotestOptions, argList)
         
@@ -59,7 +72,7 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
       {
         warning('After the change of the testType all options are set to their default values except the explicitly stated ones.')
         
-        pacotestOptions = getDefaultPacotestOptions(testType, sizeKeepingMethod)
+        pacotestOptions = getDefaultPacotestOptions(testType, ...)
         
         pacotestOptions = checkAndAssignOptions(testType, pacotestOptions, argList)
         
@@ -304,7 +317,7 @@ checkAndAssignOptionsVI = function(pacotestOptions, argList)
 }
 
 
-getDefaultPacotestOptions = function(testType, sizeKeepingMethod = NULL)
+getDefaultPacotestOptions = function(testType, sizeKeepingMethod = NULL, ...)
 {
   if (testType=="ECOV")
   {
