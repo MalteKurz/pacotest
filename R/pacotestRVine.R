@@ -24,8 +24,9 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
   }
   
   numbRejections = 0
-  out = rep(list(), (d-2)*(d-1)/2)
-  pValues = vector(length = (d-2)*(d-1)/2)
+  
+  out = matrix(list(),nrow = d, ncol =d)
+  pValues = matrix(NA, nrow=d, ncol=d)
   
   for (k in (d-1):2) {
     numbTests = sum((d-2):(k-1))
@@ -56,19 +57,19 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       
       W = subRVM$data[,svcmDataFrame$condset[[copulaInd]], drop=FALSE]
       
-      out[[(k-1)*(k-2)/2+i]] = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
+      out[k,i][[1]] = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
       
-      pValues[(k-1)*(k-2)/2+i] = out[[(k-1)*(k-2)/2+i]]$pValue
+      pValues[k,i] = out[k,i][[1]]$pValue
       
       if (illustration == 1) {
         message(oldRVM$Matrix[i, i],",",oldRVM$Matrix[k, i],
                 "|", 
                 paste(oldRVM$Matrix[(k + 1):d, i],collapse = ","),
                 " pValue:",
-                out[[(k-1)*(k-2)/2+i]]$pValue)
+                out[k,i][[1]]$pValue)
       }
       
-      if (out[[(k-1)*(k-2)/2+i]]$pValue < thisTreeLevel)
+      if (out[k,i][[1]]$pValue < thisTreeLevel)
       {
         numbRejections = numbRejections +1
       }
@@ -84,10 +85,10 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
     if (numbRejections>0)
     {
       message("Stopped the sequential test due to a rejection")
-      #return(out)
+      #return(list(pacotestResultLists=out,pValues = pValues))
     }
   }
-  return(list(out=out,pValues = pValues))
+  return(list(pacotestResultLists=out,pValues = pValues))
 }
 
 
