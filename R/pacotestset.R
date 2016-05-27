@@ -468,10 +468,10 @@ CheckGamma0Partition = function(Value,Fieldname)
 CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECORR" )
+  if (is.element(pacotestOptions$testType, c("ECOV", "ECORR")))
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC")))
     {
       if (pacotestOptions$sizeKeepingMethod=="splitTrainEvaluate")
       {
@@ -566,7 +566,7 @@ CheckpacotestOptions = function(pacotestOptions)
         warning('The field gamma0Partition is set to NULL')
       }
     }
-    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC")))
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
@@ -606,7 +606,7 @@ CheckpacotestOptions = function(pacotestOptions)
   {
     CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (pacotestOptions$grouping=="TreeECOV" || pacotestOptions$grouping=="TreeECORR" || pacotestOptions$grouping=="TreeEC" )
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC" )))
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
