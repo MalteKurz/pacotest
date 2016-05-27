@@ -1,7 +1,7 @@
 \name{pacotestset}
 \alias{pacotestset}
 
-\title{Create / alter pacotest options list}
+\title{Create / alter a pacotest options list}
 
 \description{ The function creates or updates a list object, which is required for applying the \code{\link{pacotest}} function.}
 
@@ -33,7 +33,7 @@ The minimum number of observations which are allocated to a group in the decisio
 \item{aggInfo}{
 For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
-Aggregation of information in the conditioning set. The information in the conditioning set can be aggregated by either taking the mean of all variables or the pairwise mean. The result is added as an additional variable which could be used by the decision tree to partition the support of the conditioning variable W.
+The method used for aggregating information in the conditioning set. The information in the conditioning set can be aggregated by either taking the mean of all variables or the pairwise mean. The result is added as an additional variable which can be used by the decision tree to partition the support of the conditioning variable W.
 
 Possible values: \code{none} | \code{meanAll} | \code{meanPairwise}
 }
@@ -55,7 +55,7 @@ Possible values: \code{pairwiseMax} | \code{all}
 \item{penaltyParams}{
 For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
-A vector of length two, specifying the functional form of the penalty. The penalty is a function of the sample size n and choosen to be lambda(n) = cn^(-beta). The first entry of the vector is specifying the level c of the penalty and needs to be a positive real number. The second entry of the vector is specifying the power of the penalty and needs to be choosen from the interval (0,1).
+A vector of length two, specifying the functional form of the penalty. The penalty is a function of the sample size n and choosen to be lambda(n) = cn^(-beta). The first entry of the vector is specifying the level c of the penalty and needs to be a positive real number. The second entry of the vector is specifying the power beta of the penalty and needs to be choosen from the interval (0,1).
 }
 
 \item{gamma0Partition}{
@@ -101,18 +101,18 @@ Calling with pairs of parameter names and values creates an pacotestOptions list
            \preformatted{pacotestOptions = pacotestset('Name1',Value1,'Name2',Value2,...)}
 
 Calling with an existing pacotestOptions list checks the list for consistency.
-           \preformatted{pacotestset(pacotestOptions);}
+           \preformatted{pacotestset(pacotestOptions)}
 
 Calling with an existing pacotestOptions list and pairs of parameter names and values creates a copy of the existing list, where the named parameters are updated with the provided values.
-           \preformatted{pacotestOptions = pacotestset(pacotestOptions,'Name1',Value1,'Name2',Value2,...)}
+           \preformatted{pacotestOptionsNew = pacotestset(pacotestOptions,'Name1',Value1,'Name2',Value2,...)}
 }
 
 
 
-\value{The function returns a \code{pacotestOptions} list which can be used as input argument of the function \code{\link{pacotest}}
+\value{The function returns a \code{pacotestOptions} list which can be used as input argument for the functions \code{\link{pacotest}}, \code{\link{pacotestRvineSeq}} and \code{\link{pacotestRvineSingleCopula}}
 }
 \author{
-Malte Kurz
+Malte S. Kurz
 }
 
 
