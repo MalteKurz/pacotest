@@ -63,11 +63,15 @@ pacotestOptions = pacotestset(pacotestOptions);
 switch pacotestOptions.TestType
     case {'ERC'}
         if strcmp(pacotestOptions.Grouping,'TreeERC') && pacotestOptions.AggPvalsNumbRep >1
+            W = addAggInfo(W,pacotestOptions.aggInfo);
             % varargout are the p-values that have been aggregated.
             Grouping = 0;
             [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold] = ERC(U,W,Grouping,pacotestOptions.AggPvalsNumbRep,pacotestOptions.ExpMinSampleSize,pacotestOptions.TrainingDataFraction);
         else
             Grouping = find(strcmp(pacotestOptions.Grouping,{'TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'}));
+            if Grouping <= 2
+                W = addAggInfo(W,pacotestOptions.aggInfo);
+            end
             if pacotestOptions.GroupedScatterplots
                 [pVal,varargout{1}, SplitVariable, SplitQuantile, SplitThreshold,Xdata,Ydata] = ERC(U,W,Grouping,0,pacotestOptions.ExpMinSampleSize,pacotestOptions.TrainingDataFraction);
                 GroupedScatterplot(Xdata,Ydata);
@@ -91,6 +95,9 @@ switch pacotestOptions.TestType
         
     case {'EC'}
         Grouping = find(strcmp(pacotestOptions.Grouping,{'TreeERC','TreeEC','SumMedian','SumThirdsI','SumThirdsII','ProdMedian','ProdThirdsI','ProdThirdsII'}));
+        if Grouping <= 2
+            W = addAggInfo(W,pacotestOptions.aggInfo);
+        end
         if pacotestOptions.GroupedScatterplots
             [pVal,varargout{1},varargout{2}, SplitVariable, SplitQuantile, SplitThreshold,Xdata,Ydata] = EC(U,W,pacotestOptions.NumbBoot,Grouping,pacotestOptions.ExpMinSampleSize,pacotestOptions.TrainingDataFraction);
             GroupedScatterplot(Xdata,Ydata);
@@ -112,6 +119,20 @@ switch pacotestOptions.TestType
 end
 
 
+end
+
+function [W] = addAggInfo(W,aggInfoType)
+switch aggInfoType
+    case {'none'}
+        % Do nothing
+    case {'meanAll'}
+        W = [W,mean(W,2)];
+    case {'meanPairwise'}
+        n = size(W,2);
+        m = nchoosek(n,2);
+        xx = reshape(W(:,reshape(nchoosek(1:n,2)',2*m,1)),size(W,1),2,nchoosek(n,2));
+        W = [W,squeeze(mean(xx,2))];
+end
 end
 
 function [f1,f2,f3,f4] = GroupedScatterplot(Xdata,Ydata)

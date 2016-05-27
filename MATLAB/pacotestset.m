@@ -112,14 +112,16 @@ if (nargin == 0)
     fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n');
     fprintf('           DecisionTreePlot: [ logical | 0 | 1 ]\n');
     fprintf('           ExpMinSampleSize: [ positive scalar ]\n');
-    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n');
+    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n');
+    fprintf('                    aggInfo: [ none | meanAll | meanPairwise ]\n\n');
     fprintf(' Options for TestType = [ EqualRankCorr | ERC ]:\n');
     fprintf('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n');
     fprintf('            AggPvalsNumbRep: [ positive scalar ]\n');
     fprintf('        GroupedScatterplots: [ logical | 0 | 1 ]\n');
     fprintf('           DecisionTreePlot: [ logical | 0 | 1 ]\n');
     fprintf('           ExpMinSampleSize: [ positive scalar ]\n');
-    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n');
+    fprintf('       TrainingDataFraction: [ numeric between 0 and 1 ]\n');
+    fprintf('                    aggInfo: [ none | meanAll | meanPairwise ]\n\n');
     fprintf(' Options for TestType = [ VecIndep | VI ]:\n');
     fprintf('                   NumbBoot: [ positive scalar ]\n\n');
     
@@ -139,15 +141,15 @@ if nargin == 1 && ischar(varargin{1})
     
     switch TestType
         case {'EC'}
-            DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction'};
-            DefaultOptions = {'EC',1000,'SumMedian',false,false,[],[]};
+            DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction','aggInfo'};
+            DefaultOptions = {'EC',1000,'SumMedian',false,false,[],[],[]};
             structinput = cell(2,length(DefaultFieldNames));
             structinput(1,:) = DefaultFieldNames';
             structinput(2,:) = DefaultOptions';
             pacotestOptions = struct(structinput{:});
         case {'ERC'}
-            DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction'};
-            DefaultOptions = {'ERC','TreeERC',100,false,false,50,0.5};
+            DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction','aggInfo'};
+            DefaultOptions = {'ERC','TreeERC',100,false,false,50,0.5,'none'};
             structinput = cell(2,length(DefaultFieldNames));
             structinput(1,:) = DefaultFieldNames';
             structinput(2,:) = DefaultOptions';
@@ -208,15 +210,15 @@ elseif isstruct(varargin{1})
         
         switch pacotestOptions.TestType
             case {'EC'}
-                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction'};
-                DefaultOptions = {'EC',1000,'SumMedian',false,false,[],[]};
+                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction','aggInfo'};
+                DefaultOptions = {'EC',1000,'SumMedian',false,false,[],[],[]};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
                 pacotestOptions = struct(structinput{:});
             case {'ERC'}
-                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction'};
-                DefaultOptions = {'ERC','TreeERC',100,false,false,50,0.5};
+                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction','aggInfo'};
+                DefaultOptions = {'ERC','TreeERC',100,false,false,50,0.5,'none'};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
@@ -249,6 +251,8 @@ elseif isstruct(varargin{1})
                         pacotestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
                     case {'TrainingDataFraction'}
                         pacotestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
+                    case {'aggInfo'}
+                        pacotestOptions.aggInfo = CheckAggInfo(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -268,6 +272,8 @@ elseif isstruct(varargin{1})
                         pacotestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
                     case {'TrainingDataFraction'}
                         pacotestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
+                    case {'aggInfo'}
+                        pacotestOptions.aggInfo = CheckAggInfo(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -320,15 +326,15 @@ else
         
         switch pacotestOptions.TestType
             case {'EC'}
-                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction'};
-                DefaultOptions = {'EC',1000,'SumMedian',false,false,[],[]};
+                DefaultFieldNames = {'TestType','NumbBoot','Grouping','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction','aggInfo'};
+                DefaultOptions = {'EC',1000,'SumMedian',false,false,[],[],[]};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
                 pacotestOptions = struct(structinput{:});
             case {'ERC'}
-                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction'};
-                DefaultOptions = {'ERC','TreeERC',100,false,false,50,0.5};
+                DefaultFieldNames = {'TestType','Grouping','AggPvalsNumbRep','GroupedScatterplots','DecisionTreePlot','ExpMinSampleSize','TrainingDataFraction','aggInfo'};
+                DefaultOptions = {'ERC','TreeERC',100,false,false,50,0.5,'none'};
                 structinput = cell(2,length(DefaultFieldNames));
                 structinput(1,:) = DefaultFieldNames';
                 structinput(2,:) = DefaultOptions';
@@ -363,6 +369,8 @@ else
                         pacotestOptions.ExpMinSampleSize = CheckPosScalar(FieldValues{i},FieldNames{i});
                     case {'TrainingDataFraction'}
                         pacotestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
+                    case {'aggInfo'}
+                        pacotestOptions.aggInfo = CheckAggInfo(FieldValues{i},FieldNames{i});
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
                 end
@@ -393,6 +401,12 @@ else
                             pacotestOptions.TrainingDataFraction = CheckFraction(FieldValues{i},FieldNames{i});
                         else
                             pacotestOptions.TrainingDataFraction = [];
+                        end
+                    case {'aggInfo'}
+                        if not(isempty(FieldValues{i}))
+                            pacotestOptions.aggInfo = CheckAggInfo(FieldValues{i},FieldNames{i});
+                        else
+                            pacotestOptions.aggInfo = [];
                         end
                     otherwise
                         error([FieldNames{i} ' is no valid field name'])
@@ -478,6 +492,18 @@ end
 
 end
 
+function Res = CheckAggInfo(FieldValue,FieldName)
+
+if ~(strcmp(FieldValue,'none') ||...
+        strcmp(FieldValue,'meanAll') ||...
+        strcmp(FieldValue,'meanPairwise'))
+    error('The field aggInfo must be ''none'', ''meanAll'' or ''meanPairwise''.')
+else
+    Res = FieldValue;
+end
+
+end
+
 function pacotestOptions = CheckpacotestOptions(pacotestOptions)
 
 FieldNames = fieldnames(pacotestOptions);
@@ -507,6 +533,13 @@ switch pacotestOptions.TestType
                     else
                         pacotestOptions.TrainingDataFraction = [];
                         warning('The field TrainingDataFraction is set to []')
+                    end
+                case {'aggInfo'}
+                    if strcmp(pacotestOptions.Grouping,'TreeERC') || strcmp(pacotestOptions.Grouping,'TreeEC')
+                        CheckAggInfo(pacotestOptions.(FieldNames{i}),FieldNames{i});
+                    else
+                        pacotestOptions.aggInfo = [];
+                        warning('The field aggInfo is set to []')
                     end
                 otherwise
                     error([FieldNames{i} ' is no valid field name'])
@@ -549,6 +582,13 @@ switch pacotestOptions.TestType
                     elseif not(isempty(pacotestOptions.TrainingDataFraction))
                         pacotestOptions.TrainingDataFraction = [];
                         warning('The field TrainingDataFraction is set to []')
+                    end
+                case {'aggInfo'}
+                    if strcmp(pacotestOptions.Grouping,'TreeERC') || strcmp(pacotestOptions.Grouping,'TreeEC')
+                        CheckAggInfo(pacotestOptions.(FieldNames{i}),FieldNames{i});
+                    else
+                        pacotestOptions.aggInfo = [];
+                        warning('The field aggInfo is set to []')
                     end
                 otherwise
                     error([FieldNames{i} ' is no valid field name'])
