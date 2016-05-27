@@ -71,14 +71,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     if (grouping<=3)
     {
       condSetNames = names(W)
-      out$DecisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
+      out$decisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
       out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
       
     }
     else
     {
       xx = decTreeFromFixedGrouping(pacotestOptions$grouping, W)
-      out$DecisionTree = xx$decisionTree
+      out$decisionTree = xx$decisionTree
       W = xx$W
       
     }
@@ -86,13 +86,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     # Generate plots
     if (pacotestOptions$decisionTreePlot)
     {
-      pDecTree = decisionTreePlot(out$DecisionTree)
+      pDecTree = decisionTreePlot(out$decisionTree)
       print(pDecTree)
       
     }
     if (pacotestOptions$groupedScatterplots)
     {
-      GroupedScatterplot(Udata, W, out$DecisionTree)
+      GroupedScatterplot(Udata, W, out$decisionTree)
       
     }
     

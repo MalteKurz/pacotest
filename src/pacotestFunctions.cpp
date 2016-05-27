@@ -9,14 +9,14 @@ Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
     
     
     // Associate outputs
-    double TestStat;
+    double testStat;
     double pValue;
     arma::mat S(N,1);
     Rcpp::List out;
     
-    VecIndepTest(Udata, Wdata, N, &TestStat, &pValue, S);
+    VecIndepTest(Udata, Wdata, N, &testStat, &pValue, S);
     
-    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("S")=S);
+    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("S")=S);
     return out;
   }
   catch( std::exception& __ex__ ) {
@@ -38,7 +38,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
     
     
     // Associate outputs
-    double TestStat;
+    double testStat;
     double pValue;
     arma::mat S(N,1);
     arma::uvec SplitVariable(4);
@@ -50,9 +50,9 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
     
     Rcpp::List out;
     
-    EqualCopTest(Udata, Wdata, N, grouping, finalComparison, &TestStat, &pValue, S, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+    EqualCopTest(Udata, Wdata, N, grouping, finalComparison, &testStat, &pValue, S, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
-    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("S")=S,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("S")=S,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
     return out;
   }
   catch( std::exception& __ex__ ) {
@@ -82,7 +82,7 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
     
     if ((!arma::is_finite(AggPvalsNumbRep) && !arma::is_finite(TrainingDataFraction)) || AggPvalsNumbRep == 0)
     {
-      double TestStat;
+      double testStat;
       arma::uvec SplitVariable(4);
       arma::uvec SplitQuantile(4);
       arma::vec SplitThreshold(3);
@@ -94,11 +94,11 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       {
         if (testTypeNumber == 1)
         {
-          EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         else
         {
-          EqualCorrTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCorrTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         
       }
@@ -106,16 +106,16 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       {
         if (testTypeNumber == 1)
         {
-          EqualCovTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCovTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         else
         {
-          EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &TestStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         
       }
       
-      out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("TestStat")=TestStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+      out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
     }
     else
     {
