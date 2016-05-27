@@ -1,303 +1,377 @@
-pacotestset = function(pacotestOptions=list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5),TestType = 'ERC',Grouping= 'TreeERC', AggPvalsNumbRep= 100, ExpMinSampleSize = 50, TrainingDataFraction = 0.5, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, NumbBoot = 1000){
-# Display possible values
+pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
+  {
+  # Display possible values
   Nargs = nargs()
-if(Nargs==0){
-    cat('                   TestType: [ EqualCop | EC | EqualRankCorr | ERC | VecIndep | VI ]\n\n')
-    cat(' Options for TestType = [ EqualCop | EC ]:\n')
-    cat('                   NumbBoot: [ positive scalar ]\n')
-    cat('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n')
-    cat('        GroupedScatterplots: [ logical | 0 | 1 ]\n')
-    cat('           DecisionTreePlot: [ logical | 0 | 1 ]\n')
-    cat('           ExpMinSampleSize: [ positive scalar ]\n')
-    cat('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n')
-    cat(' Options for TestType = [ EqualRankCorr | ERC ]:\n')
-    cat('                   Grouping: [ TreeERC | TreeEC | SumMedian | SumThirdsI | SumThirdsII | ProdMedian | ProdThirdsI | ProdThirdsII ]\n')
-    cat('            AggPvalsNumbRep: [ positive scalar ]\n')
-    cat('        GroupedScatterplots: [ logical | 0 | 1 ]\n')
-    cat('           DecisionTreePlot: [ logical | 0 | 1 ]\n')
-    cat('           ExpMinSampleSize: [ positive scalar ]\n')
-    cat('       TrainingDataFraction: [ numeric between 0 and 1 ]\n\n')
-    cat(' Options for TestType = [ VecIndep | VI ]:\n')
-    cat('                   NumbBoot: [ positive scalar ]\n\n')
-}
-if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
-{
-  if (nargs()==1 && is.character(pacotestOptions))
-  {
-    TestType = pacotestOptions
-  }
-  if(missing(TestType))
-  {
-    stop('The field TestType has to be specified')
+  if(Nargs==0){
+    cat('                   testType: [ ECORR | VI ]\n\n')
+    cat(' Options for testType = [ ECORR ]:\n')
+    cat('                   grouping: [ TreeECORR | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles | TreeECOV | TreeEC ]\n')
+    cat('           expMinSampleSize: [ positive scalar ]\n')
+    cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
+    cat('              withEstUncert: [ logical | 0 | 1 ]\n')
+    cat('            finalComparison: [ pairwiseMax | all ]\n')
+    cat('              penaltyParams: [ vector of length two ]\n')
+    cat('            gamma0Partition: [ SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles ]\n')
+    cat('        groupedScatterplots: [ logical | 0 | 1 ]\n')
+    cat('           decisionTreePlot: [ logical | 0 | 1 ]\n\n')
+    cat(' Options for testType = [ VI ]:\n')
+    cat('                   numbBoot: [ positive scalar ]\n\n')
   }
   else
   {
-    if (TestType=="ERC" || TestType == "EqualRankCorr")
+    # Get a list of input arguments
+    if (length(list(...)) > 0)
     {
-      pacotestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
-      if (!(missing(Grouping)))
-      {
-        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
-      }
-      if (!(missing(AggPvalsNumbRep)) && !is.null(AggPvalsNumbRep))
-      {
-        pacotestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
-      }
-      else
-      {
-        if (is.null(AggPvalsNumbRep))
-        {
-          pacotestOptions$AggPvalsNumbRep = NULL
-        }
-      }
-      if (!(missing(GroupedScatterplots)))
-      {
-        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
-      }
-      if (!(missing(DecisionTreePlot)))
-      {
-        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
-      }
-      if (!(missing(ExpMinSampleSize)) && !is.null(ExpMinSampleSize))
-      {
-        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
-      }
-      else
-      {
-        if (is.null(ExpMinSampleSize))
-        {
-          pacotestOptions$ExpMinSampleSize = NULL
-        }
-      }
-      if (!(missing(TrainingDataFraction)) && !is.null(TrainingDataFraction))
-      {
-        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
-      }
-      else
-      {
-        if (is.null(TrainingDataFraction))
-        {
-          pacotestOptions$TrainingDataFraction = NULL
-        }
-      }
+      e = list2env(list(...),environment())
     }
-    else if (TestType=="EC" || TestType == "EqualCop")
+    else
     {
-      pacotestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
-      if (!(missing(NumbBoot)))
-      {
-        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
-      }
-      if (!(missing(Grouping)))
-      {
-        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
-      }
-      if (!(missing(GroupedScatterplots)))
-      {
-        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
-      }
-      if (!(missing(DecisionTreePlot)))
-      {
-        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
-      }
-      if (!(missing(ExpMinSampleSize)) && !is.null(ExpMinSampleSize))
-      {
-        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
-      }
-      else
-      {
-        if (is.null(ExpMinSampleSize))
-        {
-          pacotestOptions$ExpMinSampleSize = NULL
-        }
-      }
-      if (!(missing(TrainingDataFraction)) && !is.null(TrainingDataFraction))
-      {
-        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
-      }
-      else
-      {
-        if (is.null(TrainingDataFraction))
-        {
-          pacotestOptions$TrainingDataFraction = NULL
-        }
-      }
+      e = environment()
     }
-    else if (TestType=="VI" || TestType == "VecIndep")
+    argList = as.list(e, all=TRUE)
+    argList$... = NULL
+    argList$e = NULL
+    argList = argList[unlist(lapply(argList, function(x) !all(is.na(x))))]
+    #xx = list(...)
+    #argList = c(argList, xx)
+    
+    
+    if(missing(pacotestOptions) || (nargs()==1 && !is.list(pacotestOptions)))
     {
-      pacotestOptions = list(TestType = 'VI',NumbBoot=1000)
-      if (!(missing(NumbBoot)))
+      if (nargs()==1 && is.character(pacotestOptions))
       {
-        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+        testType = pacotestOptions
+      }
+      if(missing(testType))
+      {
+        stop('The field testType has to be specified')
+      }
+      else
+      {
+        pacotestOptions = getDefaultPacotestOptions(testType, grouping, ...)
+        
+        pacotestOptions = checkAndAssignOptions(testType, pacotestOptions, argList)
+        
       }
     }
     else
     {
-      stop("No valid TestType.")
+      if (!is.list(pacotestOptions) || !exists('testType', where=pacotestOptions))
+      {
+        stop('The provided pacotestOptions have to be given in a list which has testType as member.')
+      }
+      if (!(missing(testType)))
+      {
+        warning('After the change of the testType all options are set to their default values except the explicitly stated ones.')
+        
+        pacotestOptions = getDefaultPacotestOptions(testType, grouping, ...)
+        
+        pacotestOptions = checkAndAssignOptions(testType, pacotestOptions, argList)
+        
+      }
+      
+      pacotestOptions = checkAndAssignOptions(pacotestOptions$testType, pacotestOptions, argList)
+      
     }
+    pacotestOptions = CheckpacotestOptions(pacotestOptions)
+    return(pacotestOptions)
   }
 }
-else
+
+
+checkAndAssignOptions = function(testType, pacotestOptions, argList)
 {
-  if (!is.list(pacotestOptions) || !exists('TestType', where=pacotestOptions))
+  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECORR")
   {
-    stop('The provided pacotestOptions have to be given in a list which has TestType as member.')
-  }
-  if (!(missing(TestType)))
-  {
-    warning('After the change of the TestType all options are set to their default values except the explicitly stated ones.')
+    pacotestOptions = checkAndAssignOptionsEcorrOrEcov(pacotestOptions, argList)
     
-    if (TestType=="ERC" || TestType == "EqualRankCorr")
+  }
+  else if (pacotestOptions$testType=="EC")
+  {
+    pacotestOptions = checkAndAssignOptionsEC(pacotestOptions, argList)
+    
+  }
+  else if (pacotestOptions$testType=="VI")
+  {
+    pacotestOptions = checkAndAssignOptionsVI(pacotestOptions, argList)
+    
+  }
+  else
+  {
+    stop("No valid testType.")
+  }
+  
+  return(pacotestOptions)
+}
+
+
+checkAndAssignOptionsEcorrOrEcov = function(pacotestOptions, argList)
+{
+  
+  if (exists('sizeKeepingMethod', argList))
+  {
+    if (!is.null(argList$sizeKeepingMethod))
     {
-      pacotestOptions = list(TestType = 'ERC', Grouping = 'TreeERC', AggPvalsNumbRep = 100, GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
-      if (!(missing(Grouping)))
-      {
-        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
-      }
-      if (!(missing(AggPvalsNumbRep)))
-      {
-        pacotestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
-      }
-      if (!(missing(GroupedScatterplots)))
-      {
-        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
-      }
-      if (!(missing(DecisionTreePlot)))
-      {
-        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
-      }
-      if (!(missing(ExpMinSampleSize)))
-      {
-        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
-      }
-      if (!(missing(TrainingDataFraction)))
-      {
-        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
-      }
-    }
-    else if (TestType=="EC" || TestType == "EqualCop")
-    {
-      pacotestOptions = list(TestType = 'EC', NumbBoot = 1000, Grouping = 'SumMedian', GroupedScatterplots = FALSE, DecisionTreePlot = FALSE, ExpMinSampleSize = 50, TrainingDataFraction = 0.5)
-      if (!(missing(NumbBoot)))
-      {
-        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
-      }
-      if (!(missing(Grouping)))
-      {
-        pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
-      }
-      if (!(missing(GroupedScatterplots)))
-      {
-        pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
-      }
-      if (!(missing(DecisionTreePlot)))
-      {
-        pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
-      }
-      if (!(missing(ExpMinSampleSize)))
-      {
-        pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
-      }
-      if (!(missing(TrainingDataFraction)))
-      {
-        pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
-      }
-    }
-    else if (TestType=="VI" || TestType == "VecIndep")
-    {
-      pacotestOptions = list(TestType = 'VI',NumbBoot=1000)
-      if (!(missing(NumbBoot)))
-      {
-        pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
-      }
+      pacotestOptions$sizeKeepingMethod = CheckSizeKeepingMethod(argList$sizeKeepingMethod,"sizeKeepingMethod")
     }
     else
     {
-      stop("No valid TestType.")
+      pacotestOptions$sizeKeepingMethod = NULL
     }
   }
   
-  if (pacotestOptions$TestType=="ERC" || pacotestOptions$TestType == "EqualRankCorr")
+  if (exists('grouping', argList))
   {
-    pacotestOptions$TestType = "ERC"
-    if (!(missing(Grouping)))
+    pacotestOptions$grouping = CheckGrouping(argList$grouping,"grouping")
+  }
+  
+  if (exists('aggPvalsNumbRep', argList))
+  {
+    if (!is.null(argList$aggPvalsNumbRep))
     {
-      pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
+      pacotestOptions$aggPvalsNumbRep = CheckPosScalar(argList$aggPvalsNumbRep,"aggPvalsNumbRep")
     }
-    if (!(missing(AggPvalsNumbRep)))
+    else
     {
-      pacotestOptions$AggPvalsNumbRep = CheckPosScalar(AggPvalsNumbRep,"AggPvalsNumbRep")
-    }
-    if (!(missing(GroupedScatterplots)))
-    {
-      pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
-    }
-    if (!(missing(DecisionTreePlot)))
-    {
-      pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
-    }
-    if (!(missing(ExpMinSampleSize)))
-    {
-      pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
-    }
-    if (!(missing(TrainingDataFraction)))
-    {
-      pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+      pacotestOptions$aggPvalsNumbRep = NULL
     }
   }
-  else if (pacotestOptions$TestType=="EC" || pacotestOptions$TestType == "EqualCop")
+  
+  if (exists('groupedScatterplots', argList))
   {
-    pacotestOptions$TestType = "EC"
-    if (!(missing(NumbBoot)))
+    pacotestOptions$groupedScatterplots = CheckLogical(argList$groupedScatterplots,"groupedScatterplots")
+  }
+  
+  if (exists('decisionTreePlot', argList))
+  {
+    pacotestOptions$decisionTreePlot = CheckLogical(argList$decisionTreePlot,"decisionTreePlot")
+  }
+  
+  if (exists('expMinSampleSize', argList))
+  {
+    if (!is.null(argList$expMinSampleSize))
     {
-      pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+      pacotestOptions$expMinSampleSize = CheckPosScalar(argList$expMinSampleSize,"expMinSampleSize")
     }
-    if (!(missing(Grouping)))
+    else
     {
-      pacotestOptions$Grouping = CheckGrouping(Grouping,"Grouping")
-    }
-    if (!(missing(GroupedScatterplots)))
-    {
-      pacotestOptions$GroupedScatterplots = CheckLogical(GroupedScatterplots,"GroupedScatterplots")
-    }
-    if (!(missing(DecisionTreePlot)))
-    {
-      pacotestOptions$DecisionTreePlot = CheckLogical(DecisionTreePlot,"DecisionTreePlot")
-    }
-    if (!(missing(ExpMinSampleSize)))
-    {
-      pacotestOptions$ExpMinSampleSize = CheckPosScalar(ExpMinSampleSize,"ExpMinSampleSize")
-    }
-    if (!(missing(TrainingDataFraction)))
-    {
-      pacotestOptions$TrainingDataFraction = CheckFraction(TrainingDataFraction,"TrainingDataFraction")
+      pacotestOptions$expMinSampleSize = NULL
     }
   }
-  else if (pacotestOptions$TestType=="VI" || pacotestOptions$TestType == "VecIndep")
+  
+  if (exists('trainingDataFraction', argList))
   {
-    pacotestOptions$TestType = "VI"
-    if (!(missing(NumbBoot)))
+    if (!is.null(argList$trainingDataFraction))
     {
-      pacotestOptions$NumbBoot = CheckPosScalar(NumbBoot,"NumbBoot")
+      pacotestOptions$trainingDataFraction = CheckFraction(argList$trainingDataFraction,"trainingDataFraction")
     }
+    else
+    {
+      pacotestOptions$trainingDataFraction = NULL
+    }
+  }
+  
+  if (exists('aggInfo', argList))
+  {
+    if (!is.null(argList$aggInfo))
+    {
+      pacotestOptions$aggInfo = CheckAggInfo(argList$aggInfo,"aggInfo")
+    }
+    else
+    {
+      pacotestOptions$aggInfo = NULL
+    }
+  }
+  
+  if (exists('withEstUncert', argList))
+  {
+    if (!is.null(argList$withEstUncert))
+    {
+      pacotestOptions$withEstUncert = CheckLogical(argList$withEstUncert,"withEstUncert")
+    }
+    else
+    {
+      pacotestOptions$withEstUncert = NULL
+    }
+  }
+  
+  if (exists('finalComparison', argList))
+  {
+    if (!is.null(argList$finalComparison))
+    {
+      pacotestOptions$finalComparison = CheckFinalComparison(argList$finalComparison,"CheckFinalComparison")
+    }
+    else
+    {
+      pacotestOptions$finalComparison = NULL
+    }
+  }
+  
+  if (exists('penaltyParams', argList))
+  {
+    if (!is.null(argList$penaltyParams))
+    {
+      pacotestOptions$penaltyParams = CheckPenaltyParams(argList$penaltyParams,"penaltyParams")
+    }
+    else
+    {
+      pacotestOptions$penaltyParams = NULL
+    }
+  }
+  
+  if (exists('gamma0Partition', argList))
+  {
+    if (!is.null(argList$gamma0Partition))
+    {
+      pacotestOptions$gamma0Partition = CheckGamma0Partition(argList$gamma0Partition,"gamma0Partition")
+    }
+    else
+    {
+      pacotestOptions$gamma0Partition = NULL
+    }
+  }
+  
+  return(pacotestOptions)
+}
+
+
+checkAndAssignOptionsEC = function(pacotestOptions, argList)
+{
+  
+  if (exists('numbBoot', argList))
+  {
+    pacotestOptions$numbBoot = CheckPosScalar(argList$numbBoot,"numbBoot")
+  }
+  
+  if (exists('grouping', argList))
+  {
+    pacotestOptions$grouping = CheckGrouping(argList$grouping,"grouping")
+  }
+  
+  if (exists('groupedScatterplots', argList))
+  {
+    pacotestOptions$groupedScatterplots = CheckLogical(argList$groupedScatterplots,"groupedScatterplots")
+  }
+  
+  if (exists('decisionTreePlot', argList))
+  {
+    pacotestOptions$decisionTreePlot = CheckLogical(argList$decisionTreePlot,"decisionTreePlot")
+  }
+  
+  if (exists('expMinSampleSize', argList))
+  {
+    if (!is.null(argList$expMinSampleSize))
+    {
+      pacotestOptions$expMinSampleSize = CheckPosScalar(argList$expMinSampleSize,"expMinSampleSize")
+    }
+    else
+    {
+      pacotestOptions$expMinSampleSize = NULL
+    }
+  }
+  
+  if (exists('trainingDataFraction', argList))
+  {
+    if (!is.null(argList$trainingDataFraction))
+    {
+      pacotestOptions$trainingDataFraction = CheckFraction(argList$trainingDataFraction,"trainingDataFraction")
+    }
+    else
+    {
+      pacotestOptions$trainingDataFraction = NULL
+    }
+  }
+  
+  if (exists('aggInfo', argList))
+  {
+    if (!is.null(argList$aggInfo))
+    {
+      pacotestOptions$aggInfo = CheckAggInfo(argList$aggInfo,"aggInfo")
+    }
+    else
+    {
+      pacotestOptions$aggInfo = NULL
+    }
+  }
+  
+  return(pacotestOptions)
+}
+
+
+checkAndAssignOptionsVI = function(pacotestOptions, argList)
+{
+  if (exists('numbBoot', argList))
+  {
+    pacotestOptions$numbBoot = CheckPosScalar(argList$numbBoot,"numbBoot")
+  }
+  
+  return(pacotestOptions)
+}
+
+
+getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKeepingMethod = NULL, ...)
+{
+  if (is.element(testType, c("ECORR","ECOV")))
+  {
+    defaultTreeGrouping = paste('Tree', testType, sep = "")
+    
+    if (is.null(sizeKeepingMethod) || is.na(sizeKeepingMethod) || sizeKeepingMethod == 'penalty')
+    {
+      if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+      {
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
+      }
+      else
+      {
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+      }
+    }
+    else if (sizeKeepingMethod == 'splitTrainEvaluate')
+    {
+      if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+      {
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
+      }
+      else
+      {
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+      }
+    }
+  }
+  else if (testType=="EC")
+  {
+    if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+    {
+      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+    }
+    else
+    {
+      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+      
+    }
+  }
+  else if (testType=="VI")
+  {
+    pacotestOptions = list(testType = 'VI',numbBoot=1000)
   }
   else
   {
-    stop("No valid TestType.")
+    stop("No valid testType.")
   }
+  
+  return(pacotestOptions)
 }
-pacotestOptions = CheckpacotestOptions(pacotestOptions)
-return(pacotestOptions)
-}
+
 
 CheckPosScalar = function(Value,Fieldname)
 {
-  if (!(is.numeric(Value)) || (Value <1 && !(Fieldname=="AggPvalsNumbRep" && Value == 0)) || Value %% 1)
+  if (!(is.numeric(Value)) || (Value <1 && !(Fieldname=="aggPvalsNumbRep" && Value == 0)) || Value %% 1)
   {
     stop(paste("The option ", Fieldname, " must be a positive scalar."))
   }
   return(Value)
 }
+
 
 CheckFraction = function(Value,Fieldname)
 {
@@ -308,6 +382,7 @@ CheckFraction = function(Value,Fieldname)
   return(Value)
 }
 
+
 CheckLogical = function(Value,Fieldname)
 {
   if (!(is.logical(Value) || Value == 1 || Value == 0))
@@ -317,103 +392,265 @@ CheckLogical = function(Value,Fieldname)
   return(as.logical(Value))
 }
 
+
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'TreeEC' || Value == 'TreeERC'))
+  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeECOV', 'TreeECORR'))))
   {
-    stop(paste("The option Grouping must be 'TreeEC', 'TreeERC' 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'ProdMedian', 'ProdThirdsI' or 'ProdThirdsII'"))
+    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeECORR', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
   return(Value)
 }
 
+
+CheckAggInfo = function(Value,Fieldname)
+{
+  if (!(is.element(Value, c('none', 'meanAll', 'meanPairwise'))))
+  {
+    stop(paste("The option aggInfo must be 'none', 'meanAll' or 'meanPairwise'"))
+  }
+  return(Value)
+}
+
+
+CheckFinalComparison = function(Value,Fieldname)
+{
+  if (!(is.element(Value, c('pairwiseMax', 'all'))))
+  {
+    stop(paste("The option aggInfo must be 'pairwiseMax' or 'all'"))
+  }
+  return(Value)
+}
+
+
+CheckSizeKeepingMethod = function(Value,Fieldname)
+{
+  if (!(is.element(Value, c('splitTrainEvaluate', 'penalty'))))
+  {
+    stop(paste("The option sizeKeepingMethod must be 'splitTrainEvaluate' or 'penalty'"))
+  }
+  return(Value)
+}
+
+
+CheckPenaltyParams = function(Value,Fieldname)
+{
+  if (!(is.numeric(Value)) || !(is.vector(Value)) || !(length(Value)==2))
+  {
+    stop(paste("The option ", Fieldname, " must be a numeric vector of length two."))
+  }
+  
+  if (!(is.numeric(Value[1])) || (Value[1] <0) )
+  {
+    stop(paste("The first value of the penaltyParams must be a positive scalar."))
+  }
+  
+  if (!(is.numeric(Value[2])) || (Value[2] <0 || Value[2] >= 1))
+  {
+    stop(paste("The second value of the penaltyParams must be a numeric in the interval [0,1)."))
+  }
+  
+  return(Value)
+}
+
+
+CheckGamma0Partition = function(Value,Fieldname)
+{
+  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles'))))
+  {
+    stop(paste("The option gamma0Partition must be 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
+  }
+  
+  return(Value)
+}
+
+
 CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (pacotestOptions$TestType=="ERC")
+  if (is.element(pacotestOptions$testType, c("ECOV", "ECORR")))
   {
-    CheckGrouping(pacotestOptions$Grouping,"Grouping")
-      if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
+    CheckGrouping(pacotestOptions$grouping,"grouping")
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC")))
+    {
+      if (pacotestOptions$sizeKeepingMethod=="splitTrainEvaluate")
       {
-        if (exists('AggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$AggPvalsNumbRep >1 && exists('GroupedScatterplots', where=pacotestOptions) && pacotestOptions$GroupedScatterplots)
+        if (!(exists('aggPvalsNumbRep', where=pacotestOptions)))
         {
-          pacotestOptions$GroupedScatterplots = FALSE
-          warning('GroupedScatterplots is set to FALSE as AggPvalsNumbRep is larger than one')
+          pacotestOptions$aggPvalsNumbRep = 100
         }
-        if (exists('AggPvalsNumbRep', where=pacotestOptions))
+        if (!(exists('trainingDataFraction', where=pacotestOptions)))
         {
-          CheckPosScalar(pacotestOptions$AggPvalsNumbRep,"AggPvalsNumbRep")
+          pacotestOptions$trainingDataFraction = 0.5
         }
+        
+        if (exists('aggPvalsNumbRep', where=pacotestOptions) && pacotestOptions$aggPvalsNumbRep >1 && exists('groupedScatterplots', where=pacotestOptions) && pacotestOptions$groupedScatterplots)
+        {
+          pacotestOptions$groupedScatterplots = FALSE
+          warning('groupedScatterplots is set to FALSE as aggPvalsNumbRep is larger than one')
+        }
+        if (exists('aggPvalsNumbRep', where=pacotestOptions))
+        {
+          CheckPosScalar(pacotestOptions$aggPvalsNumbRep,"aggPvalsNumbRep")
+        }
+        
+        if (exists('penaltyParams', where=pacotestOptions) && !is.null(pacotestOptions$penaltyParams))
+        {
+          pacotestOptions$penaltyParams = NULL;
+          warning('The field penaltyParams is set to NULL')
+        }
+        
+        if (exists('gamma0Partition', where=pacotestOptions) && !is.null(pacotestOptions$gamma0Partition))
+        {
+          pacotestOptions$gamma0Partition = NULL;
+          warning('The field gamma0Partition is set to NULL')
+        }
+        
       }
-    else
-    {
-      if (exists('ExpMinSampleSize', where=pacotestOptions) && !is.null(pacotestOptions$ExpMinSampleSize))
+      else
       {
-        pacotestOptions$ExpMinSampleSize = NULL;
-        warning('The field ExpMinSampleSize is set to NULL')
-      }
-      
-      if (exists('TrainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$TrainingDataFraction))
-      {
-        pacotestOptions$TrainingDataFraction = NULL;
-        warning('The field TrainingDataFraction is set to NULL')
-      }
-      
-      if (exists('AggPvalsNumbRep', where=pacotestOptions) && !is.null(pacotestOptions$AggPvalsNumbRep))
-      {
-        pacotestOptions$AggPvalsNumbRep = NULL;
-        warning('The field AggPvalsNumbRep is set to NULL')
-      }
-    }
-    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
-    {
-      if (exists('ExpMinSampleSize', where=pacotestOptions))
-      {
-        CheckPosScalar(pacotestOptions$ExpMinSampleSize,"ExpMinSampleSize")
-      }
-      if (exists('TrainingDataFraction', where=pacotestOptions))
-      {
-        CheckFraction(pacotestOptions$TrainingDataFraction,"TrainingDataFraction")
-      }
-    }
-  }
-  else if (pacotestOptions$TestType=="EC")
-  {
-    CheckPosScalar(pacotestOptions$NumbBoot,"NumbBoot")
-    CheckGrouping(pacotestOptions$Grouping,"Grouping")
-    if (pacotestOptions$Grouping=="TreeERC" || pacotestOptions$Grouping=="TreeEC")
-    {
-      if (exists('ExpMinSampleSize', where=pacotestOptions))
-      {
-        CheckPosScalar(pacotestOptions$ExpMinSampleSize,"ExpMinSampleSize")
-      }
-      if (exists('TrainingDataFraction', where=pacotestOptions))
-      {
-        CheckFraction(pacotestOptions$TrainingDataFraction,"TrainingDataFraction")
+        if (exists('trainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$trainingDataFraction))
+        {
+          pacotestOptions$trainingDataFraction = NULL;
+          warning('The field trainingDataFraction is set to NULL')
+        }
+        
+        if (exists('aggPvalsNumbRep', where=pacotestOptions) && !is.null(pacotestOptions$aggPvalsNumbRep))
+        {
+          pacotestOptions$aggPvalsNumbRep = NULL;
+          warning('The field aggPvalsNumbRep is set to NULL')
+        }
       }
     }
     else
     {
-      if (exists('ExpMinSampleSize', where=pacotestOptions) && !is.null(pacotestOptions$ExpMinSampleSize))
+      if (exists('expMinSampleSize', where=pacotestOptions) && !is.null(pacotestOptions$expMinSampleSize))
       {
-        pacotestOptions$ExpMinSampleSize = NULL;
-        warning('The field ExpMinSampleSize is set to NULL')
+        pacotestOptions$expMinSampleSize = NULL;
+        warning('The field expMinSampleSize is set to NULL')
       }
       
-      if (exists('TrainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$TrainingDataFraction))
+      if (exists('trainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$trainingDataFraction))
       {
-        pacotestOptions$TrainingDataFraction = NULL;
-        warning('The field TrainingDataFraction is set to NULL')
+        pacotestOptions$trainingDataFraction = NULL;
+        warning('The field trainingDataFraction is set to NULL')
+      }
+      
+      if (exists('aggInfo', where=pacotestOptions) && !is.null(pacotestOptions$aggInfo))
+      {
+        pacotestOptions$aggInfo = NULL;
+        warning('The field aggInfo is set to NULL')
+      }
+      
+      if (exists('aggPvalsNumbRep', where=pacotestOptions) && !is.null(pacotestOptions$aggPvalsNumbRep))
+      {
+        pacotestOptions$aggPvalsNumbRep = NULL;
+        warning('The field aggPvalsNumbRep is set to NULL')
+      }
+      
+      if (exists('sizeKeepingMethod', where=pacotestOptions) && !is.null(pacotestOptions$sizeKeepingMethod))
+      {
+        pacotestOptions$sizeKeepingMethod = NULL;
+        warning('The field sizeKeepingMethod is set to NULL')
+      }
+      
+      if (exists('penaltyParams', where=pacotestOptions) && !is.null(pacotestOptions$penaltyParams))
+      {
+        pacotestOptions$penaltyParams = NULL;
+        warning('The field penaltyParams is set to NULL')
+      }
+      
+      if (exists('gamma0Partition', where=pacotestOptions) && !is.null(pacotestOptions$gamma0Partition))
+      {
+        pacotestOptions$gamma0Partition = NULL;
+        warning('The field gamma0Partition is set to NULL')
+      }
+    }
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC")))
+    {
+      if (exists('expMinSampleSize', where=pacotestOptions))
+      {
+        CheckPosScalar(pacotestOptions$expMinSampleSize,"expMinSampleSize")
+      }
+      if (exists('trainingDataFraction', where=pacotestOptions))
+      {
+        CheckFraction(pacotestOptions$trainingDataFraction,"trainingDataFraction")
+      }
+      if (exists('aggInfo', where=pacotestOptions))
+      {
+        CheckAggInfo(pacotestOptions$aggInfo,"aggInfo")
+      }
+      if (exists('withEstUncert', where=pacotestOptions))
+      {
+        CheckLogical(pacotestOptions$withEstUncert,"withEstUncert")
+      }
+      if (exists('finalComparison', where=pacotestOptions))
+      {
+        CheckFinalComparison(pacotestOptions$finalComparison,"finalComparison")
+      }
+      if (exists('sizeKeepingMethod', where=pacotestOptions))
+      {
+        CheckSizeKeepingMethod(pacotestOptions$sizeKeepingMethod,"sizeKeepingMethod")
+      }
+      if (exists('penaltyParams', where=pacotestOptions))
+      {
+        CheckPenaltyParams(pacotestOptions$penaltyParams,"penaltyParams")
+      }
+      if (exists('gamma0Partition', where=pacotestOptions))
+      {
+        CheckGamma0Partition(pacotestOptions$gamma0Partition,"gamma0Partition")
       }
     }
   }
-  else if (pacotestOptions$TestType=="VI")
+  else if (pacotestOptions$testType=="EC")
   {
-    CheckPosScalar(pacotestOptions$NumbBoot,"NumbBoot")
+    CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
+    CheckGrouping(pacotestOptions$grouping,"grouping")
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC" )))
+    {
+      if (exists('expMinSampleSize', where=pacotestOptions))
+      {
+        CheckPosScalar(pacotestOptions$expMinSampleSize,"expMinSampleSize")
+      }
+      if (exists('trainingDataFraction', where=pacotestOptions))
+      {
+        CheckFraction(pacotestOptions$trainingDataFraction,"trainingDataFraction")
+      }
+      if (exists('aggInfo', where=pacotestOptions))
+      {
+        CheckAggInfo(pacotestOptions$aggInfo,"aggInfo")
+      }
+    }
+    else
+    {
+      if (exists('expMinSampleSize', where=pacotestOptions) && !is.null(pacotestOptions$expMinSampleSize))
+      {
+        pacotestOptions$expMinSampleSize = NULL;
+        warning('The field expMinSampleSize is set to NULL')
+      }
+      
+      if (exists('trainingDataFraction', where=pacotestOptions) && !is.null(pacotestOptions$trainingDataFraction))
+      {
+        pacotestOptions$trainingDataFraction = NULL;
+        warning('The field trainingDataFraction is set to NULL')
+      }
+      
+      if (exists('aggInfo', where=pacotestOptions) && !is.null(pacotestOptions$aggInfo))
+      {
+        pacotestOptions$aggInfo = NULL;
+        warning('The field aggInfo is set to NULL')
+      }
+    }
+  }
+  else if (pacotestOptions$testType=="VI")
+  {
+    CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
   }
   else
   {
-    stop("No valid pacotestOptions$TestType.")
+    stop("No valid pacotestOptions$testType.")
   }
   
   return(pacotestOptions)
 }
+

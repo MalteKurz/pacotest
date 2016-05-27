@@ -6,6 +6,11 @@ double NormalCDF(double Z)
     return R::pnorm(Z,0,1,1,0);
 }
 
+double Chi2CDF(double Z, double df)
+{
+    return R::pchisq(Z,df,1,0);
+}
+
 
 void NormalRand(arma::mat &X)
 {

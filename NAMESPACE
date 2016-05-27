@@ -1,3 +1,16 @@
 importFrom(Rcpp, evalCpp)
+
+importFrom(numDeriv, grad, jacobian)
+
+importFrom(VineCopula, BiCopPDF, RVineMatrix, RVineMatrixNormalize)
+
+importFrom(ggplot2, ggplot, aes_string, geom_point,
+           scale_colour_manual, scale_y_continuous, scale_x_continuous,
+           xlab, ylab, xlim, ylim, coord_fixed, coord_equal,
+           theme_grey, theme, unit, element_blank,
+           facet_wrap, ggplotGrob, annotate)
+
+importFrom(gridExtra, grid.arrange)
+
 useDynLib(pacotest)
-export(pacotest, pacotestset)
+export(pacotest, pacotestset, pacotestRvineSeq, pacotestRvineSingleCopula)
