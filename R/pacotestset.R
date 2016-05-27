@@ -309,7 +309,7 @@ checkAndAssignOptionsVI = function(pacotestOptions, argList)
 }
 
 
-getDefaultPacotestOptions = function(testType, sizeKeepingMethod = NULL, ...)
+getDefaultPacotestOptions = function(testType, grouping = NULL, sizeKeepingMethod = NULL, ...)
 {
   if (testType=="ECOV")
   {
@@ -382,7 +382,7 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'SumQuartiles' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'ProdQuartiles' || Value == 'TreeEC' || Value == 'TreeECOV' || Value == 'TreeECORR'))
+  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeECOV', 'TreeECORR'))))
   {
     stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeECORR', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
@@ -392,7 +392,7 @@ CheckGrouping = function(Value,Fieldname)
 
 CheckAggInfo = function(Value,Fieldname)
 {
-  if (!(Value == 'none' || Value == 'meanAll' || Value == 'meanPairwise' ))
+  if (!(is.element(Value, c('none', 'meanAll', 'meanPairwise'))))
   {
     stop(paste("The option aggInfo must be 'none', 'meanAll' or 'meanPairwise'"))
   }
@@ -402,7 +402,7 @@ CheckAggInfo = function(Value,Fieldname)
 
 CheckFinalComparison = function(Value,Fieldname)
 {
-  if (!(Value == 'pairwiseMax' || Value == 'all' ))
+  if (!(is.element(Value, c('pairwiseMax', 'all'))))
   {
     stop(paste("The option aggInfo must be 'pairwiseMax' or 'all'"))
   }
@@ -412,7 +412,7 @@ CheckFinalComparison = function(Value,Fieldname)
 
 CheckSizeKeepingMethod = function(Value,Fieldname)
 {
-  if (!(Value == 'splitTrainEvaluate' || Value == 'penalty' ))
+  if (!(is.element(Value, c('splitTrainEvaluate', 'penalty'))))
   {
     stop(paste("The option sizeKeepingMethod must be 'splitTrainEvaluate' or 'penalty'"))
   }
@@ -443,7 +443,7 @@ CheckPenaltyParams = function(Value,Fieldname)
 
 CheckGamma0Partition = function(Value,Fieldname)
 {
-  if (!(Value == 'SumMedian' || Value == 'SumThirdsI' || Value == 'SumThirdsII' || Value == 'SumThirdsIII' || Value == 'SumQuartiles' || Value == 'ProdMedian' || Value == 'ProdThirdsI' || Value == 'ProdThirdsII' || Value == 'ProdThirdsIII' || Value == 'ProdQuartiles'))
+  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles'))))
   {
     stop(paste("The option gamma0Partition must be 'SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
