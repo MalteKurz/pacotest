@@ -10,4 +10,5 @@ Description: The pacotest package provides different functions, which allow to t
 License: MIT + file LICENSE
 Imports: Rcpp (>= 0.11.4), VineCopula, numDeriv, ggplot2, gridExtra
 LinkingTo: Rcpp, RcppArmadillo
+Suggests: testthat
 BugReports: http://github.com/MalteKurz/pacotest/issues
