@@ -48,7 +48,7 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
       }
       else
       {
-        pacotestOptions = getDefaultPacotestOptions(testType, ...)
+        pacotestOptions = getDefaultPacotestOptions(testType, grouping, ...)
         
         pacotestOptions = checkAndAssignOptions(testType, pacotestOptions, argList)
         
@@ -64,7 +64,7 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
       {
         warning('After the change of the testType all options are set to their default values except the explicitly stated ones.')
         
-        pacotestOptions = getDefaultPacotestOptions(testType, ...)
+        pacotestOptions = getDefaultPacotestOptions(testType, grouping, ...)
         
         pacotestOptions = checkAndAssignOptions(testType, pacotestOptions, argList)
         
@@ -309,33 +309,46 @@ checkAndAssignOptionsVI = function(pacotestOptions, argList)
 }
 
 
-getDefaultPacotestOptions = function(testType, grouping = NULL, sizeKeepingMethod = NULL, ...)
+getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKeepingMethod = NULL, ...)
 {
-  if (testType=="ECOV")
+  if (is.element(testType, c("ECORR","ECOV")))
   {
+    defaultTreeGrouping = paste('Tree', testType, sep = "")
+    
     if (is.null(sizeKeepingMethod) || is.na(sizeKeepingMethod) || sizeKeepingMethod == 'penalty')
     {
-      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
+      if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+      {
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
+      }
+      else
+      {
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+      }
     }
     else if (sizeKeepingMethod == 'splitTrainEvaluate')
     {
-      pacotestOptions = list(testType = 'ECOV', grouping = 'TreeECOV', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
-    }
-  }
-  else if (testType=="ECORR")
-  {
-    if (is.null(sizeKeepingMethod) || is.na(sizeKeepingMethod) || sizeKeepingMethod == 'penalty')
-    {
-      pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
-    }
-    else if (sizeKeepingMethod == 'splitTrainEvaluate')
-    {
-      pacotestOptions = list(testType = 'ECORR', grouping = 'TreeECORR', aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
+      if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+      {
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
+      }
+      else
+      {
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+      }
     }
   }
   else if (testType=="EC")
   {
-    pacotestOptions = list(testType = 'EC', numbBoot = 1000, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+    if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+    {
+      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+    }
+    else
+    {
+      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+      
+    }
   }
   else if (testType=="VI")
   {
