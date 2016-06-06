@@ -98,6 +98,10 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     
   }
   
+  
+  #partitionPlot(out$decisionTree,W)
+  
+  
   return(out)
 }
 

@@ -6,6 +6,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   names(Udata) = c("V1", "V2")
   
   cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+  cbbPalette = c("black", "black", "black", "black", "black","black","black")
   
   
   p1 = ggplot(Udata,
@@ -17,8 +18,12 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     xlab(dataLabels[1]) + 
     ylab(dataLabels[2]) + 
     coord_fixed() +
-    theme_grey(base_size = 15) + 
-    theme(panel.margin = unit(4, "lines"), legend.position = "none")
+    theme_bw(base_size = 20) + 
+    theme(panel.margin = unit(4, "lines"), legend.position = "none",
+          legend.key.size = unit(1, "cm"),
+          panel.margin = unit(2.5, "lines"),
+          panel.grid.major = element_line(colour = "grey85", size = .75),
+          panel.grid.minor = element_line(colour = "grey85", size = .75))
   
   
   xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
@@ -70,7 +75,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     lM = matrix(NA, nrow=2, ncol=2)
     lM[1,] = 1
     lM[2,] = 2
-    grid.arrange(p1, p2, layout_matrix = lM)
+    p = grid.arrange(p1, p2, layout_matrix = lM)
   }
   else
   {
@@ -81,7 +86,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
       lM[2,] = 2
       lM[3,1] = NA
       lM[3,2] = 3
-      grid.arrange(p1, p2, p4, layout_matrix = lM)
+      p = grid.arrange(p1, p2, p4, layout_matrix = lM)
     }
     else
     {
@@ -92,7 +97,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
         lM[2,] = 2
         lM[3,1] = 3
         lM[3,2] = NA
-        grid.arrange(p1, p2, p3, layout_matrix = lM)
+        p = grid.arrange(p1, p2, p3, layout_matrix = lM)
       }
       else
       {
@@ -101,11 +106,42 @@ GroupedScatterplot = function(Udata, W, decisionTree)
         lM[2,] = 2
         lM[3,1] = 3
         lM[3,2] = 4
-        grid.arrange(p1, p2, p3, p4, layout_matrix = lM)
+        p = grid.arrange(p1, p2, p3, p4, layout_matrix = lM)
       }
     }
   }
   
+  df <- data.frame(x = c(0.55,0.95), y = c(0,0.07))
+  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  pBla<-ggplotGrob(pBla)
+  lines <- pBla$grobs[[4]][["children"]][[3]]
+  
+  df <- data.frame(x = c(0.1,0.5), y = c(0.07,0))
+  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  pBla<-ggplotGrob(pBla)
+  lines2 <- pBla$grobs[[4]][["children"]][[3]]
+  
+  df <- data.frame(x = c(0.275,0.575,0.775), y = c(0,0.06,0))
+  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  pBla<-ggplotGrob(pBla)
+  lines3 <- pBla$grobs[[4]][["children"]][[3]]
+  
+  df <- data.frame(x = c(0.275,0.475,0.775), y = c(0,0.06,0))
+  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  pBla<-ggplotGrob(pBla)
+  lines4 <- pBla$grobs[[4]][["children"]][[3]]
+  
+  bla <- gtable_add_grob(p, lines, l=1, t=1, b=1, z=Inf)
+  bla <- gtable_add_grob(bla, lines2, l=2, t=1, b=1, z=Inf)
+  #bla <- gtable_add_grob(p, lines3, l=1, t=1, b=1, r=2, z=Inf)
+  bla <- gtable_add_grob(bla, lines3, l=1, t=2, b=2, z=Inf)
+  bla <- gtable_add_grob(bla, lines4, l=2, t=2, b=2, z=Inf)
+  
+  grid.newpage()
+  grid.draw(bla)
+  
+  dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20)
+  dev.off()
   
   #}
   
@@ -145,7 +181,11 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab("") + 
     ylab("") + 
-    theme_grey(base_size = 15)
+    theme_bw(base_size = 20) +
+    theme(legend.key.size = unit(1, "cm"),
+          panel.margin = unit(2.5, "lines"),
+          panel.grid.major = element_line(colour = "grey85", size = .75),
+          panel.grid.minor = element_line(colour = "grey85", size = .75))
   
   
   return(list(p=p, indVector = indVector))
@@ -257,6 +297,747 @@ decisionTreePlot = function(DecisionTree)
           axis.title.y=element_blank())
   
   return(p)
+  
+}
+
+partitionPlot = function(decisionTree, W)
+{
+  
+  
+  gg = getCondKendallPlotData()
+  
+  
+  points = ggplot() +
+    geom_point(data = W, aes_string(names(W)[1], names(W)[2])) +
+    xlab(names(W)[1]) +
+    ylab(names(W)[2])
+  
+  kendall = ggplot() + geom_tile(data = gg, aes(x, y, z = z, fill = z)) + 
+    scale_fill_gradient(low="gray90", high="gray10") + 
+    labs(fill = "Kendall's\nTau") +
+    xlab(names(W)[1]) +
+    ylab(names(W)[2])
+  
+  
+  
+  
+  cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+  cbbPalette = c("black", "gray10", "gray70", "gray60", "gray20","gray80","gray40")
+  
+  partitionForPlot = getPartitionForPlot(decisionTree, W)
+  
+  data1 = partitionForPlot[is.element(partitionForPlot$subset, c('l','r')),]
+  PartitionLabeling = c(expression(Omega["r"]),
+                        expression(Omega["l"]))
+  partitionBreaks = c('r', 'l')
+  
+  p1WithPoints = points +
+    geom_polygon(data=data1, aes(x=x, y=y, group=subset, colour=subset),  fill=NA, size = 4) +
+    scale_colour_manual(values = cbbPalette[2:3], labels=PartitionLabeling, breaks = partitionBreaks) +
+    labs(colour = "Subsets") +
+    coord_fixed() +
+    scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
+    scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    theme_bw(base_size = 30) +
+    theme(legend.margin = unit(1, "lines"),
+        legend.key.size = unit(1, "cm"),
+        panel.margin = unit(2.5, "lines"),
+        panel.grid.major = element_line(colour = "grey85", size = .75),
+        panel.grid.minor = element_line(colour = "grey85", size = .75))
+  
+  p1WithKendall = kendall +
+    geom_polygon(data=data1, aes(x=x, y=y, group=subset, colour=subset),  fill=NA, size = 4) +
+    scale_colour_manual(values = cbbPalette[2:3], labels=PartitionLabeling, breaks = partitionBreaks) +
+    labs(colour = "Subsets") +
+    coord_fixed() +
+    scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
+    scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    theme_bw(base_size = 30) +
+    theme(legend.margin = unit(1, "lines"),
+          legend.key.size = unit(1, "cm"),
+          panel.margin = unit(2.5, "lines"),
+          panel.grid.major = element_line(colour = "grey85", size = .75),
+          panel.grid.minor = element_line(colour = "grey85", size = .75)) + 
+    guides(colour = guide_legend(order = 1))
+  
+  if (is.null(decisionTree$LeftNode) && !is.null(decisionTree$RightNode))
+  {
+    data2 = partitionForPlot[is.element(partitionForPlot$subset, c('l','rl','rr')),]
+    
+    PartitionLabeling = c(expression(Omega["rr"]),
+                          expression(Omega["rl"]),
+                          expression(Omega["l"]))
+    partitionBreaks = c('rr','rl','l')
+    cols = cbbPalette[c(2,6,7)]
+    
+  }
+  
+  if (!is.null(decisionTree$LeftNode) && is.null(decisionTree$RightNode))
+  {
+    data2 = partitionForPlot[is.element(partitionForPlot$subset, c('ll','lr','r')),]
+    
+    PartitionLabeling = c(expression(Omega["r"]),
+                          expression(Omega["lr"]),
+                          expression(Omega["ll"]))
+    partitionBreaks = c('r','lr','ll')
+    cols = cbbPalette[c(4,5,3)]
+    
+  }
+  
+  if (!is.null(decisionTree$LeftNode) && !is.null(decisionTree$RightNode))
+  {
+    data2 = partitionForPlot[is.element(partitionForPlot$subset, c('ll','lr','rl','rr')),]
+    
+    PartitionLabeling = c(expression(Omega["rr"]),
+                          expression(Omega["rl"]),
+                          expression(Omega["lr"]),
+                          expression(Omega["ll"]))
+    partitionBreaks = c('rr','rl','lr','ll')
+    cols = cbbPalette[4:7]
+    
+  }
+  
+  
+  if (!is.null(decisionTree$LeftNode) || !is.null(decisionTree$RightNode))
+  {
+    p2WithPoints = points +
+      geom_polygon(data=data2, aes(x=x, y=y, group=subset, colour=subset),  fill=NA, size = 4) +
+      scale_colour_manual(values = cols, labels=PartitionLabeling, breaks = partitionBreaks) +
+      labs(colour = "Subsets") +
+      coord_fixed() +
+      scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
+      scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+      theme_bw(base_size = 30) +
+      theme(legend.margin = unit(1, "lines"),
+            legend.key.size = unit(1, "cm"),
+            panel.margin = unit(2.5, "lines"),
+            panel.grid.major = element_line(colour = "grey85", size = .75),
+            panel.grid.minor = element_line(colour = "grey85", size = .75))
+    
+    p2WithKendall = kendall +
+      geom_polygon(data=data2, aes(x=x, y=y, group=subset, colour=subset),  fill=NA, size = 4) +
+      scale_colour_manual(values = cols, labels=PartitionLabeling, breaks = partitionBreaks) +
+      labs(colour = "Subsets") +
+      coord_fixed() +
+      scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
+      scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+      theme_bw(base_size = 30) +
+      theme(legend.margin = unit(1, "lines"),
+            legend.key.size = unit(1, "cm"),
+            panel.margin = unit(2.5, "lines"),
+            panel.grid.major = element_line(colour = "grey85", size = .75),
+            panel.grid.minor = element_line(colour = "grey85", size = .75)) +
+      guides(colour = guide_legend(order = 1))
+  }
+  else
+  {
+    p2 = ggplot()
+  }
+  
+  #   grid.arrange(p1WithPoints, p2WithPoints,
+  #                p1WithKendall, p2WithKendall,
+  #                ncol=2, nrow = 2)# Get the gtables
+  gA <- ggplotGrob(p1WithKendall)
+  gB <- ggplotGrob(p1WithPoints)
+  gC <- ggplotGrob(p2WithKendall)
+  gD <- ggplotGrob(p2WithPoints)
+  
+  # Set the widths
+  gB$widths = gA$widths
+  gC$widths = gA$widths
+  gD$widths = gA$widths
+  
+  # Arrange the two charts.
+  # The legend boxes are centered
+  grid.newpage()
+  grid.arrange(gA, gB, gC, gD, nrow = 2, ncol = 2)
+  
+  dev.copy(pdf,"partitionPlot.pdf", width=30 , height=20)
+  dev.off()
+}
+
+
+getPartitionForPlot = function(decisionTree, W)
+{
+  if (dim(W)[2] != 3 || !(grepl('^Mean', names(W)[3])) )
+  {
+    stop("partitionPlot is only implemented for the two-dimensional conditioning set, where the mean has been added as aggregated information.")
+  }
+  
+  eps = 0.015
+  
+  if (grepl('^Mean', decisionTree$CentralNode$Variable))
+  {
+    cThres = decisionTree$CentralNode$Threshold*2
+    
+    if (cThres < 1)
+    {
+      xl = c(0, cThres - eps, 0)
+      yl = c(0, 0, cThres - eps)
+      
+      xr = c(cThres + eps, 1, 1, 0, 0)
+      yr = c(0, 0, 1, 1, cThres + eps)
+    }
+    else
+    {
+      xl = c(0, 1, 1, cThres - eps -1, 0)
+      yl = c(0, 0, cThres - eps -1, 1, 1)
+      
+      xr = c(1, 1, cThres + eps -1)
+      yr = c(cThres + eps -1, 1, 1)
+    }
+    
+    partition = rbind(data.frame(x = xl, y=yl, subset = "l"),
+                      data.frame(x = xr, y=yr, subset = "r"))
+    
+    
+    if (!is.null(decisionTree$LeftNode))
+    {
+      if (grepl('^Mean', decisionTree$LeftNode$Variable))
+      {
+        
+        lThres = decisionTree$LeftNode$Threshold*2
+        
+        if (lThres < 1)
+        {
+          xll = c(0,lThres - eps,0)
+          yll = c(0,0,lThres - eps)
+          
+          if (cThres <1)
+          {
+            xlr = c(lThres + eps,cThres - eps,0,0)
+            ylr = c(0,0,cThres - eps,lThres + eps)
+          }
+          else
+          {
+            xlr = c(lThres + eps,1,1,cThres - eps -1,0,0)
+            ylr = c(0,0,cThres - eps -1,1,1,lThres + eps)
+          }
+          
+        }
+        else
+        {
+          xll = c(0,1,1,lThres - eps -1,0)
+          yll = c(0,0,lThres - eps -1,1,1)
+          
+          xlr = c(1,1,cThres - eps -1,lThres + eps -1)
+          ylr = c(lThres + eps -1,cThres - eps -1,1,1)
+          
+        }
+      }
+      else
+      {
+        
+        if (cThres <1)
+        {
+          if (decisionTree$LeftNode$Variable == names(W)[1])
+          {
+            
+            lThres = decisionTree$LeftNode$Threshold
+            
+            xll = c(0,lThres - eps,lThres - eps,0)
+            yll = c(0,0,cThres-lThres,cThres - eps)
+            
+            xlr = c(lThres + eps, cThres -eps, lThres +eps)
+            ylr = c(0,0,cThres-lThres - 2*eps)
+          }
+          else
+          {
+            
+            lThres = decisionTree$LeftNode$Threshold
+            
+            xll = c(0,cThres - eps, lThres - eps,0)
+            yll = c(0,0,cThres-lThres - eps, cThres-lThres - eps)
+            
+            xlr = c(0,cThres-lThres + eps,0)
+            ylr = c(lThres + eps,lThres + eps ,cThres - eps)
+            
+          }
+        }
+        else
+        {
+          if (decisionTree$LeftNode$Variable == names(W)[1])
+          {
+            
+            lThres = decisionTree$LeftNode$Threshold
+            
+            if (lThres < cThres-1)
+            {
+              xll = c(0,lThres - eps,lThres - eps,0)
+              yll = c(0,0,1,1)
+              
+              xlr = c(lThres + eps,1,1,cThres-1 - eps,lThres + eps)
+              ylr = c(0,0,cThres-1 - eps,1,1)
+            }
+            else
+            {
+              xll = c(0,lThres - eps,lThres - eps,cThres-1 - eps,0)
+              yll = c(0,0,cThres-lThres - eps,1,1)
+              
+              xlr = c(lThres + eps,1,1,lThres + eps)
+              ylr = c(0,0,cThres-1 - eps,cThres-lThres + eps)
+              
+            }
+          }
+          else
+          {
+            
+            lThres = decisionTree$LeftNode$Threshold
+            
+            
+            if (lThres < cThres-1)
+            {
+              xll = c(0,1,1,0)
+              yll = c(0,0,lThres - eps,lThres - eps)
+              
+              xlr = c(0,1,1,cThres-1 - eps,0)
+              ylr = c(lThres + eps,lThres + eps,cThres-1 - eps,1,1)
+              
+            }
+            else
+            {
+              xll = c(0,1,1,cThres-lThres - eps,0)
+              yll = c(0,0,cThres-1 - eps, lThres - eps,lThres - eps)
+              
+              xlr = c(0,cThres-lThres + eps,cThres-1 + eps,0)
+              ylr = c(lThres + eps,lThres + eps,1,1)
+              
+            }
+          }
+        }
+      }
+    }
+    
+    if (!is.null(decisionTree$RightNode))
+    {
+      if (grepl('^Mean', decisionTree$RightNode$Variable))
+      {
+        
+        rThres = decisionTree$RightNode$Threshold*2
+        
+        if (rThres >= 1)
+        {
+          if (cThres >=1)
+          {
+            xrl = c(1,1,rThres-1 - eps,cThres-1 + eps)
+            yrl = c(cThres-1 + eps,rThres-1 - eps,1,1)
+          }
+          else
+          {
+            xrl = c(1,rThres-1 - eps,0,0,cThres + eps,1)
+            yrl = c(rThres-1 - eps,1,1,cThres + eps,0,0)
+            
+          }
+          
+          xrr = c(1,rThres-1 + eps,1)
+          yrr = c(1,1,rThres-1 + eps)
+        }
+        else
+        {
+          xrl = c(1,0,0,rThres - eps,1)
+          yrl = c(1,1,rThres - eps,0,0)
+          
+          xrr = c(rThres + eps,0,0,cThres + eps)
+          yrr = c(0,rThres + eps,cThres + eps,0)
+          
+        }
+      }
+      else
+      {
+        
+        if (cThres >=1)
+        {
+          if (decisionTree$RightNode$Variable == names(W)[1])
+          {
+            
+            rThres = decisionTree$RightNode$Threshold
+            
+            xrl = c(1,1,rThres - eps,rThres - eps)
+            yrl = c(cThres-1 + eps,1,1,cThres-rThres + eps)
+            
+            xrr = c(rThres + eps,rThres + eps,cThres-1 + eps)
+            yrr = c(cThres-rThres + eps,1,1)
+            
+          }
+          else
+          {
+            
+            rThres = decisionTree$RightNode$Threshold
+            
+            xrl = c(1,1,cThres-rThres + 2*eps)
+            yrl = c(cThres-1 + eps,rThres - eps,rThres - eps)
+            
+            xrr = c(1,1,cThres-1 + eps,cThres-rThres + eps)
+            yrr = c(rThres + eps,1,1,rThres + eps)
+            
+          }
+        }
+        else
+        {
+          if (decisionTree$RightNode$Variable == names(W)[1])
+          {
+            
+            rThres = decisionTree$RightNode$Threshold
+            
+            if (rThres > cThres)
+            {
+              xrl = c(rThres - eps,1,1,rThres - eps)
+              yrl = c(0,0,1,1)
+              
+              xrr = c(cThres + eps,rThres + eps,rThres + eps,0,0)
+              yrr = c(0,0,1,1,cThres + eps)
+              
+            }
+            else
+            {
+              xrl = c(1,1,rThres - eps,rThres - eps,cThres + eps)
+              yrl = c(0,1,1,cThres-rThres - eps,0)
+              
+              xrr = c(rThres + eps,rThres + eps,0,0)
+              yrr = c(cThres-rThres + eps,1,1,cThres + eps)
+              
+            }
+          }
+          else
+          {
+            
+            rThres = decisionTree$RightNode$Threshold
+            
+            
+            if (rThres > cThres)
+            {
+              xrl = c(0,1,1,0)
+              yrl = c(rThres - eps,rThres - eps,1,1)
+              
+              xrr = c(cThres + eps,1,1,0,0)
+              yrr = c(0,0,rThres + eps,rThres + eps,cThres + eps)
+              
+            }
+            else
+            {
+              xrl = c(1,1,0,0,cThres-rThres - eps)
+              yrl = c(rThres - eps,1,1,cThres + eps,rThres - eps)
+              
+              xrr = c(cThres + eps,1,1,cThres-rThres + eps)
+              yrr = c(0,0,rThres + eps,rThres + eps)
+              
+            }
+          }
+        }
+      }
+      
+    }
+  }
+  
+  if (decisionTree$CentralNode$Variable == names(W)[1])
+  {
+    cThres = decisionTree$CentralNode$Threshold
+    
+    xl = c(0, cThres - eps, cThres - eps, 0)
+    yl = c(0, 0, 1, 1)
+    
+    xr = c(cThres + eps, 1, 1, cThres  + eps)
+    yr = c(0, 0, 1, 1)
+    
+    partition = rbind(data.frame(x = xl, y=yl, subset = "l"),
+                      data.frame(x = xr, y=yr, subset = "r"))
+    
+    
+    if (!is.null(decisionTree$LeftNode))
+    {
+      if (grepl('^Mean', decisionTree$LeftNode$Variable))
+      {
+        
+        lThres = decisionTree$LeftNode$Threshold*2
+        
+        if (lThres < cThres)
+        {
+          xll = c(0,lThres - eps,0)
+          yll = c(0,0,lThres - eps)
+          
+          xlr = c(lThres + eps,cThres - eps,cThres - eps,0,0)
+          ylr = c(0,0,1,1,lThres + eps)
+          
+        }
+        else
+        {
+          if (lThres < 1)
+          {
+            xll = c(0,cThres - eps,cThres - eps,0)
+            yll = c(0,0,lThres-cThres - eps,lThres - eps)
+            
+            xlr = c(cThres - eps,cThres - eps,0,0)
+            ylr = c(lThres-cThres + eps,1,1,lThres + eps)
+          }
+          else
+          {
+            xll = c(0,cThres - eps,cThres - eps,lThres-1 - eps,0)
+            yll = c(0,0,lThres-cThres - eps,1,1)
+            
+            xlr = c(cThres - eps,cThres - eps,lThres-1 + eps)
+            ylr = c(lThres-cThres + eps,1,1)
+          }
+        }
+      }
+      else
+      {
+        if (decisionTree$LeftNode$Variable == names(W)[1])
+        {
+          
+          lThres = decisionTree$LeftNode$Threshold
+          
+          xll = c(0,lThres - eps,lThres - eps,0)
+          yll = c(0,0,1,1)
+          
+          xlr = c(lThres + eps,cThres - eps,cThres - eps,lThres + eps)
+          ylr = c(0,0,1,1)
+        }
+        else
+        {
+          lThres = decisionTree$LeftNode$Threshold
+          
+          xll = c(0,cThres - eps,cThres - eps,0)
+          yll = c(0,0,lThres - eps,lThres -eps)
+          
+          xlr = c(0,cThres - eps,cThres - eps,0)
+          ylr = c(lThres + eps,lThres + eps,1,1)
+          
+        }
+      }
+    }
+    
+    if (!is.null(decisionTree$RightNode))
+    {
+      if (grepl('^Mean', decisionTree$RightNode$Variable))
+      {
+        
+        rThres = decisionTree$RightNode$Threshold*2
+        
+        if (rThres < 1)
+        {
+          xrl = c(cThres + eps,rThres - eps,cThres + eps)
+          yrl = c(0,0,rThres-cThres - eps)
+          
+          xrr = c(rThres + eps,1,1,cThres + eps,cThres + eps)
+          yrr = c(0,0,1,1,rThres-cThres + eps)
+          
+        }
+        else
+        {
+          if (rThres < 1 + cThres)
+          {
+            xrl = c(cThres + eps,1,1,cThres + eps)
+            yrl = c(0,0,rThres-1 - eps,rThres-cThres - eps)
+            
+            xrr = c(cThres + eps,1,1,cThres + eps)
+            yrr = c(rThres-cThres + eps,rThres-1 + eps,1,1)
+            
+          }
+          else
+          {
+            xrl = c(cThres + eps,1,1,rThres-1 - eps,cThres + eps)
+            yrl = c(0,0,rThres-1 - eps,1,1)
+            
+            xrr = c(rThres-1 + eps,1,1)
+            yrr = c(1,rThres-1 + eps,1)
+            
+          }
+        }
+      }
+      else
+      {
+        if (decisionTree$RightNode$Variable == names(W)[1])
+        {
+          
+          rThres = decisionTree$RightNode$Threshold
+          
+          xrl = c(cThres + eps,rThres - eps,rThres - eps,cThres + eps)
+          yrl = c(0,0,1,1)
+          
+          xrr = c(rThres + eps,1,1,rThres + eps)
+          yrr = c(0,0,1,1)
+        }
+        else
+        {
+          rThres = decisionTree$RightNode$Threshold
+          
+          xrl = c(cThres + eps,1,1,cThres + eps)
+          yrl = c(0,0,rThres - eps,rThres - eps)
+          
+          xrr = c(cThres + eps,1,1,cThres + eps)
+          yrr = c(rThres + eps,rThres + eps,1,1)
+          
+        }
+      }
+    }
+    
+  }
+  
+  if (decisionTree$CentralNode$Variable == names(W)[2])
+  {
+    cThres = decisionTree$CentralNode$Threshold
+    
+    xl = c(0,1,1,0)
+    yl = c(0,0,cThres - eps,cThres - eps)
+    
+    xr = c(0,1,1,0)
+    yr = c(cThres + eps,cThres + eps,1,1)
+    
+    partition = rbind(data.frame(x = xl, y=yl, subset = "l"),
+                      data.frame(x = xr, y=yr, subset = "r"))
+    
+    
+    if (!is.null(decisionTree$LeftNode))
+    {
+      if (grepl('^Mean', decisionTree$LeftNode$Variable))
+      {
+        
+        lThres = decisionTree$LeftNode$Threshold*2
+        
+        if (lThres < cThres)
+        {
+          xll = c(0,lThres - eps,0)
+          yll = c(0,0,lThres - eps)
+          
+          xlr = c(lThres + eps,1,1,0,0)
+          ylr = c(0,0,cThres - eps,cThres - eps,lThres + eps)
+          
+        }
+        else
+        {
+          if (lThres < 1)
+          {
+            xll = c(0,lThres - eps,lThres-cThres - eps,0)
+            yll = c(0,0,cThres - eps,cThres - eps)
+            
+            xlr = c(lThres + eps,1,1,lThres-cThres + eps)
+            ylr = c(0,0,cThres - eps,cThres - eps)
+            
+          }
+          else
+          {
+            xll = c(0,1,1,lThres-cThres - eps,0)
+            yll = c(0,0,lThres-1 - eps,cThres - eps,cThres - eps)
+            
+            xlr = c(1,1,lThres-cThres + eps)
+            ylr = c(lThres-1 + eps,cThres - eps,cThres - eps)
+            
+          }
+        }
+      }
+      else
+      {
+        if (decisionTree$LeftNode$Variable == names(W)[1])
+        {
+          
+          lThres = decisionTree$LeftNode$Threshold
+          
+          xll = c(0,lThres - eps,lThres - eps,0)
+          yll = c(0,0,cThres - eps,cThres - eps)
+          
+          xlr = c(lThres + eps,1,1,lThres + eps)
+          ylr = c(0,0,cThres - eps,cThres - eps)
+          
+        }
+        else
+        {
+          
+          lThres = decisionTree$LeftNode$Threshold
+          
+          xll = c(0,1,1,0)
+          yll = c(0,0,lThres - eps,lThres - eps)
+          
+          xlr = c(0,1,1,0)
+          ylr = c(lThres + eps,lThres + eps,cThres - eps,cThres - eps)
+        }
+      }
+    }
+    
+    
+    if (!is.null(decisionTree$RightNode))
+    {
+      if (grepl('^Mean', decisionTree$RightNode$Variable))
+      {
+        
+        rThres = decisionTree$RightNode$Threshold*2
+        
+        if (rThres < 1)
+        {
+          xrl = c(0,rThres-cThres - eps,0)
+          yrl = c(cThres + eps,cThres + eps,rThres - eps)
+          
+          xrr = c(rThres-cThres + eps,1,1,0,0)
+          yrr = c(cThres + eps,cThres + eps,1,1,rThres + eps)
+          
+        }
+        else
+        {
+          if (rThres < 1 + cThres)
+          {
+            xrl = c(0,rThres-cThres - eps,rThres-1 - eps,0)
+            yrl = c(cThres + eps,cThres + eps,1,1)
+            
+            xrr = c(rThres-cThres + eps,1,1,rThres-1 + eps)
+            yrr = c(cThres + eps,cThres + eps,1,1)
+            
+          }
+          else
+          {
+            xrl = c(0,1,1,rThres-1 - eps,0)
+            yrl = c(cThres + eps,cThres + eps,rThres-1 - eps,1,1)
+            
+            xrr = c(rThres-1 + eps,1,1)
+            yrr = c(1,rThres-1 + eps,1)
+            
+          }
+        }
+      }
+      else
+      {
+        if (decisionTree$RightNode$Variable == names(W)[1])
+        {
+          
+          rThres = decisionTree$RightNode$Threshold
+          
+          xrl = c(0,rThres - eps,rThres - eps,0)
+          yrl = c(cThres + eps,cThres + eps,1,1)
+          
+          xrr = c(rThres + eps,1,1,rThres + eps)
+          yrr = c(cThres + eps,cThres + eps,1,1)
+          
+        }
+        else
+        {
+          
+          rThres = decisionTree$RightNode$Threshold
+          
+          xrl = c(0,1,1,0)
+          yrl = c(cThres + eps,cThres + eps,rThres - eps,rThres - eps)
+          
+          xrr = c(0,1,1,0)
+          yrr = c(rThres + eps,rThres + eps,1,1)
+          
+        }
+      }
+    }
+    
+  }
+  
+  if (!is.null(decisionTree$LeftNode))
+  {
+  partition = rbind(partition,
+                    data.frame(x = xll, y=yll, subset = "ll"),
+                    data.frame(x = xlr, y=ylr, subset = "lr"))
+  }
+  
+  if (!is.null(decisionTree$RightNode))
+  {
+    partition = rbind(partition,
+                      data.frame(x = xrl, y=yrl, subset = "rl"),
+                      data.frame(x = xrr, y=yrr, subset = "rr"))
+  }
+  
+  return(partition)
   
 }
 
