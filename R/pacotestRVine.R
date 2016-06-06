@@ -48,6 +48,11 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
       cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
       
+      if (!is.data.frame(subRVM$data))
+      {
+        subRVM$data = as.data.frame(subRVM$data)
+      }
+      
       Udata = cbind(cPit1,cPit2)
       cPit1Name = paste(dimnames(subRVM$data)[[2]][svcmDataFrame$var1[copulaInd]],
                         paste(dimnames(subRVM$data)[[2]][svcmDataFrame$condset[[copulaInd]]], collapse=","), sep="|")
@@ -135,6 +140,12 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   
   cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
   cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  
+  if (!is.data.frame(subRVM$data))
+  {
+    subRVM$data = as.data.frame(subRVM$data)
+  }
   
   Udata = cbind(cPit1,cPit2)
   cPit1Name = paste(dimnames(subRVM$data)[[2]][svcmDataFrame$var1[copulaInd]],

@@ -323,7 +323,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
       }
       else
       {
-        pacotestOptions = list(testType = testType, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', withEstUncert = FALSE, groupedScatterplots = FALSE, decisionTreePlot = FALSE)
       }
     }
     else if (sizeKeepingMethod == 'splitTrainEvaluate')
@@ -334,7 +334,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
       }
       else
       {
-        pacotestOptions = list(testType = testType, grouping = 'SumMedian', groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', withEstUncert = FALSE, groupedScatterplots = FALSE, decisionTreePlot = FALSE)
       }
     }
   }
