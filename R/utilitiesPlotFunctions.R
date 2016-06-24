@@ -15,10 +15,10 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     scale_colour_manual(values = cbbPalette[1]) + 
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(dataLabels[1]) + 
-    ylab(dataLabels[2]) + 
+    xlab(expression(u["4|23"])) + 
+    ylab(expression(u["1|23"])) + 
     coord_fixed() +
-    theme_bw(base_size = 20) + 
+    theme_bw(base_size = 30) + 
     theme(panel.margin = unit(4, "lines"), legend.position = "none",
           legend.key.size = unit(1, "cm"),
           panel.margin = unit(2.5, "lines"),
@@ -175,13 +175,13 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
              aes_string("V1", "V2", colour="split")) +
     geom_point(data = transform(data, split = NULL), colour = "grey85") + 
     geom_point() +  
-    facet_wrap(~split, scales="fixed") +
+    facet_wrap(~split, scales="fixed", labeller=label_parsed) +
     coord_equal() +
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab("") + 
     ylab("") + 
-    theme_bw(base_size = 20) +
+    theme_bw(base_size = 30) +
     theme(legend.key.size = unit(1, "cm"),
           panel.margin = unit(2.5, "lines"),
           panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -338,6 +338,8 @@ partitionPlot = function(decisionTree, W)
     coord_fixed() +
     scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
     scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    xlab(expression(u["2"])) + 
+    ylab(expression(u["3"])) + 
     theme_bw(base_size = 30) +
     theme(legend.margin = unit(1, "lines"),
         legend.key.size = unit(1, "cm"),
@@ -352,6 +354,8 @@ partitionPlot = function(decisionTree, W)
     coord_fixed() +
     scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
     scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    xlab(expression(u["2"])) + 
+    ylab(expression(u["3"])) + 
     theme_bw(base_size = 30) +
     theme(legend.margin = unit(1, "lines"),
           legend.key.size = unit(1, "cm"),
@@ -407,6 +411,8 @@ partitionPlot = function(decisionTree, W)
       coord_fixed() +
       scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
       scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+      xlab(expression(u["2"])) + 
+      ylab(expression(u["3"])) + 
       theme_bw(base_size = 30) +
       theme(legend.margin = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
@@ -421,6 +427,8 @@ partitionPlot = function(decisionTree, W)
       coord_fixed() +
       scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
       scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+      xlab(expression(u["2"])) + 
+      ylab(expression(u["3"])) + 
       theme_bw(base_size = 30) +
       theme(legend.margin = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
