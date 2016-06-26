@@ -173,7 +173,7 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
   
   p = ggplot(data,
              aes_string("V1", "V2", colour="split")) +
-    geom_point(data = transform(data, split = NULL), colour = "grey85") + 
+    geom_point(data = transform(data, split = NULL), colour = "grey70") + 
     geom_point() +  
     facet_wrap(~split, scales="fixed", labeller=label_parsed) +
     coord_equal() +
@@ -327,8 +327,8 @@ partitionPlot = function(decisionTree, W)
   partitionForPlot = getPartitionForPlot(decisionTree, W)
   
   data1 = partitionForPlot[is.element(partitionForPlot$subset, c('l','r')),]
-  PartitionLabeling = c(expression(Omega["r"]),
-                        expression(Omega["l"]))
+  PartitionLabeling = c(expression(Omega["(0,r)"]),
+                        expression(Omega["(0,l)"]))
   partitionBreaks = c('r', 'l')
   
   p1WithPoints = points +
@@ -368,9 +368,9 @@ partitionPlot = function(decisionTree, W)
   {
     data2 = partitionForPlot[is.element(partitionForPlot$subset, c('l','rl','rr')),]
     
-    PartitionLabeling = c(expression(Omega["rr"]),
-                          expression(Omega["rl"]),
-                          expression(Omega["l"]))
+    PartitionLabeling = c(expression(Omega["(0,r,r)"]),
+                          expression(Omega["(0,r,l)"]),
+                          expression(Omega["(0,l)"]))
     partitionBreaks = c('rr','rl','l')
     cols = cbbPalette[c(2,6,7)]
     
@@ -380,9 +380,9 @@ partitionPlot = function(decisionTree, W)
   {
     data2 = partitionForPlot[is.element(partitionForPlot$subset, c('ll','lr','r')),]
     
-    PartitionLabeling = c(expression(Omega["r"]),
-                          expression(Omega["lr"]),
-                          expression(Omega["ll"]))
+    PartitionLabeling = c(expression(Omega["(0,r)"]),
+                          expression(Omega["(0,l,r)"]),
+                          expression(Omega["(0,l,l)"]))
     partitionBreaks = c('r','lr','ll')
     cols = cbbPalette[c(4,5,3)]
     
@@ -392,10 +392,10 @@ partitionPlot = function(decisionTree, W)
   {
     data2 = partitionForPlot[is.element(partitionForPlot$subset, c('ll','lr','rl','rr')),]
     
-    PartitionLabeling = c(expression(Omega["rr"]),
-                          expression(Omega["rl"]),
-                          expression(Omega["lr"]),
-                          expression(Omega["ll"]))
+    PartitionLabeling = c(expression(Omega["(0,r,r)"]),
+                          expression(Omega["(0,r,l)"]),
+                          expression(Omega["(0,l,r)"]),
+                          expression(Omega["(0,l,l)"]))
     partitionBreaks = c('rr','rl','lr','ll')
     cols = cbbPalette[4:7]
     
