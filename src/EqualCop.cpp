@@ -909,16 +909,16 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
     
     // Computing the integrals of C squared D squared and C times D
     
-#pragma omp parallel sections
+//#pragma omp parallel sections
     {
         {
         IntASquared (&U1[0],&U2[0],&U1plush[0],&U1minush[0],&U2plush[0],&U2minush[0],&UU2[0],Xi,CC,n1,N,h1);
         }
-#pragma omp section
+//#pragma omp section
         {
             IntBSquared (&V1[0],&V2[0],&V1plush[0],&V1minush[0],&V2plush[0],&V2minush[0],&VV1[0],Eta,DD,n2,N,h2);
         }
-#pragma omp section
+//#pragma omp section
         {
             CalcIntAB (&U1[0],&V1[0],&U2[0],&V2[0],&U1plush[0],&U1minush[0],&V1plush[0],&V1minush[0],&U2plush[0],&U2minush[0],&V2plush[0],&V2minush[0],&UV1[0],&UV2[0],Xi,Eta,CD,n1,n2,N,h1,h2);
         }
