@@ -48,11 +48,11 @@ test_that("unit tests for ERC", {
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
   
-  expect_equal(res$testStat,0.83383352525331200233)
-  expect_equal(res$pValue,0.36116636240337429697)
+  expect_equal(res$testStat,0.83383352525331200233, tolerance = 1e-6)
+  expect_equal(res$pValue,0.36116636240337429697, tolerance = 1e-6)
   
-  expect_equal(resWithEstimation$testStat,0.84785692959644609612)
-  expect_equal(resWithEstimation$pValue,0.35715930974148979438)
+  expect_equal(resWithEstimation$testStat,0.84785692959644609612, tolerance = 1e-6)
+  expect_equal(resWithEstimation$pValue,0.35715930974148979438, tolerance = 1e-6)
   
   
   ind = matrix(NA,N,3)
@@ -64,11 +64,11 @@ test_that("unit tests for ERC", {
   res = pacotest:::testStatEqualCorrWithoutEstimation(U, svcmDataFrameHat, ind)
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
-  expect_equal(res$testStat,2.454766624833430555)
-  expect_equal(res$pValue,0.29305841758446760092)
+  expect_equal(res$testStat,2.454766624833430555, tolerance = 1e-6)
+  expect_equal(res$pValue,0.29305841758446760092, tolerance = 1e-6)
   
-  expect_equal(resWithEstimation$testStat,2.7602023114432685524)
-  expect_equal(resWithEstimation$pValue,0.25155310573676692432)
+  expect_equal(resWithEstimation$testStat,2.7602023114432685524, tolerance = 1e-6)
+  expect_equal(resWithEstimation$pValue,0.25155310573676692432, tolerance = 1e-6)
   
   
   ind = matrix(NA,N,4)
@@ -81,11 +81,11 @@ test_that("unit tests for ERC", {
   res = pacotest:::testStatEqualCorrWithoutEstimation(U, svcmDataFrameHat, ind)
   resWithEstimation = pacotest:::testStatEqualCorrWithEstimation(U, svcmDataFrameHat, ind)
   
-  expect_equal(res$testStat,2.7721624555651458444)
-  expect_equal(res$pValue,0.42810299746943947241)
+  expect_equal(res$testStat,2.7721624555651458444, tolerance = 1e-6)
+  expect_equal(res$pValue,0.42810299746943947241, tolerance = 1e-6)
   
-  expect_equal(resWithEstimation$testStat,2.9912498147485870881)
-  expect_equal(resWithEstimation$pValue,0.39297625116189294214)
+  expect_equal(resWithEstimation$testStat,2.9912498147485870881, tolerance = 1e-6)
+  expect_equal(resWithEstimation$pValue,0.39297625116189294214, tolerance = 1e-6)
   
   
   
@@ -127,11 +127,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,1.1630787964924615974)
-  expect_equal(res2$pValue,0.28082793910460845943)
+  expect_equal(res2$testStat,1.1630787964924615974, tolerance = 1e-6)
+  expect_equal(res2$pValue,0.28082793910460845943, tolerance = 1e-6)
   
-  expect_equal(resWithEstimation2$testStat,1.1486998581351295368)
-  expect_equal(resWithEstimation2$pValue,0.28382148028243781024)
+  expect_equal(resWithEstimation2$testStat,1.1486998581351295368, tolerance = 1e-6)
+  expect_equal(resWithEstimation2$pValue,0.28382148028243781024, tolerance = 1e-6)
   
   
   ind = matrix(NA,N,3)
@@ -143,11 +143,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,1.8312662134969845962)
-  expect_equal(res2$pValue,0.40026313656338963209)
+  expect_equal(res2$testStat,1.8312662134969845962, tolerance = 1e-6)
+  expect_equal(res2$pValue,0.40026313656338963209, tolerance = 1e-6)
   
-  expect_equal(resWithEstimation2$testStat,1.8236835598401168745)
-  expect_equal(resWithEstimation2$pValue,0.40178354529346393953)
+  expect_equal(resWithEstimation2$testStat,1.8236835598401168745, tolerance = 1e-6)
+  expect_equal(resWithEstimation2$pValue,0.40178354529346393953, tolerance = 1e-6)
   
   
   ind = matrix(NA,N,4)
@@ -160,11 +160,11 @@ test_that("unit tests for ERC", {
   resWithEstimation2 = pacotest:::testStatEqualCorrWithEstimation(U2, svcmDataFrameHat2, ind)
   
   
-  expect_equal(res2$testStat,2.704885100069900794)
-  expect_equal(res2$pValue,0.43939776104000616286)
+  expect_equal(res2$testStat,2.704885100069900794, tolerance = 1e-6)
+  expect_equal(res2$pValue,0.43939776104000616286, tolerance = 1e-6)
   
-  expect_equal(resWithEstimation2$testStat,2.9090013927664419846)
-  expect_equal(resWithEstimation2$pValue,0.40586921002370979217)
+  expect_equal(resWithEstimation2$testStat,2.9090013927664419846, tolerance = 1e-6)
+  expect_equal(resWithEstimation2$pValue,0.40586921002370979217, tolerance = 1e-6)
   
 })
 
