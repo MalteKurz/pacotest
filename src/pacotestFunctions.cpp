@@ -65,7 +65,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
 
 
 // [[Rcpp::export]]
-Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert, double finalComparison, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep = NA_REAL, double ExpMinSampleSize = NA_REAL, double TrainingDataFraction = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
+Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert, double finalComparison, arma::mat & data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep = NA_REAL, double ExpMinSampleSize = NA_REAL, double TrainingDataFraction = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
   try
   {
     int testTypeNumber = (int) TestTypeNumber;
@@ -151,7 +151,7 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
 
 
 // [[Rcpp::export]]
-SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &indexVectors, arma::uvec &nObsPerVector, Rcpp::List cPitData, arma::vec &theta, arma::mat &sigma)
+SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma)
 {
   int nGroups = nObsPerVector.n_elem;
   
@@ -197,7 +197,7 @@ SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svc
 
 
 // [[Rcpp::export]]
-SEXP covOfCovariancesWithEstimationFromCpp(arma::mat &data, Rcpp::DataFrame svcmDataFrame, arma::umat &indexVectors, arma::uvec &nObsPerVector, Rcpp::List cPitData, arma::vec &theta, arma::mat &sigma)
+SEXP covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma)
 {
   int nGroups = nObsPerVector.n_elem;
   
