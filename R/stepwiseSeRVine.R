@@ -44,7 +44,7 @@ stepwiseSeRVine <- function(data, RVM)
   svcmDataFrame = rVineDataFrameRep(RVM)
   
   # Compute CPITs for the whole vine
-  cPitData = getCpitsFromVine(data, svcmDataFrame)
+  cPitData = getCpitsFromVine(data, svcmDataFrame, TRUE)
   
   covHat = covOfParameters(data, svcmDataFrame, cPitData)
   se = sqrt(diag(covHat)/dim(data)[1])

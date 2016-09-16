@@ -39,6 +39,29 @@ deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 }
 
 
+
+## Asympt with ranks section
+likeVar1 =  function(u1,u2,family,params)
+{
+  nPar = getNumbOfParameters(family)
+  par = getParAsScalars(nPar,params)
+  
+  result = log(BiCopPDF(u1,u2,family,par[1],par[2]))
+  
+  return(result)
+}
+
+likeVar2 =  function(u2,u1,family,params)
+{
+  nPar = getNumbOfParameters(family)
+  par = getParAsScalars(nPar,params)
+  
+  result = log(BiCopPDF(u1,u2,family,par[1],par[2]))
+  
+  return(result)
+}
+
+
 getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula = FALSE)
 {
   
@@ -57,6 +80,12 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
   
   D = matrix(0,nrow=nParameters,ncol=nParameters)
   
+  ## with Ranks
+  likeWithCpitsDerivs = array(0, dim = c(nObs, nCopulas,d))
+  w = array(0, dim = c(nObs, nCopulas,d))
+  
+  ##
+  
   for (jCopula in 1:nCopulas)
   {
     if (svcmDataFrame$nPar[jCopula])
@@ -73,6 +102,42 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
         cPit1_1 = getCpit1(cPitData, svcmDataFrame, jCopula)
         cPit2_1 = getCpit2(cPitData, svcmDataFrame, jCopula)
       }
+      
+      ## with ranks
+      
+      likeVar1Deriv = grad(likeVar1,cPit1_1, method='simple',u2=cPit2_1,family=family_1,params=par_1)
+      likeVar2Deriv = grad(likeVar2,cPit2_1, method='simple',u1=cPit1_1,family=family_1,params=par_1)
+      
+      if (jCopula < d) # first tree
+      {
+        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = likeVar1Deriv
+        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = likeVar2Deriv
+        
+      }
+      else
+      {
+        condset = svcmDataFrame$condset[jCopula]
+        
+        cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var1[jCopula])
+        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = likeVar1Deriv * cPit1Deriv
+        
+        cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var2[jCopula])
+        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = likeVar2Deriv * cPit2Deriv
+        
+        
+        for (condsetVariable in condset)
+        {
+          cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
+          cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
+          likeWithCpitsDerivs[, jCopula, condsetVariable] = likeVar1Deriv * cPit1Deriv + likeVar2Deriv * cPit2Deriv
+          
+        }
+        
+      }
+      
+      
+      
+      ##
       
       for (lCopula in 1:jCopula)
       {
@@ -98,6 +163,18 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
       }
     }
   }
+  
+  
+  orderingInds = apply(dataSet,2,order)
+  
+  for (iVar in 1:d)
+  {
+    xx = likeWithCpitsDerivs[orderingInds[,iVar], , iVar]
+    w[orderingInds[,iVar], , iVar] = apply(xx,2,cumsum)/nObs
+    
+  }
+  
+  sumOfW = apply(w,c(1,2),sum)
   
   
   return(D)

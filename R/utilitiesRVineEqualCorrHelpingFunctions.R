@@ -78,8 +78,76 @@ getCpit2 = function(cPitData, svcmDataFrame, copulaInd)
   
 }
 
+getCpit1Deriv = function(cPitData, svcmDataFrame, copulaInd, variable)
+{
+  
+  #if (cPit1hfun[jCopula]) # That's always the case
+  cPit1 = cPitData$hfunDerivs[,svcmDataFrame$cPit1Ind[copulaInd], variable]
+  
+  return(cPit1)
+  
+}
 
-getCpitsFromVine <- function(data, svcmDataFrame)
+
+getCpit2Deriv = function(cPitData, svcmDataFrame, copulaInd, variable)
+{
+  
+  if (svcmDataFrame$cPit2hfun[copulaInd]) # That's always the case
+  {
+    cPit2 = cPitData$hfunDerivs[,svcmDataFrame$cPit2Ind[copulaInd]]
+  }
+  else
+  {
+    cPit2 = cPitData$vfunDerivs[,svcmDataFrame$cPit2Ind[copulaInd], variable]
+  }
+  
+  return(cPit2)
+  
+}
+
+
+hfunCpit2 =  function(cPit2, family, cPit1, params)
+{
+  result = hfun(family,cPit1,cPit2,params)
+  
+  return(result)
+}
+
+hfunDerivCpit1 = function(family,cPit1,cPit2,params)
+{
+  result = BiCopPDF(cPit1, cPit2, family, params[1], params[2])
+  
+  return(result)
+}
+hfunDerivCpit2 = function(family,cPit1,cPit2,params)
+{
+  result = grad(hfunCpit2,cPit2, method='simple', family=family, cPit1=cPit1, params=params)
+  
+  return(result)
+}
+
+vfunCpit1 =  function(cPit1, family, cPit2, params)
+{
+  result = hfun(family,cPit1,cPit2,params)
+  
+  return(result)
+}
+
+vfunDerivCpit1 = function(family,cPit1,cPit2,params)
+{
+  result = grad(vfunCpit1,cPit1, method='simple', family=family, cPit2=cPit2, params=params)
+  
+  return(result)
+}
+vfunDerivCpit2 = function(family,cPit1,cPit2,params)
+{
+  result = BiCopPDF(cPit1, cPit2, family, params[1], params[2])
+  
+  return(result)
+}
+
+
+getCpitsFromVine <- function(data, svcmDataFrame, withDerivs = FALSE)
 {
   
   d <- ncol(data)
@@ -89,6 +157,13 @@ getCpitsFromVine <- function(data, svcmDataFrame)
   cPitData <- list()
   cPitData$hfun <- array(NA, dim = c(nObs, nCopulas))
   cPitData$vfun <- array(NA, dim = c(nObs, nCopulas))
+  
+  if (withDerivs == TRUE)
+  {
+    cPitData$hfunDerivs <- array(0, dim = c(nObs, nCopulas,d))
+    cPitData$vfunDerivs <- array(0, dim = c(nObs, nCopulas,d))
+    
+  }
   
   # First tree
   for (jCopula in 1:(d-1)) {
@@ -103,6 +178,25 @@ getCpitsFromVine <- function(data, svcmDataFrame)
     {
       cPitData$vfun[, jCopula] = vfun(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
     }
+    
+    if (withDerivs == TRUE)
+    {
+      #influencingVariables = c(svcmDataFrame$var1[jCopula],svcmDataFrame$var2[jCopula],svcmDataFrame$condset[jCopula])
+      
+      if (svcmDataFrame$hfun[jCopula])
+      {
+        cPitData$hfunDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = hfunDerivCpit1(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        cPitData$hfunDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = hfunDerivCpit2(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        
+      }
+      if (svcmDataFrame$vfun[jCopula])
+      {
+        cPitData$vfunDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = vfunDerivCpit1(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        cPitData$vfunDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = vfunDerivCpit2(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        
+      }
+    }
+    
   }
   
   for (jCopula in d:nCopulas) {
@@ -116,10 +210,59 @@ getCpitsFromVine <- function(data, svcmDataFrame)
     {
       cPitData$hfun[, jCopula] = hfun(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
     }
+    
     if (svcmDataFrame$vfun[jCopula])
     {
       cPitData$vfun[, jCopula] = vfun(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
     }
+    
+    if (withDerivs == TRUE)
+    {
+      condset = svcmDataFrame$condset[jCopula]
+      
+      if (svcmDataFrame$hfun[jCopula])
+      {
+        xxHfunDerivCpit1 = hfunDerivCpit1(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        xxHfunDerivCpit2 = hfunDerivCpit2(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        
+        cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var1[jCopula])
+        cPitData$hfunDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = xxHfunDerivCpit1 * cPit1Deriv
+        
+        cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var2[jCopula])
+        cPitData$hfunDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = xxHfunDerivCpit2 * cPit2Deriv
+        
+        for (condsetVariable in condset)
+        {
+          cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
+          cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
+          cPitData$hfunDerivs[, jCopula, condsetVariable] = xxHfunDerivCpit1 * cPit1Deriv + xxHfunDerivCpit2 * cPit2Deriv
+          
+        }
+        
+      }
+      
+      if (svcmDataFrame$vfun[jCopula])
+      {
+        xxVfunDerivCpit1 = vfunDerivCpit1(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        xxVfunDerivCpit2 = vfunDerivCpit2(svcmDataFrame$family[jCopula],cPit1,cPit2,params)
+        
+        cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var1[jCopula])
+        cPitData$vfunDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = xxVfunDerivCpit1 * cPit1Deriv
+        
+        cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var2[jCopula])
+        cPitData$vfunDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = xxVfunDerivCpit2 * cPit2Deriv
+        
+        for (condsetVariable in condset)
+        {
+          cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
+          cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
+          cPitData$vfunDerivs[, jCopula, condsetVariable] = xxVfunDerivCpit1 * cPit1Deriv + xxVfunDerivCpit2 * cPit2Deriv
+          
+        }
+        
+      }
+    }
+    
   }
 
 return(cPitData)
