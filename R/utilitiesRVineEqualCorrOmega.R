@@ -62,9 +62,10 @@ likeVar2 =  function(u2,u1,family,params)
 }
 
 
-getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula = FALSE)
+
+
+bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
 {
-  
   d <- ncol(data)
   nObs = nrow(data)
   if (includeLastCopula)
@@ -78,13 +79,9 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
   
-  D = matrix(0,nrow=nParameters,ncol=nParameters)
-  
-  ## with Ranks
   likeWithCpitsDerivs = array(0, dim = c(nObs, nCopulas,d))
   w = array(0, dim = c(nObs, nCopulas,d))
   
-  ##
   
   for (jCopula in 1:nCopulas)
   {
@@ -134,10 +131,59 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
         }
         
       }
-      
-      
-      
-      ##
+    }
+  }
+  
+  
+  orderingInds = apply(dataSet,2,order)
+  
+  for (iVar in 1:d)
+  {
+    xx = likeWithCpitsDerivs[orderingInds[,iVar], , iVar]
+    w[orderingInds[,iVar], , iVar] = apply(xx,2,cumsum)/nObs
+    
+  }
+  
+  sumOfW = apply(w,c(1,2),sum)
+  
+  
+}
+
+
+getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula = FALSE)
+{
+  
+  d <- ncol(data)
+  nObs = nrow(data)
+  if (includeLastCopula)
+  {
+    nCopulas = d*(d-1)/2
+  }
+  else
+  {
+    nCopulas = d*(d-1)/2-1
+  }
+  
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  
+  D = matrix(0,nrow=nParameters,ncol=nParameters)
+  
+  for (jCopula in 1:nCopulas)
+  {
+    if (svcmDataFrame$nPar[jCopula])
+    {
+      family_1 = svcmDataFrame$family[jCopula]
+      par_1 = svcmDataFrame$par[[jCopula]]
+      if (jCopula<d)
+      {
+        cPit1_1 = data[,svcmDataFrame$var1[jCopula]]
+        cPit2_1 = data[,svcmDataFrame$var2[jCopula]]
+      }
+      else
+      {
+        cPit1_1 = getCpit1(cPitData, svcmDataFrame, jCopula)
+        cPit2_1 = getCpit2(cPitData, svcmDataFrame, jCopula)
+      }
       
       for (lCopula in 1:jCopula)
       {
@@ -164,17 +210,7 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
     }
   }
   
-  
-  orderingInds = apply(dataSet,2,order)
-  
-  for (iVar in 1:d)
-  {
-    xx = likeWithCpitsDerivs[orderingInds[,iVar], , iVar]
-    w[orderingInds[,iVar], , iVar] = apply(xx,2,cumsum)/nObs
-    
-  }
-  
-  sumOfW = apply(w,c(1,2),sum)
+  bSsp = bSspForCovWithRanks(data, svcmDataFrame, cPitData, includeLastCopula)
   
   
   return(D)
