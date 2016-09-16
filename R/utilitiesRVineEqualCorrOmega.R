@@ -63,9 +63,117 @@ likeVar2 =  function(u2,u1,family,params)
 
 
 
+helpingfunctionBSspForCovWithRanks = function(parVector, data, svcmDataFrame, cPitData, copulaInd)
+{
+  
+  d <- ncol(data)
+  nObs = nrow(data)
+  
+  likeWithCpitsDerivs = array(0, dim = c(nObs, d))
+  w = array(0, dim = c(nObs, d))
+  
+  family = svcmDataFrame$family[copulaInd]
+  
+  if (copulaInd<d)
+  {
+    cPit1 = data[,svcmDataFrame$var1[copulaInd]]
+    cPit2 = data[,svcmDataFrame$var2[copulaInd]]
+  }
+  else
+  {
+    cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
+    cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
+  }
+  
+  ## with ranks
+  xxSide = vector(length=length(cPit1))
+  xxSide[] = NA
+  xxSide[cPit1>0.999] = -1
+  likeVar1Deriv = grad(likeVar1,cPit1, method='simple',side = xxSide ,u2=cPit2,family=family,params=parVector)
+  xxSide = vector(length=length(cPit2))
+  xxSide[] = NA
+  xxSide[cPit2>0.999] = -1
+  likeVar2Deriv = grad(likeVar2,cPit2, method='simple',side = xxSide ,u1=cPit1,family=family,params=parVector)
+  
+  if (copulaInd < d) # first tree
+  {
+    likeWithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = likeVar1Deriv
+    likeWithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = likeVar2Deriv
+    
+  }
+  else
+  {
+    condset = svcmDataFrame$condset[copulaInd]
+    
+    cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var1[copulaInd])
+    likeWithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = likeVar1Deriv * cPit1Deriv
+    
+    cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var2[copulaInd])
+    likeWithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = likeVar2Deriv * cPit2Deriv
+    
+    
+    for (condsetVariable in condset)
+    {
+      cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
+      cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
+      likeWithCpitsDerivs[, condsetVariable] = likeVar1Deriv * cPit1Deriv + likeVar2Deriv * cPit2Deriv
+      
+    }
+    
+  }
+  
+  orderingInds = apply(data,2,order)
+  
+  for (iVar in 1:d)
+  {
+    xx = likeWithCpitsDerivs[orderingInds[,iVar], iVar]
+    w[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+  }
+  
+  sumOfW = apply(w,1,sum)
+  
+  return(sumOfW)
+  
+  
+}
+
+
+likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcmDataFrame, cPitData)
+{
+  xx = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  yy = helpingfunctionBSspForCovWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
+  result = mean((xx-mean(xx))*(yy-mean(yy)))
+  
+  
+  return(result)
+}
+
+
+likeMultDerivWithRanks =  function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData)
+{
+  result = grad(likeMultWithRanks,params2, method='simple',
+                copulaInd2=copulaInd2,
+                params1=params1,copulaInd1=copulaInd1,
+                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
+  return(result)
+}
+
+
+deriv2LikeMultWithRanks = function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData)
+{
+  
+  result = jacobian(likeMultDerivWithRanks,params1, method='simple',
+                    copulaInd1=copulaInd1,
+                    params2=params2,copulaInd2=copulaInd2,
+                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
+  return(result)
+}
+
 
 bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
 {
+  
   d <- ncol(data)
   nObs = nrow(data)
   if (includeLastCopula)
@@ -79,73 +187,37 @@ bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
   
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
   
-  likeWithCpitsDerivs = array(0, dim = c(nObs, nCopulas,d))
-  w = array(0, dim = c(nObs, nCopulas,d))
+  bSsp = matrix(0,nrow=nParameters,ncol=nParameters)
   
   
   for (jCopula in 1:nCopulas)
   {
+    
     if (svcmDataFrame$nPar[jCopula])
     {
-      family_1 = svcmDataFrame$family[jCopula]
-      par_1 = svcmDataFrame$par[[jCopula]]
-      if (jCopula<d)
+    parVector1 = svcmDataFrame$par[[jCopula]]
+    
+    for (lCopula in 1:jCopula)
+    {
+      if (svcmDataFrame$nPar[lCopula] &&
+            ((lCopula == jCopula) || !any(svcmDataFrame$copulaInd[lCopula]==c(svcmDataFrame$cPit1CopulaInd[[jCopula]],svcmDataFrame$cPit2CopulaInd[[jCopula]]))))
       {
-        cPit1_1 = data[,svcmDataFrame$var1[jCopula]]
-        cPit2_1 = data[,svcmDataFrame$var2[jCopula]]
-      }
-      else
-      {
-        cPit1_1 = getCpit1(cPitData, svcmDataFrame, jCopula)
-        cPit2_1 = getCpit2(cPitData, svcmDataFrame, jCopula)
-      }
-      
-      ## with ranks
-      
-      likeVar1Deriv = grad(likeVar1,cPit1_1, method='simple',u2=cPit2_1,family=family_1,params=par_1)
-      likeVar2Deriv = grad(likeVar2,cPit2_1, method='simple',u1=cPit1_1,family=family_1,params=par_1)
-      
-      if (jCopula < d) # first tree
-      {
-        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = likeVar1Deriv
-        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = likeVar2Deriv
+        parVector2 = svcmDataFrame$par[[lCopula]]
         
-      }
-      else
-      {
-        condset = svcmDataFrame$condset[jCopula]
+        bSsp[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] =
+          deriv2LikeMultWithRanks(parVector1,jCopula,
+                                  parVector2,lCopula,
+                                  data, svcmDataFrame, cPitData)
         
-        cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var1[jCopula])
-        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var1[jCopula]] = likeVar1Deriv * cPit1Deriv
-        
-        cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, svcmDataFrame$var2[jCopula])
-        likeWithCpitsDerivs[, jCopula, svcmDataFrame$var2[jCopula]] = likeVar2Deriv * cPit2Deriv
-        
-        
-        for (condsetVariable in condset)
-        {
-          cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
-          cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, jCopula, condsetVariable)
-          likeWithCpitsDerivs[, jCopula, condsetVariable] = likeVar1Deriv * cPit1Deriv + likeVar2Deriv * cPit2Deriv
-          
-        }
         
       }
     }
-  }
-  
-  
-  orderingInds = apply(dataSet,2,order)
-  
-  for (iVar in 1:d)
-  {
-    xx = likeWithCpitsDerivs[orderingInds[,iVar], , iVar]
-    w[orderingInds[,iVar], , iVar] = apply(xx,2,cumsum)/nObs
+    
+    }
     
   }
   
-  sumOfW = apply(w,c(1,2),sum)
-  
+  return(bSsp)
   
 }
 
@@ -212,6 +284,9 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
   
   bSsp = bSspForCovWithRanks(data, svcmDataFrame, cPitData, includeLastCopula)
   
+  print(D)
+  print(bSsp)
+  print(bSsp/D)
   
   return(D)
   
