@@ -39,94 +39,6 @@ deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 }
 
 
-### FOR TESTING: DELETE LATER ON
-likeForDerivWithRespectToVariable = function(uVector, variableNumber, data, svcmDataFrame, copulaInd, params)
-{
-  data[,variableNumber] = uVector
-  
-  cPitDataNewleyComputed = getCpitsFromVine(data, svcmDataFrame, FALSE)
-  
-  d <- ncol(data)
-  nObs = nrow(data)
-  
-  family = svcmDataFrame$family[copulaInd]
-  
-  if (copulaInd<d)
-  {
-    cPit1 = data[,svcmDataFrame$var1[copulaInd]]
-    cPit2 = data[,svcmDataFrame$var2[copulaInd]]
-  }
-  else
-  {
-    cPit1 = getCpit1(cPitDataNewleyComputed, svcmDataFrame, copulaInd)
-    cPit2 = getCpit2(cPitDataNewleyComputed, svcmDataFrame, copulaInd)
-  }
-  
-  
-  result = likeVar1(cPit1,cPit2,family,params)
-  
-}
-
-
-cPit1ForDerivWithRespectToVariable = function(uVector, variableNumber, data, svcmDataFrame, copulaInd, params)
-{
-  data[,variableNumber] = uVector
-  
-  cPitDataNewleyComputed = getCpitsFromVine(data, svcmDataFrame, FALSE)
-  
-  d <- ncol(data)
-  nObs = nrow(data)
-  
-  family = svcmDataFrame$family[copulaInd]
-  
-  if (copulaInd<d)
-  {
-    cPit1 = data[,svcmDataFrame$var1[copulaInd]]
-    cPit2 = data[,svcmDataFrame$var2[copulaInd]]
-  }
-  else
-  {
-    cPit1 = getCpit1(cPitDataNewleyComputed, svcmDataFrame, copulaInd)
-    cPit2 = getCpit2(cPitDataNewleyComputed, svcmDataFrame, copulaInd)
-  }
-  
-  
-  result = cPit1
-  
-}
-
-
-cPit2ForDerivWithRespectToVariable = function(uVector, variableNumber, data, svcmDataFrame, copulaInd, params)
-{
-  data[,variableNumber] = uVector
-  
-  cPitDataNewleyComputed = getCpitsFromVine(data, svcmDataFrame, FALSE)
-  
-  d <- ncol(data)
-  nObs = nrow(data)
-  
-  family = svcmDataFrame$family[copulaInd]
-  
-  if (copulaInd<d)
-  {
-    cPit1 = data[,svcmDataFrame$var1[copulaInd]]
-    cPit2 = data[,svcmDataFrame$var2[copulaInd]]
-  }
-  else
-  {
-    cPit1 = getCpit1(cPitDataNewleyComputed, svcmDataFrame, copulaInd)
-    cPit2 = getCpit2(cPitDataNewleyComputed, svcmDataFrame, copulaInd)
-  }
-  
-  
-  result = cPit2
-  
-}
-
-
-### FOR TESTING: DELETE LATER ON
-
-
 ## Asympt with ranks section
 likeVar1 =  function(u1,u2,family,params)
 {
@@ -290,17 +202,7 @@ computeLikeWithCpitsDerivs = function(parVector, data, svcmDataFrame, cPitData, 
   if (copulaInd < d) # first tree
   {
     likeWithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = likeVar1Deriv
-    #blaBlub = grad(likeForDerivWithRespectToVariable,
-    #               data[,svcmDataFrame$var1[copulaInd]],
-    #               variableNumber = svcmDataFrame$var1[copulaInd],
-    #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
-    
-    
     likeWithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = likeVar2Deriv
-    #blaBlub = grad(likeForDerivWithRespectToVariable,
-    #               data[,svcmDataFrame$var2[copulaInd]],
-    #               variableNumber = svcmDataFrame$var2[copulaInd],
-    #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
     
   }
   else
@@ -308,110 +210,24 @@ computeLikeWithCpitsDerivs = function(parVector, data, svcmDataFrame, cPitData, 
     condset = svcmDataFrame$condset[[copulaInd]]
     
     cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var1[copulaInd])
-    #blaBlub1 = grad(cPit1ForDerivWithRespectToVariable,
-    #               data[,svcmDataFrame$var1[copulaInd]],
-    #               variableNumber = svcmDataFrame$var1[copulaInd],
-    #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
     likeWithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = likeVar1Deriv * cPit1Deriv
-    #blaBlub = grad(likeForDerivWithRespectToVariable,
-    #               data[,svcmDataFrame$var1[copulaInd]],
-    #               variableNumber = svcmDataFrame$var1[copulaInd],
-    #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
     
     cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var2[copulaInd])
-    #blaBlub2 = grad(cPit2ForDerivWithRespectToVariable,
-    #               data[,svcmDataFrame$var2[copulaInd]],
-    #               variableNumber = svcmDataFrame$var2[copulaInd],
-    #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
     likeWithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = likeVar2Deriv * cPit2Deriv
-    #blaBlub = grad(likeForDerivWithRespectToVariable,
-    #               data[,svcmDataFrame$var2[copulaInd]],
-    #               variableNumber = svcmDataFrame$var2[copulaInd],
-    #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
     
     
     for (condsetVariable in condset)
     {
       cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
-      #blaBlub1 = grad(cPit1ForDerivWithRespectToVariable,
-      #                data[,condsetVariable],
-      #                variableNumber = condsetVariable,
-      #                data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
       cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
-      #blaBlub2 = grad(cPit2ForDerivWithRespectToVariable,
-      #                data[,condsetVariable],
-      #                variableNumber = condsetVariable,
-      #                data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
+      
       likeWithCpitsDerivs[, condsetVariable] = likeVar1Deriv * cPit1Deriv + likeVar2Deriv * cPit2Deriv
-      #blaBlub = grad(likeForDerivWithRespectToVariable,
-      #               data[,condsetVariable],
-      #               variableNumber = condsetVariable,
-      #               data=data, svcmDataFrame = svcmDataFrame, copulaInd=copulaInd, params=parVector)
       
     }
     
   }
   
   return(likeWithCpitsDerivs)
-}
-
-integrandForW = function(xx, parVector, svcmDataFrame, copulaInd, relevantVariableIndices, iVariable, d)
-{
-  if (length(dim(xx))==2)
-  {
-    nObs = dim(xx)[1]
-  }
-  else
-  {
-    nObs = 1
-  }
-  
-  dataForIntegration = array(0.5, c(nObs, d))
-  
-  dataForIntegration[,relevantVariableIndices] = xx
-  
-  cPitDataNewleyComputed = getCpitsFromVine(dataForIntegration, svcmDataFrame, TRUE)
-  likeWithCpitsDerivs = computeLikeWithCpitsDerivs(parVector, dataForIntegration,
-                                                   svcmDataFrame, cPitDataNewleyComputed, copulaInd)
-  dens = subtreeDensity(parVector, dataForIntegration,
-                        svcmDataFrame, cPitDataNewleyComputed, copulaInd)
-  
-  result = likeWithCpitsDerivs[,iVariable] * dens
-  
-  return(result)
-  
-}
-
-
-
-computeWViaNumericalIntegration = function(parVector, data, svcmDataFrame, copulaInd)
-{
-  d <- ncol(data)
-  nObs = nrow(data)
-  
-  w = array(0, dim = c(nObs, d))
-  
-  relevantVariableIndices = c(svcmDataFrame$var1[copulaInd],svcmDataFrame$var2[copulaInd],
-                              svcmDataFrame$condset[[copulaInd]])
-  
-  ind = 0
-  for (iVariable in relevantVariableIndices)
-  {
-    ind = ind + 1
-    lb = array(10^-3, length(relevantVariableIndices))
-    ub = array(1 - 10^-3, length(relevantVariableIndices))
-    
-    for (iObs in 1:nObs)
-    {
-      lb[ind] = data[iObs, relevantVariableIndices[iVariable]]
-      w[iObs,relevantVariableIndices[iVariable]] = adaptIntegrate(integrandForW, lower = lb, upper = ub,
-                                                       parVector = parVector, svcmDataFrame = svcmDataFrame, copulaInd = copulaInd,
-                                                       relevantVariableIndices = relevantVariableIndices, iVariable = iVariable, d = d)$integral
-    }
-    
-  }
-  
-  return(w)
 }
 
 
