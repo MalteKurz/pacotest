@@ -181,15 +181,16 @@ scoresForBSspWithRanks = function(params, data, svcmDataFrame, cPitData, copulaI
 likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcmDataFrame, cPitData)
 {
   xx1 = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
-  #xx2 = scoresForBSspWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
-  xx = xx1 #+ xx2
+  xx2 = scoresForBSspWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
     
   yy1 = helpingfunctionBSspForCovWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
-  #yy2 = scoresForBSspWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
-  yy = yy1 #+ yy2
+  yy2 = scoresForBSspWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
   
+  cov1 = mean((xx1-mean(xx1))*(yy1-mean(yy1)))
+  cov2 = mean((xx2-mean(xx2))*(yy1-mean(yy1)))
+  cov3 = mean((xx1-mean(xx1))*(yy2-mean(yy2)))
   
-  result = mean((xx-mean(xx))*(yy-mean(yy)))
+  result = cov1 + cov2 + cov3
   
   
   return(result)
