@@ -45,16 +45,7 @@ likeVar1 =  function(u1,u2,family,params)
   nPar = getNumbOfParameters(family)
   par = getParAsScalars(nPar,params)
   
-  if (family == 3)
-  {
-    theta = par[1]
-    xx = (1+theta)*(u1*u2)^(-1-theta)*
-      (u1^(-theta) + u2^(-theta)-1)^(-1/theta-2)
-    result = log(xx)
-  }
-  else{
-    result = log(BiCopPDF(u1,u2,family,par[1],par[2]))
-  }
+  result = log(BiCopPDF(u1,u2,family,par[1],par[2]))
   
   return(result)
 }
@@ -64,16 +55,7 @@ likeVar2 =  function(u2,u1,family,params)
   nPar = getNumbOfParameters(family)
   par = getParAsScalars(nPar,params)
   
-  if (family == 3)
-  {
-    theta = par[1]
-    xx = (1+theta)*(u1*u2)^(-1-theta)*
-      (u1^(-theta) + u2^(-theta)-1)^(-1/theta-2)
-    result = log(xx)
-  }
-  else{
-    result = log(BiCopPDF(u1,u2,family,par[1],par[2]))
-  }
+  result = log(BiCopPDF(u1,u2,family,par[1],par[2]))
   
   return(result)
 }
