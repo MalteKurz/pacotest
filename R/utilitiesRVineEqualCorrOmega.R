@@ -267,10 +267,10 @@ computeLikeWithCpitsDerivs = function(parVector, data, svcmDataFrame, cPitData, 
   ## with ranks
   if (family == 3)
   {
-    #likeVar1Deriv = claytonLikeDerivVar1(cPit1,cPit2,parVector)
-    #likeVar2Deriv = claytonLikeDerivVar1(cPit2,cPit1,parVector)
-    likeVar1Deriv = claytonLikeDerivVar1Theta(cPit1,cPit2,parVector)
-    likeVar2Deriv = claytonLikeDerivVar1Theta(cPit2,cPit1,parVector)
+    likeVar1Deriv = claytonLikeDerivVar1(cPit1,cPit2,parVector)
+    likeVar2Deriv = claytonLikeDerivVar1(cPit2,cPit1,parVector)
+    #likeVar1Deriv = claytonLikeDerivVar1Theta(cPit1,cPit2,parVector)
+    #likeVar2Deriv = claytonLikeDerivVar1Theta(cPit2,cPit1,parVector)
   }
   else
   {
@@ -545,15 +545,15 @@ bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
       {
         parVector2 = svcmDataFrame$par[[lCopula]]
         
-        #bSspX[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] =
-        #  deriv2LikeMultWithRanks(parVector1,jCopula,
-        #                          parVector2,lCopula,
-        #                          data, svcmDataFrame, cPitData)
-        
         bSsp[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] =
-          likeMultWithRanks(parVector1,jCopula,
+          deriv2LikeMultWithRanks(parVector1,jCopula,
                                   parVector2,lCopula,
                                   data, svcmDataFrame, cPitData)
+        
+        #bSsp[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] =
+        #  likeMultWithRanks(parVector1,jCopula,
+        #                          parVector2,lCopula,
+        #                          data, svcmDataFrame, cPitData)
         
         #bSspG[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] =
         #deriv2LikeMultWithRanks(parVector1,jCopula,
@@ -612,8 +612,8 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
       
       for (lCopula in 1:jCopula)
       {
-        if (svcmDataFrame$nPar[lCopula] &&
-              ((lCopula == jCopula) || !any(svcmDataFrame$copulaInd[lCopula]==c(svcmDataFrame$cPit1CopulaInd[[jCopula]],svcmDataFrame$cPit2CopulaInd[[jCopula]]))))
+        if (svcmDataFrame$nPar[lCopula])
+              #((lCopula == jCopula) || !any(svcmDataFrame$copulaInd[lCopula]==c(svcmDataFrame$cPit1CopulaInd[[jCopula]],svcmDataFrame$cPit2CopulaInd[[jCopula]]))))
         {
           family_2 = svcmDataFrame$family[lCopula]
           par_2 = svcmDataFrame$par[[lCopula]]
