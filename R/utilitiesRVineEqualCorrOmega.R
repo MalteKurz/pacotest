@@ -265,8 +265,6 @@ bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
     
   }
   
-  #bSsp = bSsp + 2* bSspG
-  
   return(bSsp)
   
 }
