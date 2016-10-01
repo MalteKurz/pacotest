@@ -452,35 +452,39 @@ helpingfunctionBSspForCovWithRanks = function(parVector, data, svcmDataFrame, cP
 }
 
 
-likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcmDataFrame, cPitData, bla=FALSE)
+scoresForBSspWithRanks = function(params, data, svcmDataFrame, cPitData, copulaInd)
 {
-  xx = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
-  if (bla == FALSE)
-  {
-  yy = helpingfunctionBSspForCovWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
-  }
-  else
-  {
   
-  ## start to be deleted ##
-  family = svcmDataFrame$family[copulaInd2]
+  family = svcmDataFrame$family[copulaInd]
   d <- ncol(data)
   
-  if (copulaInd2<d)
+  if (copulaInd<d)
   {
-    cPit1 = data[,svcmDataFrame$var1[copulaInd2]]
-    cPit2 = data[,svcmDataFrame$var2[copulaInd2]]
+    cPit1 = data[,svcmDataFrame$var1[copulaInd]]
+    cPit2 = data[,svcmDataFrame$var2[copulaInd]]
   }
   else
   {
-    cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd2)
-    cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd2)
+    cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
+    cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
   }
   
-  yy = likeVar1(cPit1, cPit2, family, params2)
+  result = likeVar1(cPit1, cPit2, family, params)
   
-  ## end to be delted
-  }
+  return(result)
+}
+
+
+likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcmDataFrame, cPitData, bla=FALSE)
+{
+  xx1 = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  #xx2 = scoresForBSspWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  xx = xx1 #+ xx2
+    
+  yy1 = helpingfunctionBSspForCovWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
+  #yy2 = scoresForBSspWithRanks(params2, data, svcmDataFrame, cPitData, copulaInd2)
+  yy = yy1 #+ yy2
+  
   
   result = mean((xx-mean(xx))*(yy-mean(yy)))
   
