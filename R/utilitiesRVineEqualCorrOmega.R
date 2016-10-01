@@ -178,7 +178,7 @@ scoresForBSspWithRanks = function(params, data, svcmDataFrame, cPitData, copulaI
 }
 
 
-likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcmDataFrame, cPitData, bla=FALSE)
+likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcmDataFrame, cPitData)
 {
   xx1 = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
   #xx2 = scoresForBSspWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
@@ -196,23 +196,23 @@ likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcm
 }
 
 
-likeMultDerivWithRanks =  function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData,bla)
+likeMultDerivWithRanks =  function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData)
 {
   result = grad(likeMultWithRanks,params2, method='simple',
                 copulaInd2=copulaInd2,
                 params1=params1,copulaInd1=copulaInd1,
-                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData,bla=bla)
+                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
   return(result)
 }
 
 
-deriv2LikeMultWithRanks = function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData, bla=FALSE)
+deriv2LikeMultWithRanks = function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData)
 {
   
   result = jacobian(likeMultDerivWithRanks,params1, method='simple',
                     copulaInd1=copulaInd1,
                     params2=params2,copulaInd2=copulaInd2,
-                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData,bla=bla)
+                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
   return(result)
 }
 
