@@ -21,24 +21,15 @@ getParAsScalars = function(nPar,par)
 
 hfun = function(family,cPit1,cPit2,params)
 {
-  if (family == 3)
-  {
-    theta = params[1]
-    out = cPit2^(-theta-1) *
-      (cPit1^(-theta) + cPit2^(-theta) -1)^(-1/theta-1)
-  }
-  else
-  {
-    out = .C("Hfunc1",
-             as.integer(family),
-             as.integer(length(cPit1)), 
-             as.double(cPit1), 
-             as.double(cPit2), 
-             as.double(params[1]),
-             as.double(params[2]), 
-             as.double(rep(0, length(cPit1))), 
-             PACKAGE = "VineCopula")[[7]]
-  }
+  out = .C("Hfunc1",
+           as.integer(family),
+           as.integer(length(cPit1)), 
+           as.double(cPit1), 
+           as.double(cPit2), 
+           as.double(params[1]),
+           as.double(params[2]), 
+           as.double(rep(0, length(cPit1))), 
+           PACKAGE = "VineCopula")[[7]]
   
   return(out)
 }
@@ -46,24 +37,15 @@ hfun = function(family,cPit1,cPit2,params)
 
 vfun = function(family,cPit1,cPit2,params)
 {
-  if (family == 3)
-  {
-    theta = params[1]
-    out = cPit1^(-theta-1) *
-      (cPit1^(-theta) + cPit2^(-theta) -1)^(-1/theta-1)
-  }
-  else
-  {
-    out = .C("Hfunc2",
-             as.integer(family),
-             as.integer(length(cPit1)), 
-             as.double(cPit2), 
-             as.double(cPit1), 
-             as.double(params[1]),
-             as.double(params[2]), 
-             as.double(rep(0, length(cPit1))), 
-             PACKAGE = "VineCopula")[[7]]
-  }
+  out = .C("Hfunc2",
+           as.integer(family),
+           as.integer(length(cPit1)), 
+           as.double(cPit2), 
+           as.double(cPit1), 
+           as.double(params[1]),
+           as.double(params[2]), 
+           as.double(rep(0, length(cPit1))), 
+           PACKAGE = "VineCopula")[[7]]
   
   return(out)
 }
@@ -133,36 +115,14 @@ hfunCpit2 =  function(cPit2, family, cPit1, params)
 
 hfunDerivCpit1 = function(family,cPit1,cPit2,params)
 {
-  if (family == 3)
-  {
-    theta = params[1]
-    u1 = cPit1
-    u2 = cPit2
-    result = (1+theta)*(u1*u2)^(-1-theta)*
-      (u1^(-theta) + u2^(-theta)-1)^(-1/theta-2)
-  }
-  else
-  {
-    result = BiCopPDF(cPit1, cPit2, family, params[1], params[2])
-  }
-  
+  result = BiCopPDF(cPit1, cPit2, family, params[1], params[2])
   
   return(result)
 }
+
 hfunDerivCpit2 = function(family,cPit1,cPit2,params)
 {
-  if (family == 3)
-  {
-    theta = params[1]
-    xx = cPit1^(-theta) + cPit2^(-theta) -1
-    result = ((-theta-1)* cPit2^(-theta-2)*xx + 
-                (theta+1) * cPit2^(-2*theta-2)) * xx^(-1/theta-2)
-    
-  }
-  else
-  {
-    result = grad(hfunCpit2,cPit2, method='simple', family=family, cPit1=cPit1, params=params)
-  }
+  result = grad(hfunCpit2,cPit2, method='simple', family=family, cPit1=cPit1, params=params)
   
   return(result)
 }
@@ -176,35 +136,14 @@ vfunCpit1 =  function(cPit1, family, cPit2, params)
 
 vfunDerivCpit1 = function(family,cPit1,cPit2,params)
 {
-  if (family == 3)
-  {
-    theta = params[1]
-    xx = cPit1^(-theta) + cPit2^(-theta) -1
-    result = ((-theta-1)* cPit1^(-theta-2)*xx + 
-                (theta+1) * cPit1^(-2*theta-2)) * xx^(-1/theta-2)
-    
-  }
-  else
-  {
-    result = grad(vfunCpit1,cPit1, method='simple', family=family, cPit2=cPit2, params=params)
-  }
+  result = grad(vfunCpit1,cPit1, method='simple', family=family, cPit2=cPit2, params=params)
   
   return(result)
 }
+
 vfunDerivCpit2 = function(family,cPit1,cPit2,params)
 {
-  if (family == 3)
-  {
-    theta = params[1]
-    u1 = cPit1
-    u2 = cPit2
-    result = (1+theta)*(u1*u2)^(-1-theta)*
-      (u1^(-theta) + u2^(-theta)-1)^(-1/theta-2)
-  }
-  else
-  {
-    result = BiCopPDF(cPit1, cPit2, family, params[1], params[2])
-  }
+  result = BiCopPDF(cPit1, cPit2, family, params[1], params[2])
   
   return(result)
 }
