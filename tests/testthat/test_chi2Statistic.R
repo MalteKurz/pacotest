@@ -6,6 +6,7 @@ test_that("unit tests for ERC", {
   library("testthat")
   library("VineCopula")
   library("numDeriv")
+  library("methods")
   
   
   set.seed(3141)

@@ -86,13 +86,13 @@ computeLikeWithCpitsDerivs = function(parVector, data, svcmDataFrame, cPitData, 
   xxSide[] = NA
   xxSide[cPit1>0.99] = -1
   xxSide[cPit1<0.01] = 1
-  likeVar1Deriv = grad(likeVar1,cPit1, side = xxSide ,u2=cPit2,family=family,params=parVector)
+  likeVar1Deriv = grad(likeVar1,cPit1, side = xxSide ,u2=cPit2,family=family,params=parVector, method='simple')
   
   xxSide = vector(length=length(cPit2))
   xxSide[] = NA
   xxSide[cPit2>0.99] = -1
   xxSide[cPit2<0.01] = 1
-  likeVar2Deriv = grad(likeVar2,cPit2, side = xxSide ,u1=cPit1,family=family,params=parVector)
+  likeVar2Deriv = grad(likeVar2,cPit2, side = xxSide ,u1=cPit1,family=family,params=parVector, method='simple')
   
   if (copulaInd < d) # first tree
   {
@@ -218,7 +218,7 @@ deriv2LikeMultWithRanks = function(params1,copulaInd1, params2,copulaInd2, data,
 }
 
 
-bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
+bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula = FALSE)
 {
   
   d <- ncol(data)
@@ -235,8 +235,6 @@ bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula)
   nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
   
   bSsp = matrix(0,nrow=nParameters,ncol=nParameters)
-  bSspX = matrix(0,nrow=nParameters,ncol=nParameters)
-  bSspG = matrix(0,nrow=nParameters,ncol=nParameters)
   
   
   for (jCopula in 1:nCopulas)
@@ -392,7 +390,7 @@ getOmegaWithLikesE = function(data, svcmDataFrame, indList, cPitData, listOfMult
 
 
 
-omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
+omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta, withRanks)
 {
   
   d <- ncol(data)
@@ -459,7 +457,14 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta)
 
   if (nParameters)
   {
-    omega[1:nParameters,1:nParameters] = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    omegaWithLikesD = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    if(withRanks)
+    {
+      bSsp = bSspForCovWithRanks(data, svcmDataFrame, cPitData)
+      omegaWithLikesD = omegaWithLikesD + bSsp
+    }
+    omega[1:nParameters,1:nParameters] = omegaWithLikesD
+    
     omega[(nParameters+1):(nParameters+4*nGroups+nGroups),1:nParameters] = getOmegaWithLikesE(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
   }
   
@@ -524,7 +529,7 @@ getOmegaWithLikesCovE = function(data, svcmDataFrame, indList, cPitData, listOfM
 }
 
 
-omegaRvineCov = function(data, svcmDataFrame, indList, cPitData, theta)
+omegaRvineCov = function(data, svcmDataFrame, indList, cPitData, theta, withRanks)
 {
   
   d <- ncol(data)
@@ -587,7 +592,14 @@ omegaRvineCov = function(data, svcmDataFrame, indList, cPitData, theta)
   
   if (nParameters)
   {
-    omega[1:nParameters,1:nParameters] = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    omegaWithLikesD = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    if(withRanks)
+    {
+      bSsp = bSspForCovWithRanks(data, svcmDataFrame, cPitData)
+      omegaWithLikesD = omegaWithLikesD + bSsp
+    }
+    omega[1:nParameters,1:nParameters] = omegaWithLikesD
+    
     omega[(nParameters+1):(nParameters+2*nGroups+nGroups),1:nParameters] = getOmegaWithLikesCovE(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
   }
   

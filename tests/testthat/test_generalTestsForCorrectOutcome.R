@@ -6,6 +6,7 @@ test_that("unit tests for ECORR", {
   library("testthat")
   library("VineCopula")
   library("numDeriv")
+  library("methods")
   
   
   
