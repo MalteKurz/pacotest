@@ -37,7 +37,7 @@ test_that("unit tests for ERC", {
   rvm = RVineMatrixNormalize(rvm)
   
   U = RVineSim(N,rvm)
-  rvmHat = RVineSeqEst(U,rvm)$RVM
+  rvmHat = RVineSeqEst(U,rvm)
   
   svcmDataFrameHat = pacotest:::rVineDataFrameRep(rvmHat)
   
@@ -116,7 +116,7 @@ test_that("unit tests for ERC", {
   rvm2 = RVineMatrixNormalize(rvm2)
   
   U2 = RVineSim(N,rvm2)
-  rvmHat2 = RVineSeqEst(U2,rvm2)$RVM
+  rvmHat2 = RVineSeqEst(U2,rvm2)
   
   svcmDataFrameHat2 = pacotest:::rVineDataFrameRep(rvmHat2)
   
