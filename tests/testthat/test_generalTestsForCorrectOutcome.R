@@ -219,7 +219,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test1,2.1246893133763933292e-12, tolerance = 1e-2)
   expect_equal(resultData2Test1,0.63520407773957221487, tolerance = 1e-2)
   expect_equal(resultData3Test1,5.752268106284930127e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test1,0.15587677566236446403, tolerance = 1e-2)
+  expect_equal(resultData4Test1,0.28687570821890190365, tolerance = 1e-2)
   
   ##
   resultData1Test2 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions2)$pValue
@@ -230,7 +230,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test2,1.9217960556261459715e-13, tolerance = 1e-2)
   expect_equal(resultData2Test2,0.44452957033286516486, tolerance = 1e-2)
   expect_equal(resultData3Test2,9.6432739571383763177e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test2,0.15619267110582790714, tolerance = 1e-2)
+  expect_equal(resultData4Test2,0.4467445460704165261, tolerance = 1e-2)
   
   ##
   resultData1Test3 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions3)$pValue
@@ -241,7 +241,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test3,1.1102230246251565404e-15, tolerance = 1e-2)
   expect_equal(resultData2Test3,0.5580923850607153458, tolerance = 1e-2)
   expect_equal(resultData3Test3,2.3669399773496024864e-12, tolerance = 1e-2)
-  expect_equal(resultData4Test3,0.1541884126560324475, tolerance = 1e-2)
+  expect_equal(resultData4Test3,0.23216541288975905966, tolerance = 1e-2)
   
   ##
   resultData1Test4 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions4)$pValue
@@ -252,7 +252,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test4,3.3317792969000947778e-13, tolerance = 1e-2)
   expect_equal(resultData2Test4,0.47397446101156270881, tolerance = 1e-2)
   expect_equal(resultData3Test4,4.0479203322618673155e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test4,0.18825661750246180937, tolerance = 1e-2)
+  expect_equal(resultData4Test4,0.24323996217835758271, tolerance = 1e-2)
   
   ##
   resultData1Test5 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions5)$pValue
@@ -297,7 +297,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test8,1.1429746038515986584e-13, tolerance = 1e-2)
   expect_equal(resultData2Test8,0.59295520957221348191, tolerance = 1e-2)
   expect_equal(resultData3Test8,3.9912728677649056408e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test8,0.21495265190788415133, tolerance = 1e-2)
+  expect_equal(resultData4Test8,0.23679788942968227339, tolerance = 1e-2)
   
   ##
   resultData1Test9 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions9)$pValue
@@ -308,7 +308,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test9,5.4373172631017041567e-13, tolerance = 1e-2)
   expect_equal(resultData2Test9,0.53315281445507345381, tolerance = 1e-2)
   expect_equal(resultData3Test9,8.0054185502831387566e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test9,0.12813098312621101771, tolerance = 1e-2)
+  expect_equal(resultData4Test9,0.35183868648104549282, tolerance = 1e-2)
   
   ##
   resultData1Test10 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions10)$pValue
@@ -319,7 +319,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test10,1.6098233857064769836e-15, tolerance = 1e-2)
   expect_equal(resultData2Test10,0.619130004810437784, tolerance = 1e-2)
   expect_equal(resultData3Test10,1.8795520695391587651e-12, tolerance = 1e-2)
-  expect_equal(resultData4Test10,0.17673130429000261099, tolerance = 1e-2)
+  expect_equal(resultData4Test10,0.20706972655040151166, tolerance = 1e-2)
   
   ##
   resultData1Test11 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions11)$pValue
@@ -330,7 +330,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test11,2.6623148130511253839e-13, tolerance = 1e-2)
   expect_equal(resultData2Test11,0.50311142788708784757, tolerance = 1e-2)
   expect_equal(resultData3Test11,6.250877593316772618e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test11,0.16726361497538227985, tolerance = 1e-2)
+  expect_equal(resultData4Test11,0.21746320138389635401, tolerance = 1e-2)
   
   ##
   resultData1Test12 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions12)$pValue
@@ -341,7 +341,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test12,2.5190405317232489324e-12, tolerance = 1e-2)
   expect_equal(resultData2Test12,0.55176889867673017953, tolerance = 1e-2)
   expect_equal(resultData3Test12,1.0080859480510184767e-09, tolerance = 1e-2)
-  expect_equal(resultData4Test12,0.1690533342375308834, tolerance = 1e-2)
+  expect_equal(resultData4Test12,0.26489140864933702346, tolerance = 1e-2)
   
   ##
   resultData1Test13 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions13)$pValue
@@ -352,7 +352,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test13,1.85873538782743708e-12, tolerance = 1e-2)
   expect_equal(resultData2Test13,0.40894465103703903086, tolerance = 1e-2)
   expect_equal(resultData3Test13,5.4038018504343199311e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test13,0.15699172106865283416, tolerance = 1e-2)
+  expect_equal(resultData4Test13,0.32368124043977708482, tolerance = 1e-2)
   
   ##
   resultData1Test14 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions14)$pValue
@@ -363,7 +363,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test14,8.5487172896137053613e-15, tolerance = 1e-2)
   expect_equal(resultData2Test14,0.55045671042871491263, tolerance = 1e-2)
   expect_equal(resultData3Test14,3.2835401064801317261e-12, tolerance = 1e-2)
-  expect_equal(resultData4Test14,0.16076681715336549328, tolerance = 1e-2)
+  expect_equal(resultData4Test14,0.25056714373550648123, tolerance = 1e-2)
   
   ##
   resultData1Test15 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions15)$pValue
@@ -374,7 +374,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test15,4.0872860651575138036e-13, tolerance = 1e-2)
   expect_equal(resultData2Test15,0.41687690526596948848, tolerance = 1e-2)
   expect_equal(resultData3Test15,3.4853187003136554267e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test15,0.20337320388824658979, tolerance = 1e-2)
+  expect_equal(resultData4Test15,0.25563507291861059523, tolerance = 1e-2)
   
   ##
   resultData1Test16 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions16)$pValue
@@ -385,7 +385,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test16,3.4767189127649089642e-12, tolerance = 1e-2)
   expect_equal(resultData2Test16,0.50423600959622016937, tolerance = 1e-2)
   expect_equal(resultData3Test16,2.1512736037010427026e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test16,0.14569436465787743984, tolerance = 1e-2)
+  expect_equal(resultData4Test16,0.20040253398187107825, tolerance = 1e-2)
   
   ##
   resultData1Test17 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions17)$pValue
@@ -396,7 +396,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test17,1.0745848655346890155e-12, tolerance = 1e-2)
   expect_equal(resultData2Test17,0.5523203441913488998, tolerance = 1e-2)
   expect_equal(resultData3Test17,9.9395125463530575871e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test17,0.17874838533804909835, tolerance = 1e-2)
+  expect_equal(resultData4Test17,0.2985501716539057937, tolerance = 1e-2)
   
   ##
   resultData1Test18 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions18)$pValue
@@ -407,7 +407,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test18,3.8302694349567900645e-15, tolerance = 1e-2)
   expect_equal(resultData2Test18,0.58424540728909668541, tolerance = 1e-2)
   expect_equal(resultData3Test18,1.4301781980918804038e-11, tolerance = 1e-2)
-  expect_equal(resultData4Test18,0.14077158420207858125, tolerance = 1e-2)
+  expect_equal(resultData4Test18,0.17916966243283055649, tolerance = 1e-2)
   
   ##
   resultData1Test19 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions19)$pValue
@@ -418,7 +418,7 @@ test_that("unit tests for ECORR", {
   expect_equal(resultData1Test19,1.1696199564426024153e-12, tolerance = 1e-2)
   expect_equal(resultData2Test19,0.47242161671558513536, tolerance = 1e-2)
   expect_equal(resultData3Test19,8.8058427216708423657e-10, tolerance = 1e-2)
-  expect_equal(resultData4Test19,0.14158713933062910817, tolerance = 1e-2)
+  expect_equal(resultData4Test19,0.18836423784367994916, tolerance = 1e-2)
   
   ##
   resultData1Test20 = pacotest(data1[,c(2,3)],data1[,1],pacotestOptions20)$pValue
