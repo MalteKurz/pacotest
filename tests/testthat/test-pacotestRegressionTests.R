@@ -1,116 +1,241 @@
-context("Regression tests for pacotest with testType = ECORR")
+context("Regression tests for pacotest")
 
-
-test_that("unit tests for ECORR", {
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
+test_that("ECORR1", {
   
-  library("pacotest")
-  library("testthat")
-  library("VineCopula")
-  library("numDeriv")
-  library("methods")
+  maxNTests = length(pacotestOptions)
   
+  ind = matrix(NA, maxNTests, 4)
   
-  pacotestOptions = list()
-  # Define the test types
-  pacotestOptions[[1]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeECORR'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'pairwiseMax'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'splitTrainEvaluate'))
   
-  pacotestOptions[[2]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate")
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
   
-  pacotestOptions[[3]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+  thisTestsInd = yy[xx]
   
-  pacotestOptions[[4]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[5]] = pacotestset(testType='ECORR',grouping = "SumMedian", withEstUncert = FALSE)
-  
-  pacotestOptions[[6]] = pacotestset(testType='ECORR',grouping = "ProdThirdsII", withEstUncert = FALSE)
-  
-  pacotestOptions[[7]] = pacotestset(testType='ECORR',grouping = "SumThirdsIII", withEstUncert = FALSE)
-  
-  pacotestOptions[[8]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[9]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[10]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[11]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  
-  pacotestOptions[[12]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[13]] = pacotestset(testType='ECORR', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[14]] = pacotestset(testType='ECORR', grouping = 'TreeEC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[15]] = pacotestset(testType='ECORR', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[16]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[17]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[18]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  pacotestOptions[[19]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-  
-  
-  pacotestOptions[[20]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[21]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[22]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[23]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[24]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[25]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[26]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[27]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  
-  pacotestOptions[[28]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[29]] = pacotestset(testType='ECORR', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[30]] = pacotestset(testType='ECORR', grouping = 'TreeEC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[31]] = pacotestset(testType='ECORR', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[32]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[33]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[34]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  pacotestOptions[[35]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
-  
-  
-  resPacotestComputed = matrix(NA, 35, 4)
-  
-  
+  ## load hard-coded results
   filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
   hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
   
-  set.seed(1921)
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
   
-  for (iTest in 1:35)
-  {
-    optionValues = paste(pacotestOptions[[1]],';', sep='')
-    optionNames = paste(names(pacotestOptions[[1]]),':', sep='')
-    optionString = paste(c(rbind(optionNames,optionValues)), collapse=" ")
+})
+  
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
+test_that("ECORR2", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeECORR'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'all'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'splitTrainEvaluate'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+  
 
-    
-    resPacotestComputed[iTest,] = pacotestForData1_4(data1, data2, data3, data4, pacotestOptions[[iTest]])
-    for (iDataset in 1:4)
-    {
-      expect_equal(resPacotestComputed[iTest, iDataset], hardCodedResults[iTest, iDataset], tolerance = 1e-2,
-                   info = paste("Data set number: ", iDataset, "; pacotestOptions: ", optionString, collapse=''))
-      
-    }
-  }
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
+test_that("ECORR3", {
   
+  maxNTests = length(pacotestOptions)
   
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeEC'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'pairwiseMax'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'splitTrainEvaluate'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
+test_that("ECORR4", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeEC'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'all'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'splitTrainEvaluate'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
+test_that("ECORR5", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeECORR'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'pairwiseMax'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'penalty'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = penalty")
+test_that("ECORR6", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeECORR'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'all'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'penalty'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
+test_that("ECORR7", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeEC'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'pairwiseMax'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'penalty'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty")
+test_that("ECORR8", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 4)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'TreeEC'))
+  ind[,3] = sapply(pacotestOptions, function(x) identical(x$finalComparison, 'all'))
+  ind[,4] = sapply(pacotestOptions, function(x) identical(x$sizeKeepingMethod, 'penalty'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = SumMedian, ProdThirdsII, SumThirdsIII")
+test_that("ECORR9", {
+  
+  maxNTests = length(pacotestOptions)
+  
+  ind = matrix(NA, maxNTests, 2)
+  
+  ind[,1] = sapply(pacotestOptions, function(x) identical(x$testType, 'ECORR'))
+  ind[,2] = sapply(pacotestOptions, function(x) identical(x$grouping, 'SumMedian') | 
+                     identical(x$grouping, 'ProdThirdsII') | identical(x$grouping, 'SumThirdsIII'))
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  ## load hard-coded results
+  filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+  hardCodedResults = read.table(filePath, header = FALSE, sep = ",")
+  
+  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
+  
+})
+
+
 #   
 #   set.seed(51312)
 #   # Data set 6
@@ -257,5 +382,5 @@ test_that("unit tests for ECORR", {
 #   expect_equal(resultData6Test35,0.97358975668844760509, tolerance = 1e-2)
   
   
-})
+
 
