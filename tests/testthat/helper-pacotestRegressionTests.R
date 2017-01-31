@@ -81,10 +81,26 @@ pacotestOptions[[34]] = pacotestset(testType='ECORR', grouping = 'TreeEC', final
 pacotestOptions[[35]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
 
+for (indPacotest in 1:35)
+{
+  if (any(indPacotest == c(1:4, 8:19)))
+  {
+    pacotestOptions[[indPacotest + 35]] = pacotestset(pacotestOptions[[indPacotest]], withEstUncert = TRUE, aggPvalsNumbRep = 1)
+  }
+  else
+  {
+    pacotestOptions[[indPacotest + 35]] = pacotestset(pacotestOptions[[indPacotest]], withEstUncert = TRUE)
+  }
+}
+
 ## setup some seeds
 set.seed(1921)
 seedsPerTest = sample(1:2222, 100)
 
+
+## load hard-coded results
+#filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
+hardCodedResults = read.table("hardCodedResEcorr.csv", header = FALSE, sep = ",")
 
 
 ## Simulate sample data
@@ -271,3 +287,27 @@ unitTestKernel <- function(data, pacotestOptions, hardCodedResults, seedsPerTest
   return(resPacotestComputed)
   
 }
+
+filterPacotestOptionLists <- function(pacotestOptions, properties, values)
+{
+  maxNTests = length(pacotestOptions)
+  nProperties = length(properties)
+  
+  ind = matrix(NA, maxNTests, nProperties)
+  
+  for (iProperty in 1:nProperties)
+  {
+    ind[,iProperty] = sapply(pacotestOptions, function(x) identical(as.character(x[[properties[iProperty]]]), values[iProperty]))
+  }
+  
+  xx = apply(ind, 1, all)
+  yy = 1:maxNTests
+  
+  thisTestsInd = yy[xx]
+  
+  return(thisTestsInd)
+  
+}
+
+
+
