@@ -99,9 +99,9 @@ seedsPerTest = sample(1:2222, 100)
 
 
 ## load hard-coded results
-#filePath <- system.file("unitTestData", "hardCodedResEcorr.csv", package="pacotest")
 hardCodedResults = read.table("hardCodedResEcorr.csv", header = FALSE, sep = ",")
 
+hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula.csv", header = FALSE, sep = ",", na.strings=c("NA"))
 
 ## Simulate sample data
 
@@ -146,52 +146,12 @@ U[,2] = (data4[,1]^theta*(data4[,3]^(-theta)-1)+1)^(-(1+theta)/theta);
 
 data4[,c(2,3)] = U
 
-
 data = list(data1, data2, data3, data4)
 
 
-set.seed(31191)
-# Data set 5
-N= 756
-# Four-dimensional D-vine
-structure = matrix(c(4,0,0,0,
-                     1,3,2,0,
-                     2,1,2,0,
-                     3,2,1,1),4,4,TRUE)
-
-families = array(3,dim=dim(structure))
-par2 = array(0,dim=dim(structure))
-names = c("V1", "V2", "V3","V4")
-par_firstTree = VineCopula::BiCopTau2Par(3, 0.5)
-par_secondTree = par_firstTree/(1+par_firstTree)
-par_thirdTree = par_firstTree/(1+2*par_firstTree)
-par  = matrix(c(0,0,0,0,
-                par_thirdTree,0,0,0,
-                par_secondTree,par_secondTree,0,0,
-                par_firstTree,par_firstTree,par_firstTree,0),4,4,TRUE)
-
-rvm = VineCopula::RVineMatrix(structure,families,par,par2,names)
-rvm = VineCopula::RVineMatrixNormalize(rvm)
-svcmDataFrame = pacotest:::rVineDataFrameRep(rvm)
-
-U = VineCopula::RVineSim(N,rvm)
-
-# Compute CPITs for the whole vine
-cPitData = pacotest:::getCpitsFromVine(U, svcmDataFrame)
-
-# Obtain the cPits to be tested
-copulaInd = nrow(svcmDataFrame)
-
-cPit1 = pacotest:::getCpit1(cPitData, svcmDataFrame, copulaInd)
-cPit2 = pacotest:::getCpit2(cPitData, svcmDataFrame, copulaInd)
-
-
-Udata = cbind(cPit1,cPit2)
-W = U[,svcmDataFrame$condset[[copulaInd]]]
-
-set.seed(31312)
+set.seed(51312)
 # Data set 6
-N= 1756
+N= 768
 # Four-dimensional D-vine
 structure = matrix(c(4,0,0,0,
                      1,3,2,0,
@@ -215,23 +175,10 @@ names = c("V1", "V2", "V3","V4")
 
 rvm = VineCopula::RVineMatrix(structure,families,par,par2,names)
 rvm = VineCopula::RVineMatrixNormalize(rvm)
-svcmDataFrame = pacotest:::rVineDataFrameRep(rvm)
 
-U = VineCopula::RVineSim(N,rvm)
+data5 = VineCopula::RVineSim(N,rvm)
 
-# Compute CPITs for the whole vine
-cPitData = pacotest:::getCpitsFromVine(U, svcmDataFrame)
-
-# Obtain the cPits to be tested
-copulaInd = nrow(svcmDataFrame)
-
-cPit1 = pacotest:::getCpit1(cPitData, svcmDataFrame, copulaInd)
-cPit2 = pacotest:::getCpit2(cPitData, svcmDataFrame, copulaInd)
-
-
-Udata = cbind(cPit1,cPit2)
-W = U[,svcmDataFrame$condset[[copulaInd]]]
-
+rvmHatData5 = VineCopula::RVineSeqEst(data5,rvm)
 
 
 pacotestForData1_4 <- function(data, pacotestOptions)
