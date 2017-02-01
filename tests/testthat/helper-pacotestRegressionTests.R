@@ -134,9 +134,16 @@ for (iTest in c(75:78, 80:85))
   indThres = indThres + 1
 }
 
+
+for (indPacotest in 1:8)
+{
+  pacotestOptions[[indPacotest + 95]] = pacotestset(pacotestOptions[[indPacotest+19]], withEstUncert = TRUE, estUncertWithRanks = TRUE)
+}
+
+
 ## setup some seeds
 set.seed(1921)
-seedsPerTest = sample(1:2222, 100)
+seedsPerTest = sample(1:2222, 250)
 
 
 ## load hard-coded results
