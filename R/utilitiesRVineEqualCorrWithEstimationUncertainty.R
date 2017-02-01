@@ -1,21 +1,21 @@
 
 
-covOfCorrelationsWithEstimation = function(data, svcmDataFrame, indList, cPitData, theta, withRanks = FALSE)
+covOfCorrelationsWithEstimation = function(data, svcmDataFrame, indList, cPitData, theta, estUncertWithRanks = FALSE)
 {
   
   gInv = gInvRvine(data, svcmDataFrame, indList, cPitData, theta)
-  omega = omegaRvine(data, svcmDataFrame, indList, cPitData, theta, withRanks)
+  omega = omegaRvine(data, svcmDataFrame, indList, cPitData, theta, estUncertWithRanks)
   
   varMat = gInv %*% omega %*% t(gInv)
   
   return(varMat)
 }
 
-covOfCovariancesWithEstimation = function(data, svcmDataFrame, indList, cPitData, theta, withRanks = FALSE)
+covOfCovariancesWithEstimation = function(data, svcmDataFrame, indList, cPitData, theta, estUncertWithRanks = FALSE)
 {
   
   gInv = gInvRvineCov(data, svcmDataFrame, indList, cPitData, theta)
-  omega = omegaRvineCov(data, svcmDataFrame, indList, cPitData, theta, withRanks)
+  omega = omegaRvineCov(data, svcmDataFrame, indList, cPitData, theta, estUncertWithRanks)
   
   varMat = gInv %*% omega %*% t(gInv)
   
