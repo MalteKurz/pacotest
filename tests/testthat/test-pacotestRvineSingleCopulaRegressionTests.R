@@ -1,83 +1,345 @@
 context("Regression tests for pacotestRvineSingleCopula")
 
-# test_that("pacotestRvineSingleCopula1", {
-#   
-#   properties = c('withEstUncert')
-#   values = c('TRUE')
-#   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
-#   
-#   
-#   maxNTests = length(pacotestOptions)
-#   
-#   resPacotestComputed = matrix(NA, maxNTests, 1)
-#   
-#   for (iTest in thisTestsInd)
-#   {
-#     set.seed(seedsPerTest[iTest])
-#     resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
-#     
-#     expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
-#     
-#   }
-#   
-# })
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula1", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
 
-
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula2", {
   
-set.seed(51312)
-# Data set 6
-N= 768
-# Four-dimensional D-vine
-structure = matrix(c(4,0,0,0,
-                     1,3,2,0,
-                     2,1,2,0,
-                     3,2,1,1),4,4,TRUE)
-
-families = array(3,dim=dim(structure))
-families  = matrix(c(0,0,0,0,
-                     5,0,0,0,
-                     1,1,0,0,
-                     2,2,2,0),4,4,TRUE)
-par2  = matrix(c(0,0,0,0,
-                 0,0,0,0,
-                 0,0,0,0,
-                 2.5,8,6,0),4,4,TRUE)
-par  = matrix(c(0,0,0,0,
-                5,0,0,0,
-                0.4,0.3,0,0,
-                0.5,0.8,0.6,0),4,4,TRUE)
-names = c("V1", "V2", "V3","V4")
-
-rvm = RVineMatrix(structure,families,par,par2,names)
-rvm = RVineMatrixNormalize(rvm)
-
-U = RVineSim(N,rvm)
-
-rvmHat = RVineSeqEst(U,rvm)
-
-maxNTests = length(pacotestOptions)
-
-resPacotestComputed = matrix(NA, maxNTests, 1)
-
-for (iTest in c(71, 75:95))
-{
-  set.seed(seedsPerTest[iTest])
-  resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeECORR', 'all', 'splitTrainEvaluate', 'TRUE')
   
-  expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
-}
-
-for (iTest in 72:74)
-{
-  set.seed(seedsPerTest[iTest])
-  resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5[1:341,], rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+  maxNTests = length(pacotestOptions)
   
-  expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+  resPacotestComputed = matrix(NA, maxNTests, 1)
   
-}
-
-
-
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
 })
+
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula3", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula4", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeEC', 'all', 'splitTrainEvaluate', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula5", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'penalty', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula6", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeECORR', 'all', 'penalty', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula7", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeEC', 'pairwiseMax', 'penalty', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula8", {
+  
+  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
+  values = c('ECORR', 'TreeEC', 'all', 'penalty', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+        testType=ECORR, grouping = SumMedian, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula9", {
+  
+  properties = c('testType', 'grouping', 'withEstUncert')
+  values = c('ECORR', 'SumMedian', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = ProdThirdsII, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula10", {
+  
+  properties = c('testType', 'grouping', 'withEstUncert')
+  values = c('ECORR', 'ProdThirdsII', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECORR, grouping = SumThirdsIII, withEstUncert = TRUE")
+test_that("pacotestRvineSingleCopula11", {
+  
+  properties = c('testType', 'grouping', 'withEstUncert')
+  values = c('ECORR', 'SumThirdsIII', 'TRUE')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+testType=VI")
+test_that("pacotestRvineSingleCopula12", {
+  
+  properties = c('testType')
+  values = c('VI')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+        testType=EC")
+test_that("pacotestRvineSingleCopula13", {
+  
+  properties = c('testType')
+  values = c('EC')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5[1:341,], rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+context("unit tests for pacotest with options:
+testType=ECOV")
+test_that("pacotestRvineSingleCopula14", {
+  
+  properties = c('testType')
+  values = c('ECOV')
+  
+  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
+  
+  
+  maxNTests = length(pacotestOptions)
+  
+  resPacotestComputed = matrix(NA, maxNTests, 1)
+  
+  for (iTest in thisTestsInd)
+  {
+    set.seed(seedsPerTest[iTest])
+    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
+    
+    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
+    
+  }
+  
+})
+
+
+
