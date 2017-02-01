@@ -619,7 +619,7 @@ CheckpacotestOptions = function(pacotestOptions)
       }
     }
     
-    if (exists('estUncertWithRanks', where=pacotestOptions) && pacotestOptions$estUncertWithRanks == TRUE)
+    if (exists('estUncertWithRanks', where=pacotestOptions) && pacotestOptions$estUncertWithRanks == TRUE && pacotestOptions$withEstUncert == FALSE)
     {
       pacotestOptions$withEstUncert = TRUE
       warning('withEstUncert is set to TRUE as estUncertWithRanks is set to TRUE')
