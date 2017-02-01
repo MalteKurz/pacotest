@@ -1,6 +1,6 @@
-context("chi2 test statistic")
+context("chi2 test statistic regression tests")
 
-test_that("unit tests for ERC", {
+test_that("ECORR chi2 test statistic regression tests", {
   
   library("pacotest")
   library("testthat")
