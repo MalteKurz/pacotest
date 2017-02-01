@@ -65,13 +65,14 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
 
 
 // [[Rcpp::export]]
-Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert, double finalComparison, arma::mat & data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep = NA_REAL, double ExpMinSampleSize = NA_REAL, double TrainingDataFraction = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
+Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert, double doubleEstUncertWithRanks, double finalComparison, arma::mat & data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep = NA_REAL, double ExpMinSampleSize = NA_REAL, double TrainingDataFraction = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
   try
   {
     int testTypeNumber = (int) TestTypeNumber;
     int grouping = (int) Grouping;
     int aggPvalsNumbRep = (int) AggPvalsNumbRep;
     int intWithEstUncert = (int) doubleWithEstUncert;
+    int intEstUncertWithRanks = (int) doubleEstUncertWithRanks;
     int gamma0Partition = (int) Gamma0Partition;
     
     
@@ -94,11 +95,11 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       {
         if (testTypeNumber == 1)
         {
-          EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         else
         {
-          EqualCorrTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCorrTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         
       }
@@ -106,11 +107,11 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       {
         if (testTypeNumber == 1)
         {
-          EqualCovTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCovTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         else
         {
-          EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
         }
         
       }
@@ -129,11 +130,11 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       
       if (testTypeNumber == 1)
       {
-        EqualCovTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+        EqualCovTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
       }
       else
       {
-        EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+        EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
       }
       
       out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
@@ -151,7 +152,7 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
 
 
 // [[Rcpp::export]]
-SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma)
+SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma, int intEstUncertWithRanks)
 {
   int nGroups = nObsPerVector.n_elem;
   
@@ -188,7 +189,7 @@ SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame sv
   Rcpp::Environment pacotest = Rcpp::Environment::namespace_env("pacotest");
   Rcpp::Function covOfCorrelationsWithEstimation = pacotest["covOfCorrelationsWithEstimation"];
   
-  SEXP outFromR = covOfCorrelationsWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("indList", indListForR), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta));
+  SEXP outFromR = covOfCorrelationsWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("indList", indListForR), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta), Rcpp::Named("estUncertWithRanks", intEstUncertWithRanks));
   
   sigma = Rcpp::as<arma::mat>(outFromR);
   
@@ -197,7 +198,7 @@ SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame sv
 
 
 // [[Rcpp::export]]
-SEXP covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma)
+SEXP covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma, int intEstUncertWithRanks)
 {
   int nGroups = nObsPerVector.n_elem;
   
@@ -234,7 +235,7 @@ SEXP covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svc
   Rcpp::Environment pacotest = Rcpp::Environment::namespace_env("pacotest");
   Rcpp::Function covOfCovariancesWithEstimation = pacotest["covOfCovariancesWithEstimation"];
   
-  SEXP outFromR = covOfCovariancesWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("indList", indListForR), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta));
+  SEXP outFromR = covOfCovariancesWithEstimation(Rcpp::Named("data", data), Rcpp::Named("svcmDataFrame", svcmDataFrame), Rcpp::Named("indList", indListForR), Rcpp::Named("cPitData", cPitData), Rcpp::Named("theta", theta), Rcpp::Named("estUncertWithRanks", intEstUncertWithRanks));
   
   sigma = Rcpp::as<arma::mat>(outFromR);
   
@@ -277,7 +278,9 @@ Rcpp::List testStatEqualCorrWithEstimationCpp(arma::umat indexVectors, arma::uve
     arma::mat sigma;
     arma::vec theta;
     
-    EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta, data, svcmDataFrame, cPitData);
+    int intEstUncertWithRanks = 0;
+    
+    EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
     
     out = Rcpp::List::create(Rcpp::Named("testStat")=testStat,Rcpp::Named("sigma")=sigma,Rcpp::Named("theta")=theta);
     

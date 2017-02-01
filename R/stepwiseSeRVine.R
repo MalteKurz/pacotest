@@ -1,19 +1,24 @@
 
 
-covOfParameters = function(data, svcmDataFrame, cPitData)
+covOfParameters = function(data, svcmDataFrame, cPitData, withRanks = FALSE)
 {
   
   gInv = getGinvD(data, svcmDataFrame, TRUE)
   omega = getOmegaWithLikesD(data, svcmDataFrame, cPitData, TRUE)
+  if (withRanks)
+  {
+    bSsp = bSspForCovWithRanks(data, svcmDataFrame, cPitData, TRUE)
+    omega = omega + bSsp
+  }
   xx = t(omega)
   omega[upper.tri(omega)] = xx[upper.tri(xx)]
   
   varMat = gInv %*% omega %*% t(gInv)
   
-  return(varMat)
+  return(list(varMat=varMat, gInv=gInv))
 }
 
-stepwiseSeRVine <- function(data, RVM)
+stepwiseSeRVine <- function(data, RVM, withRanks = FALSE)
 {
   
   data <- as.matrix(data)
@@ -44,9 +49,12 @@ stepwiseSeRVine <- function(data, RVM)
   svcmDataFrame = rVineDataFrameRep(RVM)
   
   # Compute CPITs for the whole vine
-  cPitData = getCpitsFromVine(data, svcmDataFrame)
+  cPitData = getCpitsFromVine(data, svcmDataFrame, withRanks)
   
-  covHat = covOfParameters(data, svcmDataFrame, cPitData)
+  xx = covOfParameters(data, svcmDataFrame, cPitData, withRanks)
+  covHat = xx$varMat
+  gInv = xx$gInv
+  g = solve(gInv)
   se = sqrt(diag(covHat)/dim(data)[1])
   
   se1Matrix = matrix(0,d,d)
@@ -59,17 +67,19 @@ stepwiseSeRVine <- function(data, RVM)
   {
     for (jj in 1:(d-tree))
     {
-      se1Matrix[(d-tree+1),(d-tree-jj+1)] = se[I]
-      I = I+1
-      if (svcmDataFrame$nPar[copulaInd]>1){
-        se2Matrix[(d-tree+1),(d-tree-jj+1)] = se[I]
+      if (svcmDataFrame$nPar[copulaInd]>0){
+        se1Matrix[(d-tree+1),(d-tree-jj+1)] = se[I]
         I = I+1
+        if (svcmDataFrame$nPar[copulaInd]>1){
+          se2Matrix[(d-tree+1),(d-tree-jj+1)] = se[I]
+          I = I+1
+        }
       }
       copulaInd = copulaInd +1
     }
   }
   
-  return(list(se1Matrix=se1Matrix,se2Matrix=se2Matrix))
+  return(list(se1Matrix=se1Matrix,se2Matrix=se2Matrix, covHat = covHat, g = g))
   
 }
 

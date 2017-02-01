@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
+pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
   {
   # Display possible values
   Nargs = nargs()
@@ -9,6 +9,7 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
     cat('              withEstUncert: [ logical | 0 | 1 ]\n')
+    cat('         estUncertWithRanks: [ logical | 0 | 1 ]\n')
     cat('            finalComparison: [ pairwiseMax | all ]\n')
     cat('              penaltyParams: [ vector of length two ]\n')
     cat('            gamma0Partition: [ SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles ]\n')
@@ -195,6 +196,18 @@ checkAndAssignOptionsEcorrOrEcov = function(pacotestOptions, argList)
     }
   }
   
+  if (exists('estUncertWithRanks', argList))
+  {
+    if (!is.null(argList$estUncertWithRanks))
+    {
+      pacotestOptions$estUncertWithRanks = CheckLogical(argList$estUncertWithRanks,"estUncertWithRanks")
+    }
+    else
+    {
+      pacotestOptions$estUncertWithRanks = NULL
+    }
+  }
+  
   if (exists('finalComparison', argList))
   {
     if (!is.null(argList$finalComparison))
@@ -319,22 +332,22 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
     {
       if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
       {
-        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
       else
       {
-        pacotestOptions = list(testType = testType, grouping = 'SumMedian', withEstUncert = FALSE, groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', withEstUncert = FALSE, estUncertWithRanks = FALSE, groupedScatterplots = FALSE, decisionTreePlot = FALSE)
       }
     }
     else if (sizeKeepingMethod == 'splitTrainEvaluate')
     {
       if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
       {
-        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
       }
       else
       {
-        pacotestOptions = list(testType = testType, grouping = 'SumMedian', withEstUncert = FALSE, groupedScatterplots = FALSE, decisionTreePlot = FALSE)
+        pacotestOptions = list(testType = testType, grouping = 'SumMedian', withEstUncert = FALSE, estUncertWithRanks = FALSE, groupedScatterplots = FALSE, decisionTreePlot = FALSE)
       }
     }
   }
@@ -584,6 +597,10 @@ CheckpacotestOptions = function(pacotestOptions)
       {
         CheckLogical(pacotestOptions$withEstUncert,"withEstUncert")
       }
+      if (exists('estUncertWithRanks', where=pacotestOptions))
+      {
+        CheckLogical(pacotestOptions$estUncertWithRanks,"estUncertWithRanks")
+      }
       if (exists('finalComparison', where=pacotestOptions))
       {
         CheckFinalComparison(pacotestOptions$finalComparison,"finalComparison")
@@ -600,6 +617,12 @@ CheckpacotestOptions = function(pacotestOptions)
       {
         CheckGamma0Partition(pacotestOptions$gamma0Partition,"gamma0Partition")
       }
+    }
+    
+    if (exists('estUncertWithRanks', where=pacotestOptions) && pacotestOptions$estUncertWithRanks == TRUE && pacotestOptions$withEstUncert == FALSE)
+    {
+      pacotestOptions$withEstUncert = TRUE
+      warning('withEstUncert is set to TRUE as estUncertWithRanks is set to TRUE')
     }
   }
   else if (pacotestOptions$testType=="EC")
