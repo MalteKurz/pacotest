@@ -18,7 +18,7 @@ test_that("ECORR chi2 test statistic regression tests", {
   
   # Four-dimensional Clayton copula (D-vine)
   structure = matrix(c(4,0,0,0,
-                       1,3,2,0,
+                       1,3,0,0,
                        2,1,2,0,
                        3,2,1,1),4,4,TRUE)
   
@@ -95,7 +95,7 @@ test_that("ECORR chi2 test statistic regression tests", {
   N= 1756
   # Four-dimensional D-vine
   structure = matrix(c(4,0,0,0,
-                       1,3,2,0,
+                       1,3,0,0,
                        2,1,2,0,
                        3,2,1,1),4,4,TRUE)
   families  = matrix(c(0,0,0,0,

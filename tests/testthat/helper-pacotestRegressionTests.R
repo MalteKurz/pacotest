@@ -202,7 +202,7 @@ set.seed(51312)
 N= 768
 # Four-dimensional D-vine
 structure = matrix(c(4,0,0,0,
-                     1,3,2,0,
+                     1,3,0,0,
                      2,1,2,0,
                      3,2,1,1),4,4,TRUE)
 
