@@ -5,7 +5,7 @@ sudo: false
 addons:
   apt:
     packages:
-- libgsl0-dev
+      - libgsl0-dev
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes()'
