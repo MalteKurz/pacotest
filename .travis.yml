@@ -2,14 +2,19 @@ language: r
 cache: packages
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - libgsl0-dev
+
 before_install:
 
 after_success:
- - Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov()'
 
 r-packages:
- - covr
+  - covr
 
 r_binary_packages:
- - gsl
+  - gsl
 
