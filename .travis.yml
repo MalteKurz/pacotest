@@ -12,7 +12,6 @@ after_success:
   - Rscript -e 'covr::codecov()'
 
 r-packages:
-  - covr
 
 r_binary_packages:
   - gsl
