@@ -2,7 +2,7 @@
 \alias{pacotestRvineSeq}
 
 \title{
-Sequentially testing the simplifying assumption for R-vine copulas
+Sequentially Testing the Simplifying Assumption for R-Vine Copulas
 }
 
 \description{
@@ -33,10 +33,10 @@ Either 1 or 2. If illustration = 1, the p-value for each test for a (j-1)-th ord
 \value{
 A list consisting of the following elements:
 \item{pacotestResultLists}{
-A matrix in the same structure like the Matrix, family, par, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a list containing the test result from a test for a (j-1)-th order partial copula obtained from a call to \code{\link{pacotest}}. Depending on the choosen test, it could consist of different elements. A documentation of the \code{pacotestResultLists} can be found in the documentation of \code{\link{pacotest}}.
+A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a list containing the test result from a test for a (j-1)-th order partial copula obtained from a call to \code{\link{pacotest}}. Depending on the choosen test, it could consist of different elements. A documentation of the \code{pacotestResultLists} can be found in the documentation of \code{\link{pacotest}}.
 }
 \item{pValues}{
-A matrix in the same structure like the Matrix, family, par, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a p-value corresponding to the test result from a test for a (j-1)-th order partial copula.
+A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a p-value corresponding to the test result from a test for a (j-1)-th order partial copula.
 }
 }
 
@@ -50,10 +50,12 @@ Malte S. Kurz
 
 \references{
 Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
+
+Spanhel, F. and M. S. Kurz (2015). Simplified vine copula models: Approximations based on the simplifying assumption. ArXiv e-prints http://arxiv.org/abs/1510.06971.
 }
 
 \examples{
-# Sample data and R-vine copula selection taken
+# Sample data and R-vine copula selection are taken
 # from the documentation of RVineStructureSelect
 # of the VineCopula package.
 

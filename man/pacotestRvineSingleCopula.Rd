@@ -2,11 +2,13 @@
 \alias{pacotestRvineSingleCopula}
 
 \title{
-Testing for (j-1)-th order partial copulas in R-vine copulas
+Testing for a Single (j-1)-th Order Partial Copula in a R-Vine Copula
 }
 
 \description{
-The function can be used to test a single copula in a R-vine copula to be a (j-1)-th order partial copula. To apply the function one needs to provide the data and a specified/estimated R-vine copula model in form of a \link[VineCopula]{RVineMatrix} from the \link[VineCopula]{VineCopula-package}. Additionally, a pacotest options list, which can be generated with the \code{\link{pacotestset}} function, needs to be provided.
+The function can be used to test a single copula in a R-vine copula to be a (j-1)-th order partial copula.
+To apply the function one needs to provide the data and a specified/estimated R-vine copula model in form of a \link[VineCopula]{RVineMatrix} from the \link[VineCopula]{VineCopula-package}.
+Additionally, a pacotest options list, which can be generated with the \code{\link{pacotestset}} function, needs to be provided.
 }
 
 \usage{
@@ -57,10 +59,12 @@ Malte S. Kurz
 
 \references{
 Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
+
+Spanhel, F. and M. S. Kurz (2015). Simplified vine copula models: Approximations based on the simplifying assumption. ArXiv e-prints http://arxiv.org/abs/1510.06971.
 }
 
 \examples{
-# Sample data and R-vine copula selection taken
+# Sample data and R-vine copula selection are taken
 # from the documentation of RVineStructureSelect
 # of the VineCopula package.
 
@@ -76,7 +80,7 @@ pacotestOptions = pacotestset(testType='ECORR',
                                decisionTreePlot = TRUE)
 
 # Test for a 2-nd order partial copula
-# corresponding to the variables BMW.DE,BMW.DE
+# corresponding to the variables BAYN.DE,BMW.DE
 # and conditioning set ALV.DE,BAS.DE
 tree = 3
 copulaNumber = 1
