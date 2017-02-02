@@ -8,7 +8,7 @@ addons:
       - libgsl0-dev
 
 before_script:
-  - Rscript -e 'Rcpp::compileAttributes()'
+  - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
 after_success:
   - Rscript -e 'covr::codecov()'
