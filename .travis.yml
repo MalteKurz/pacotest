@@ -3,10 +3,10 @@ cache: packages
 sudo: false
 
 before_install:
-Rscript -e 'update.packages(ask = FALSE)'
+ - Rscript -e 'update.packages(ask = FALSE)'
 
 after_success:
-- Rscript -e 'covr::codecov()'
+ - Rscript -e 'covr::codecov()'
 
 r-packages:
  - covr
