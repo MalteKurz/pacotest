@@ -2,8 +2,10 @@ language: r
 cache: packages
 sudo: false
 
-apt_packages:
-  - libgsl0-dev
+addons:
+  apt:
+    packages:
+- libgsl0-dev
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes()'
