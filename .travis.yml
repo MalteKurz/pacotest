@@ -11,7 +11,7 @@ before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - travis_wait 30 Rscript -e 'covr::codecov()'
 
 r-packages:
 
