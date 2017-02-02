@@ -11,3 +11,6 @@ after_success:
 r-packages:
  - covr
 
+r_binary_packages:
+ - gsl
+
