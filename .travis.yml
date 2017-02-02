@@ -1,0 +1,13 @@
+language: r
+cache: packages
+sudo: false
+
+before_install:
+Rscript -e 'update.packages(ask = FALSE)'
+
+after_success:
+- Rscript -e 'covr::codecov()'
+
+r-packages:
+ - covr
+
