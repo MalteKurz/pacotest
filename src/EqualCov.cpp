@@ -157,18 +157,11 @@ void EqualCovTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int
     *TestStat = EqualCovChi2TestStat(Udata, indexVectors, nObsPerVector);
   }
   
-  //      arma::vec bla(4);
-  //      bla(0) = *TestStat;
-  //      bla(1) = testStatWithPenalty;
-  //      bla(2) = n_double*penaltyLevel/(pow(n_double,penaltyPower));
-  
   
   int nGroups = indexVectorsGamma0.n_cols;
   double df = nGroups-1;
   *TestStat = max(*TestStat,testStatWithPenalty) - n_double*penaltyLevel/(pow(n_double,penaltyPower));
   
-  //      bla(3) = *TestStat;
-  //      bla.print("Test statistics plus penalty:");
   
   *pValue = 1-Chi2CDF(*TestStat, df);
 }

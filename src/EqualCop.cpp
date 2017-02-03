@@ -108,16 +108,6 @@ double EqualCopTestStat(double *Xdata, double *Ydata, int n1, int n2)
     return Sn1n2;
 }
 
-// #include <sys/time.h>
-//     typedef unsigned long long timestamp_t;
-// 
-//     static timestamp_t
-//     get_timestamp ()
-//     {
-//       struct timeval now;
-//       gettimeofday (&now, NULL);
-//       return  now.tv_usec + (timestamp_t)now.tv_sec * 1000000;
-//     }
 
 void ranksA(const double *X,int n, double *A1, double *A2, double *AA2)
 {
@@ -472,7 +462,6 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
     double N1 =n1, N2=n2;
     
     
-    //#pragma omp parallel for private(i,j,p,o)
     for (i=0;i<n1;i++)
     {
         for (j=0;j<n2;j++)
@@ -644,10 +633,7 @@ static void IntASquared (double *A1, double *A2, double *A1plush, double *A1minu
     
     double N1 =n1;
     
-    //timestamp_t t0 = get_timestamp();
     GetAAMatrices (A1,A2,A1plush,A1minush,A2plush,A2minush,AA2, &IntASquaredij[0],n1,h);
-    //timestamp_t t1 = get_timestamp();
-    //printf("%2.5f \n",(double) (t1 - t0) / 1000000);
     
     for (k=0;k<N;k++)
     {
@@ -673,10 +659,7 @@ static void IntBSquared (double *B1, double *B2, double *B1plush, double *B1minu
     
     double N2 =n2;
     
-    //timestamp_t t0 = get_timestamp();
     GetAAMatrices (B2,B1,B2plush,B2minush,B1plush,B1minush,BB1, &IntBSquaredij[0],n2,h);
-    //timestamp_t t1 = get_timestamp();
-    //printf("%2.5f \n",(double) (t1 - t0) / 1000000);
     
     for (k=0;k<N;k++)
     {
@@ -705,10 +688,7 @@ static void CalcIntAB (double *A1, double *B1, double *A2, double *B2, double *A
     
     vector<double> IntABij(n1*n2);
     
-    //timestamp_t t0 = get_timestamp();
     GetABMatrices (A1,B1,A2,B2,A1plush,A1minush,B1plush,B1minush,A2plush,A2minush,B2plush,B2minush,AB1,AB2,&IntABij[0],n1,n2,h1,h2);
-    //timestamp_t t1 = get_timestamp();
-    //printf("%2.5f \n",(double) (t1 - t0) / 1000000);
     
     for (k=0;k<N;k++)
     {
@@ -909,28 +889,16 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
     
     // Computing the integrals of C squared D squared and C times D
     
-//#pragma omp parallel sections
-    {
-        {
-        IntASquared (&U1[0],&U2[0],&U1plush[0],&U1minush[0],&U2plush[0],&U2minush[0],&UU2[0],Xi,CC,n1,N,h1);
-        }
-//#pragma omp section
-        {
-            IntBSquared (&V1[0],&V2[0],&V1plush[0],&V1minush[0],&V2plush[0],&V2minush[0],&VV1[0],Eta,DD,n2,N,h2);
-        }
-//#pragma omp section
-        {
-            CalcIntAB (&U1[0],&V1[0],&U2[0],&V2[0],&U1plush[0],&U1minush[0],&V1plush[0],&V1minush[0],&U2plush[0],&U2minush[0],&V2plush[0],&V2minush[0],&UV1[0],&UV2[0],Xi,Eta,CD,n1,n2,N,h1,h2);
-        }
-    }
+    
+    IntASquared (&U1[0],&U2[0],&U1plush[0],&U1minush[0],&U2plush[0],&U2minush[0],&UU2[0],Xi,CC,n1,N,h1);
+    
+    IntBSquared (&V1[0],&V2[0],&V1plush[0],&V1minush[0],&V2plush[0],&V2minush[0],&VV1[0],Eta,DD,n2,N,h2);
+    
+    CalcIntAB (&U1[0],&V1[0],&U2[0],&V2[0],&U1plush[0],&U1minush[0],&V1plush[0],&V1minush[0],&U2plush[0],&U2minush[0],&V2plush[0],&V2minush[0],&UV1[0],&UV2[0],Xi,Eta,CD,n1,n2,N,h1,h2);
+    
     
     return hh*(A/hh1-2.0*B/hh3+C/hh2);
 }
-
-/*void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S, arma::mat &Xdata, arma::mat &Ydata)
-{
-    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, Xdata, Ydata, 50, 0.5);
-}*/
 
 void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
@@ -979,18 +947,4 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     *pValue = accu(S>*TestStat)/((double)N);
     
 }
-
-/*void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, double *TestStat, double *pValue, arma::mat &S)
-{
-    EqualCopTest(Udata, Wdata, N, GroupingMethod, TestStat, pValue, S, 50, 0.5);
-}*/
-
-//void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
-//{
-//    arma::mat Xdata;
-//    arma::mat Ydata;
-//    
-//    EqualCopTest(Udata, Wdata, N, GroupingMethod, finalComparisonMethod, TestStat, pValue, S, Xdata, Ydata, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
-//    
-//}
 
