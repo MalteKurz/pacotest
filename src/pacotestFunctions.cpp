@@ -2,22 +2,22 @@
 
 // [[Rcpp::export]]
 Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
+  
+  // initialize output variable
+  Rcpp::List out;
+  
   try
   {
-    
     int N = (int) NumbBoot;
-    
     
     // Associate outputs
     double testStat;
     double pValue;
     arma::mat S(N,1);
-    Rcpp::List out;
     
     VecIndepTest(Udata, Wdata, N, &testStat, &pValue, S);
     
     out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("S")=S);
-    return out;
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );
@@ -25,17 +25,22 @@ Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
   catch(...) {
     ::Rf_error( "c++ exception" );
   }
+  
+  return out;
+  
 }
 
 
 // [[Rcpp::export]]
 Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double finalComparison, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+  
+  // initialize output variable
+  Rcpp::List out;
+  
   try
   {
-    
     int N = (int) NumbBoot;
     int grouping = (int) Grouping;
-    
     
     // Associate outputs
     double testStat;
@@ -48,12 +53,10 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
     SplitQuantile.zeros();
     SplitThreshold.zeros();
     
-    Rcpp::List out;
     
     EqualCopTest(Udata, Wdata, N, grouping, finalComparison, &testStat, &pValue, S, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
     
     out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("S")=S,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
-    return out;
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );
@@ -61,11 +64,18 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
   catch(...) {
     ::Rf_error( "c++ exception" );
   }
+  
+  return out;
+  
 }
 
 
 // [[Rcpp::export]]
 Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, double Grouping, double doubleWithEstUncert, double doubleEstUncertWithRanks, double finalComparison, arma::mat & data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep = NA_REAL, double ExpMinSampleSize = NA_REAL, double TrainingDataFraction = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
+  
+  // initialize output variable
+  Rcpp::List out;
+  
   try
   {
     int testTypeNumber = (int) TestTypeNumber;
@@ -78,7 +88,6 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
     
     // Associate outputs
     double pValue;
-    Rcpp::List out;
     unsigned int i=0;
     
     if ((!arma::is_finite(AggPvalsNumbRep) && !arma::is_finite(TrainingDataFraction)) || AggPvalsNumbRep == 0)
@@ -139,8 +148,6 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       
       out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
     }
-    
-    return out;
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );
@@ -148,11 +155,14 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
   catch(...) {
     ::Rf_error( "c++ exception" );
   }
+  
+  return out;
+  
 }
 
 
 // [[Rcpp::export]]
-SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma, int intEstUncertWithRanks)
+void covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma, int intEstUncertWithRanks)
 {
   int nGroups = nObsPerVector.n_elem;
   
@@ -193,12 +203,14 @@ SEXP covOfCorrelationsWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame sv
   
   sigma = Rcpp::as<arma::mat>(outFromR);
   
+  return;
+  
 }
 
 
 
 // [[Rcpp::export]]
-SEXP covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma, int intEstUncertWithRanks)
+void covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svcmDataFrame, arma::umat & indexVectors, arma::uvec & nObsPerVector, Rcpp::List cPitData, arma::vec & theta, arma::mat & sigma, int intEstUncertWithRanks)
 {
   int nGroups = nObsPerVector.n_elem;
   
@@ -239,16 +251,21 @@ SEXP covOfCovariancesWithEstimationFromCpp(arma::mat & data, Rcpp::DataFrame svc
   
   sigma = Rcpp::as<arma::mat>(outFromR);
   
+  return;
+  
 }
 
 
 // [[Rcpp::export]]
 Rcpp::List testStatEqualCorrWithoutEstimationCpp(arma::umat indexVectors, arma::uvec nObsPerVector, arma::mat Udata)
 {
+  
+  // initialize output variable
+  Rcpp::List out;
+  
   try
   {
     // Associate outputs
-    Rcpp::List out;
     double testStat;
     arma::mat sigma;
     arma::vec theta;
@@ -256,8 +273,6 @@ Rcpp::List testStatEqualCorrWithoutEstimationCpp(arma::umat indexVectors, arma::
     EqualCorrChi2TestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta);
     
     out = Rcpp::List::create(Rcpp::Named("testStat")=testStat,Rcpp::Named("sigma")=sigma,Rcpp::Named("theta")=theta);
-    
-    return out;
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );
@@ -265,15 +280,21 @@ Rcpp::List testStatEqualCorrWithoutEstimationCpp(arma::umat indexVectors, arma::
   catch(...) {
     ::Rf_error( "c++ exception" );
   }
+  
+  return out;
+  
 }
 
 // [[Rcpp::export]]
 Rcpp::List testStatEqualCorrWithEstimationCpp(arma::umat indexVectors, arma::uvec nObsPerVector, arma::mat Udata, arma::mat data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
+  
+  // initialize output variable
+  Rcpp::List out;
+  
   try
   {
     // Associate outputs
-    Rcpp::List out;
     double testStat;
     arma::mat sigma;
     arma::vec theta;
@@ -283,8 +304,6 @@ Rcpp::List testStatEqualCorrWithEstimationCpp(arma::umat indexVectors, arma::uve
     EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
     
     out = Rcpp::List::create(Rcpp::Named("testStat")=testStat,Rcpp::Named("sigma")=sigma,Rcpp::Named("theta")=theta);
-    
-    return out;
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );
@@ -292,5 +311,8 @@ Rcpp::List testStatEqualCorrWithEstimationCpp(arma::umat indexVectors, arma::uve
   catch(...) {
     ::Rf_error( "c++ exception" );
   }
+  
+  return out;
+  
 }
 
