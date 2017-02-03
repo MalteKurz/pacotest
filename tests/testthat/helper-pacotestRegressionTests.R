@@ -98,17 +98,17 @@ for (indPacotest in 1:35)
 # Define the test types
 pacotestOptions[[71]] = pacotestset(testType='VI')
 
-pacotestOptions[[72]] = pacotestset(testType='EC',grouping = "SumMedian")
+pacotestOptions[[72]] = pacotestset(testType='EC',grouping = "ProdMedian")
 
-pacotestOptions[[73]] = pacotestset(testType='EC',grouping = "ProdThirdsII")
+pacotestOptions[[73]] = pacotestset(testType='EC',grouping = "ProdThirdsIII")
 
-pacotestOptions[[74]] = pacotestset(testType='EC',grouping = "SumThirdsIII")
+pacotestOptions[[74]] = pacotestset(testType='EC',grouping = "SumThirdsII")
 
-pacotestOptions[[75]] = pacotestset(testType='ECOV',grouping = "SumMedian", withEstUncert = FALSE)
+pacotestOptions[[75]] = pacotestset(testType='ECOV',grouping = "ProdQuartiles", withEstUncert = FALSE)
 
-pacotestOptions[[76]] = pacotestset(testType='ECOV',grouping = "ProdThirdsII", withEstUncert = FALSE)
+pacotestOptions[[76]] = pacotestset(testType='ECOV',grouping = "ProdThirdsI", withEstUncert = FALSE)
 
-pacotestOptions[[77]] = pacotestset(testType='ECOV',grouping = "SumThirdsIII", withEstUncert = FALSE)
+pacotestOptions[[77]] = pacotestset(testType='ECOV',grouping = "SumThirdsI", withEstUncert = FALSE)
 
 pacotestOptions[[78]] = pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
