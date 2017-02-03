@@ -1,10 +1,10 @@
 \name{pacotest}
 \alias{pacotest}
 
-\title{Testing for the Partial copula / the Simplifying Assumption for a Single Bivariate Conditional Copula}
+\title{Testing for the Partial copula and the Simplifying Assumption for a Single Bivariate Conditional Copula}
 
 \description{
-The function can be used to test for the partial copula / the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Equal Correlation (ECORR) test and the Vectorial Independence (VI) test are implemeted. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
+The function can be used to test for the partial copula and the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Equal Correlation (ECORR) test and the Vectorial Independence (VI) test are implemeted. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
 
 \details{
 Applying a test with default options (cf. \code{\link{pacotestset}}).
@@ -58,9 +58,9 @@ Malte S. Kurz
 \references{
 Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
 
-Spanhel, F. and M. S. Kurz (2015). Simplified vine copula models: Approximations based on the simplifying assumption. ArXiv e-prints http://arxiv.org/abs/1510.06971.
+Spanhel, F. and M. S. Kurz (2015), "Simplified vine copula models: Approximations based on the simplifying assumption", ArXiv e-prints http://arxiv.org/abs/1510.06971.
 
-Spanhel, F. and M. S. Kurz (2016). The partial copula: Properties and associated dependence measures, Statistics & Probability Letters 119, pp. 76-83.
+Spanhel, F. and M. S. Kurz (2016), "The partial copula: Properties and associated dependence measures", Statistics & Probability Letters 119, pp. 76-83.
 }
 
 \examples{

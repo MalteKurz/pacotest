@@ -1,7 +1,7 @@
 \name{pacotestset}
 \alias{pacotestset}
 
-\title{Create / alter a pacotest options list}
+\title{Create and alter a pacotest options list}
 
 \description{ The function creates or updates a list object, which is required for applying the \code{\link{pacotest}} function.}
 
