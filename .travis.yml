@@ -16,21 +16,13 @@ os:
 
 r:
   - release
-  - oldrelease
   - devel
-
-matrix:
-  exclude:
-    - os: osx
-      r: oldrelease
-    - os: osx
-      r: devel
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
 after_success:
-  - travis_wait 30 Rscript -e 'covr::codecov()'
+  - travis_wait 30 if [[ "$TRAVIS_R_VERSION" != "release" && ("$TRAVIS_OS_NAME" == "linux") ]]; then Rscript -e 'covr::codecov()'; fi
 
 r-packages:
 
