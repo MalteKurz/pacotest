@@ -10,6 +10,22 @@ addons:
     packages:
       - libgsl0-dev
 
+os:
+  - linux
+  - osx
+
+r:
+  - release
+  - oldrelease
+  - devel
+
+matrix:
+  exclude:
+    - os: osx
+      r: oldrelease
+    - os: osx
+      r: devel
+
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
