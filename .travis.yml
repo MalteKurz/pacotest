@@ -2,6 +2,9 @@ language: r
 cache: packages
 sudo: false
 
+env:
+  - NOT_CRAN=true
+
 addons:
   apt:
     packages:
