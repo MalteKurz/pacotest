@@ -3,6 +3,7 @@ context("Regression tests for pacotestRvineSingleCopula")
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula1", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
@@ -27,6 +28,7 @@ test_that("pacotestRvineSingleCopula1", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula2", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeECORR', 'all', 'splitTrainEvaluate', 'TRUE')
@@ -52,6 +54,7 @@ test_that("pacotestRvineSingleCopula2", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula3", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
@@ -76,6 +79,7 @@ test_that("pacotestRvineSingleCopula3", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula4", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeEC', 'all', 'splitTrainEvaluate', 'TRUE')
@@ -100,6 +104,7 @@ test_that("pacotestRvineSingleCopula4", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula5", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
   values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'penalty', 'TRUE', 'FALSE')
@@ -149,6 +154,7 @@ test_that("pacotestRvineSingleCopula6", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula7", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
   values = c('ECORR', 'TreeEC', 'pairwiseMax', 'penalty', 'TRUE', 'FALSE')
@@ -173,6 +179,7 @@ test_that("pacotestRvineSingleCopula7", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula8", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
   values = c('ECORR', 'TreeEC', 'all', 'penalty', 'TRUE', 'FALSE')
@@ -197,6 +204,7 @@ test_that("pacotestRvineSingleCopula8", {
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = SumMedian, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula9", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'withEstUncert')
   values = c('ECORR', 'SumMedian', 'TRUE')
@@ -221,6 +229,7 @@ test_that("pacotestRvineSingleCopula9", {
 context("unit tests for pacotest with options:
 testType=ECORR, grouping = ProdThirdsII, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula10", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'withEstUncert')
   values = c('ECORR', 'ProdThirdsII', 'TRUE')
@@ -245,6 +254,7 @@ test_that("pacotestRvineSingleCopula10", {
 context("unit tests for pacotest with options:
 testType=ECORR, grouping = SumThirdsIII, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula11", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'withEstUncert')
   values = c('ECORR', 'SumThirdsIII', 'TRUE')
@@ -268,7 +278,8 @@ test_that("pacotestRvineSingleCopula11", {
 
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
-test_that("pacotestRvineSingleCopula5", {
+test_that("pacotestRvineSingleCopula12", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
   values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'penalty', 'TRUE', 'TRUE')
@@ -292,7 +303,7 @@ test_that("pacotestRvineSingleCopula5", {
 
 context("unit tests for pacotest with options:
         testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
-test_that("pacotestRvineSingleCopula6", {
+test_that("pacotestRvineSingleCopula13", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
   values = c('ECORR', 'TreeECORR', 'all', 'penalty', 'TRUE', 'TRUE')
@@ -316,7 +327,7 @@ test_that("pacotestRvineSingleCopula6", {
 
 context("unit tests for pacotest with options:
 testType=VI")
-test_that("pacotestRvineSingleCopula12", {
+test_that("pacotestRvineSingleCopula14", {
   
   properties = c('testType')
   values = c('VI')
@@ -341,7 +352,8 @@ test_that("pacotestRvineSingleCopula12", {
 
 context("unit tests for pacotest with options:
         testType=EC")
-test_that("pacotestRvineSingleCopula13", {
+test_that("pacotestRvineSingleCopula15", {
+  testthat::skip_on_cran()
   
   properties = c('testType')
   values = c('EC')
@@ -366,7 +378,8 @@ test_that("pacotestRvineSingleCopula13", {
 
 context("unit tests for pacotest with options:
 testType=ECOV")
-test_that("pacotestRvineSingleCopula14", {
+test_that("pacotestRvineSingleCopula16", {
+  testthat::skip_on_cran()
   
   properties = c('testType')
   values = c('ECOV')

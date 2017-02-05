@@ -3,6 +3,7 @@ context("Regression tests for pacotest")
 context("unit tests for pacotest with options:
 testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
 test_that("ECORR1", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
@@ -16,6 +17,7 @@ test_that("ECORR1", {
 context("unit tests for pacotest with options:
 testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
 test_that("ECORR2", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeECORR', 'all', 'splitTrainEvaluate', 'FALSE')
@@ -30,6 +32,7 @@ test_that("ECORR2", {
 context("unit tests for pacotest with options:
 testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
 test_that("ECORR3", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
@@ -43,6 +46,7 @@ test_that("ECORR3", {
 context("unit tests for pacotest with options:
 testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
 test_that("ECORR4", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
   values = c('ECORR', 'TreeEC', 'all', 'splitTrainEvaluate', 'FALSE')

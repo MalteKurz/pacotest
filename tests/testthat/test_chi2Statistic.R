@@ -1,13 +1,7 @@
 context("chi2 test statistic regression tests")
 
 test_that("ECORR chi2 test statistic regression tests", {
-  
-  library("pacotest")
-  library("testthat")
-  library("VineCopula")
-  library("numDeriv")
-  library("methods")
-  
+  testthat::skip_on_cran()
   
   set.seed(3141)
   
