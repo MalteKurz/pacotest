@@ -1,3 +1,4 @@
+#include <pacotest_header.h>
 
 double NormalCDF(double Z);
 double Chi2CDF(double Z, double df);
