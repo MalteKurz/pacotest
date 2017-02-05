@@ -18,7 +18,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     ylab(dataLabels[2]) + 
     coord_fixed() +
     theme_grey(base_size = 15) + 
-    theme(panel.margin = unit(4, "lines"), legend.position = "none")
+    theme(panel.spacing = unit(4, "lines"), legend.position = "none")
   
   
   xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
@@ -26,7 +26,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   indCentralSplit = xx$indVector
   p2 = xx$p + 
     scale_colour_manual(values = cbbPalette[2:3]) + 
-    theme(panel.margin = unit(30, "lines"), legend.position = "none")
+    theme(panel.spacing = unit(30, "lines"), legend.position = "none")
   
   p2<-ggplotGrob(p2)
   p2[[1]]$axis_l2 = p2[[1]]$axis_l1
@@ -42,7 +42,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     
     p3 = xx$p + 
       scale_colour_manual(values = cbbPalette[4:5]) + 
-      theme(panel.margin = unit(10, "lines"), legend.position = "none")
+      theme(panel.spacing = unit(10, "lines"), legend.position = "none")
     
     p3<-ggplotGrob(p3)
     p3[[1]]$axis_l2 = p3[[1]]$axis_l1
@@ -57,7 +57,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     
     p4 = xx$p + 
       scale_colour_manual(values = cbbPalette[6:7]) + 
-      theme(panel.margin = unit(10, "lines"), legend.position = "none")
+      theme(panel.spacing = unit(10, "lines"), legend.position = "none")
     
     p4<-ggplotGrob(p4)
     p4[[1]]$axis_l2 = p4[[1]]$axis_l1
