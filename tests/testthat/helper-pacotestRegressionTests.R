@@ -151,6 +151,8 @@ hardCodedResults = read.table("hardCodedResEcorr.csv", header = FALSE, sep = ","
 
 hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula.csv", header = FALSE, sep = ",", na.strings=c("NA"))
 
+hardCodedResPacotestRvineSeq = as.matrix(read.table("hardCodedResPacotestRvineSeq.csv", header = FALSE, sep = ",", na.strings=c("NA")))
+colnames(hardCodedResPacotestRvineSeq) <- NULL
 ## Simulate sample data
 
 
