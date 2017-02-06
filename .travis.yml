@@ -3,7 +3,11 @@ cache: packages
 sudo: false
 
 env:
-  - NOT_CRAN=true
+  global:
+    - NOT_CRAN=true
+  matrix:
+    - DO_CODECOV=true
+    - DO_CODECOV=false
 
 addons:
   apt:
@@ -16,10 +20,6 @@ os:
 r:
   - release
   - devel
-
-env:
-  - DO_CODECOV=true
-  - DO_CODECOV=false
 
 matrix:
   exclude:
