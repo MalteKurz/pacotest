@@ -4,26 +4,28 @@ sudo: false
 
 env:
   - NOT_CRAN=true
+  - DO_CODECOV=true
+  - DO_CODECOV=false
 
 addons:
   apt:
     packages:
       - libgsl0-dev
+os:
+  - linux
+  - osx
+
+r:
+  - release
+  - devel
 
 matrix:
-  include:
-  - os: linux
-    r: release
-    env: DO_CODECOV=true
-  - os: linux
-    r: devel
-    env: DO_CODECOV=false
-  - os: osx
-    r: release
-    env: DO_CODECOV=false
-  - os: osx
-    r: release
-    env: DO_CODECOV=false
+  exclude:
+    - os: linux
+      r: release
+      env: DO_CODECOV=false
+    - r: devel
+      env: DO_CODECOV=true
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
