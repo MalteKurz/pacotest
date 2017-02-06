@@ -10,27 +10,24 @@ addons:
     packages:
       - libgsl0-dev
 
-os:
-  - linux
-  - osx
-
-r:
-  - release
-  - devel
-
 matrix:
-  exclude:
-    - os: osx
-      r: devel
+  include:
+  - os: linux
+    r: release
+    env: DO_CODECOV=true
+  - os: linux
+    r: devel
+    env: DO_CODECOV=false
+  - os: osx
+    r: release
+    env: DO_CODECOV=false
+  - os: osx
+    r: release
+    env: DO_CODECOV=false
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
 after_success:
-  - if [[ "$TRAVIS_R_VERSION" == "release" && ("$TRAVIS_OS_NAME" == "linux") ]]; then travis_wait 30 Rscript -e 'covr::codecov()'; fi
-
-r-packages:
-
-r_binary_packages:
-  - gsl
+  - if [[ "$DO_CODECOV" == "true" ]]; then travis_wait 30 Rscript -e 'covr::codecov()'; fi
 
