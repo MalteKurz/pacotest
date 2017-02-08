@@ -34,6 +34,10 @@ matrix:
     - os: osx
       r: devel
 
+branches:
+  only: 
+    - master
+
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
