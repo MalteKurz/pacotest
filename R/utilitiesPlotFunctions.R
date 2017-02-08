@@ -18,17 +18,12 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     xlab(expression(u["4|23"])) + 
     ylab(expression(u["1|23"])) + 
     coord_fixed() +
-<<<<<<< HEAD
-    theme_bw(base_size = 30) + 
-    theme(panel.margin = unit(4, "lines"), legend.position = "none",
+    theme_bw() + 
+    theme(legend.position = "none",
           legend.key.size = unit(1, "cm"),
-          panel.margin = unit(2.5, "lines"),
+          panel.spacing = unit(2.5, "lines"),
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75))
-=======
-    theme_grey(base_size = 15) + 
-    theme(panel.spacing = unit(4, "lines"), legend.position = "none")
->>>>>>> 16022071ac57e608b660c734d4736f3f7ffe924c
   
   
   xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
@@ -136,18 +131,19 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   pBla<-ggplotGrob(pBla)
   lines4 <- pBla$grobs[[4]][["children"]][[3]]
   
-  bla <- gtable_add_grob(p, lines, l=1, t=1, b=1, z=Inf)
-  bla <- gtable_add_grob(bla, lines2, l=2, t=1, b=1, z=Inf)
+  #bla <- gtable_add_grob(p, lines, l=1, t=1, b=1, z=Inf)
+  #bla <- gtable_add_grob(bla, lines2, l=2, t=1, b=1, z=Inf)
   #bla <- gtable_add_grob(p, lines3, l=1, t=1, b=1, r=2, z=Inf)
-  bla <- gtable_add_grob(bla, lines3, l=1, t=2, b=2, z=Inf)
-  bla <- gtable_add_grob(bla, lines4, l=2, t=2, b=2, z=Inf)
+  #bla <- gtable_add_grob(bla, lines3, l=1, t=2, b=2, z=Inf)
+  #bla <- gtable_add_grob(bla, lines4, l=2, t=2, b=2, z=Inf)
   
-  grid.newpage()
-  grid.draw(bla)
+  #grid.newpage()
+  #grid.draw(p)
   
-  dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20)
-  dev.off()
+  #dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20)
+  #dev.off()
   
+  return(p)
   #}
   
 }
@@ -186,9 +182,9 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab("") + 
     ylab("") + 
-    theme_bw(base_size = 30) +
+    theme_bw() +
     theme(legend.key.size = unit(1, "cm"),
-          panel.margin = unit(2.5, "lines"),
+          panel.spacing = unit(2.5, "lines"),
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75))
   
@@ -348,7 +344,7 @@ partitionPlot = function(decisionTree, W)
     theme_bw(base_size = 30) +
     theme(legend.margin = unit(1, "lines"),
         legend.key.size = unit(1, "cm"),
-        panel.margin = unit(2.5, "lines"),
+        panel.spacing = unit(2.5, "lines"),
         panel.grid.major = element_line(colour = "grey85", size = .75),
         panel.grid.minor = element_line(colour = "grey85", size = .75))
   
@@ -364,7 +360,7 @@ partitionPlot = function(decisionTree, W)
     theme_bw(base_size = 30) +
     theme(legend.margin = unit(1, "lines"),
           legend.key.size = unit(1, "cm"),
-          panel.margin = unit(2.5, "lines"),
+          panel.spacing = unit(2.5, "lines"),
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75)) + 
     guides(colour = guide_legend(order = 1))
@@ -421,7 +417,7 @@ partitionPlot = function(decisionTree, W)
       theme_bw(base_size = 30) +
       theme(legend.margin = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
-            panel.margin = unit(2.5, "lines"),
+            panel.spacing = unit(2.5, "lines"),
             panel.grid.major = element_line(colour = "grey85", size = .75),
             panel.grid.minor = element_line(colour = "grey85", size = .75))
     
@@ -437,7 +433,7 @@ partitionPlot = function(decisionTree, W)
       theme_bw(base_size = 30) +
       theme(legend.margin = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
-            panel.margin = unit(2.5, "lines"),
+            panel.spacing = unit(2.5, "lines"),
             panel.grid.major = element_line(colour = "grey85", size = .75),
             panel.grid.minor = element_line(colour = "grey85", size = .75)) +
       guides(colour = guide_legend(order = 1))
