@@ -30,6 +30,9 @@ matrix:
       env: DO_CODECOV=true
     - r: devel
       env: DO_CODECOV=true
+  allow_failures:
+    - os: osx
+      r: devel
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
