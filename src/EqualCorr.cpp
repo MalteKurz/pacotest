@@ -1,6 +1,6 @@
 #include <pacotest_header.h>
 
-void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
   unsigned int n=Udata.n_rows;
@@ -13,7 +13,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
   
   if (withEstUncert)
   {
-    *TestStat = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData);
+    *TestStat = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
   }
   else
   {
@@ -28,7 +28,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
 }
 
 
-void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
     double S;
     int i;
@@ -59,7 +59,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
         
         if (withEstUncert)
         {
-          S = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData);
+          S = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
         }
         else
         {
@@ -81,7 +81,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
     
 }
 
-void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert,int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
   unsigned int n=Udata.n_rows;
@@ -100,7 +100,7 @@ void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, in
   
   if (withEstUncert)
   {
-    testStatWithPenalty = EqualCorrChi2WithEstimationTestStat(Udata, indexVectorsGamma0, nObsPerVectorGamma0, data, svcmDataFrame, cPitData) + n_double*penaltyLevel/(pow(n_double,penaltyPower));
+    testStatWithPenalty = EqualCorrChi2WithEstimationTestStat(Udata, indexVectorsGamma0, nObsPerVectorGamma0, data, svcmDataFrame, cPitData, intEstUncertWithRanks) + n_double*penaltyLevel/(pow(n_double,penaltyPower));
   }
   else
   {
@@ -118,25 +118,18 @@ void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, in
   
   if (withEstUncert)
   {
-    *TestStat = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData);
+    *TestStat = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
   }
   else
   {
     *TestStat = EqualCorrChi2TestStat(Udata, indexVectors, nObsPerVector);
   }
   
-  //      arma::vec bla(4);
-  //      bla(0) = *TestStat;
-  //      bla(1) = testStatWithPenalty;
-  //      bla(2) = n_double*penaltyLevel/(pow(n_double,penaltyPower));
-  
   
   int nGroups = indexVectorsGamma0.n_cols;
   double df = nGroups-1;
   *TestStat = max(*TestStat,testStatWithPenalty) - n_double*penaltyLevel/(pow(n_double,penaltyPower));
   
-  //      bla(3) = *TestStat;
-  //      bla.print("Test statistics plus penalty:");
   
   *pValue = 1-Chi2CDF(*TestStat, df);
   
@@ -297,7 +290,7 @@ void EqualCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arm
 }
 
 
-void EqualCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &Udata, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, int intEstUncertWithRanks)
 {
   double nObs = ind.n_rows;
   int nGroups = ind.n_cols;
@@ -328,24 +321,24 @@ void EqualCorrChi2WithEstimationTestStat(arma::umat &ind, const arma::mat &Udata
   }
   // Maybe (depending on whether the function is callable from outside) add exception for nGroups>4
   
-  EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, testStat, sigma, theta, data, svcmDataFrame, cPitData);
+  EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, testStat, sigma, theta, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
   
 }
 
 
-double EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+double EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, int intEstUncertWithRanks)
 {
   arma::mat sigma;
   arma::vec theta;
   double testStat;
   
-  EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta, data, svcmDataFrame, cPitData);
+  EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, &testStat, sigma, theta, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
   
   return testStat;
 }
 
 
-void EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &indexVectors, arma::uvec &nObsPerVector, double *testStat, arma::mat &sigma, arma::vec &theta, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, int intEstUncertWithRanks)
 {
   int nGroups = nObsPerVector.n_elem;
   
@@ -395,7 +388,7 @@ void EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &ind
     
   }
   
-  covOfCorrelationsWithEstimationFromCpp(data, svcmDataFrame, indexVectors, nObsPerVector, cPitData, theta, sigma);
+  covOfCorrelationsWithEstimationFromCpp(data, svcmDataFrame, indexVectors, nObsPerVector, cPitData, theta, sigma, intEstUncertWithRanks);
   
   int nCol = sigma.n_cols;
   

@@ -52,21 +52,17 @@ void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double 
     for (i=0;i<n;i++)
     {
         V1(i,i) = 1-U(i,0);
-        //*(V1+i*n+i) = 1-U[i];
         if (d1>1)
         {
             for (l=1;l<d1;l++)
             {
                 V1(i,i) *= (1-U(i,l));
-                //*(V1+i*n+i) *= (1-U[l*n+i]);
             }
         }
         for (j=i+1;j<n;j++)
         {
             V1(i,j) = 1-max(U(i,0),U(j,0));
             V1(j,i) = V1(i,j);
-            //*(V1+j*n+i) = 1-max(U[i],U[j]);
-            //*(V1+i*n+j) = *(V1+j*n+i);
         }
         if (d1>1)
         {
@@ -76,8 +72,6 @@ void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double 
                 {
                     V1(i,j) *= (1-max(U(i,l),U(j,l)));
                     V1(j,i) = V1(i,j);
-                    //*(V1+j*n+i) *= (1-max(U[l*n+i],U[l*n+j]));
-                    //*(V1+i*n+j) = *(V1+j*n+i);
                 }
             }
         }
@@ -86,21 +80,17 @@ void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double 
     for (i=0;i<n;i++)
     {
         V2(i,i) = 1-V(i,0);
-        //*(V2+i*n+i) = 1-V[i];
         if (d2>1)
         {
             for (l=1;l<d2;l++)
             {
                 V2(i,i) *= (1-V(i,l));
-                //*(V2+i*n+i) *= (1-V[l*n+i]);
             }
         }
         for (j=i+1;j<n;j++)
         {
             V2(i,j) = 1-max(V(i,0),V(j,0));
             V2(j,i) = V2(i,j);
-            //*(V2+j*n+i) = 1-max(V[i],V[j]);
-            //*(V2+i*n+j) = *(V2+j*n+i);
         }
         if (d2>1)
         {
@@ -110,8 +100,6 @@ void VecIndepTest(const arma::mat &Udata, const arma::mat &Wdata, int N, double 
                 {
                     V2(i,j) *= (1-max(V(i,l),V(j,l)));
                     V2(j,i) = V2(i,j);
-                    //*(V2+j*n+i) *= (1-max(V[l*n+i],V[l*n+j]));
-                    //*(V2+i*n+j) = *(V2+j*n+i);
                 }
             }
         }

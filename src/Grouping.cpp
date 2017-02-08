@@ -412,7 +412,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   Cols(1) =1;
   
   
-  if ((m>1) && (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction)) //If the dimension of the conditioning set is larger than two, a second split is performed
+  if (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction) // Check whether a second split should be done
   {
     unsigned int n1 = J(SplitQuantile(0)+1,0)+1;
     unsigned int n2 = n0 - n1;

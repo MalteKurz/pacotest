@@ -43,8 +43,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     }
     
     out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),
-                      grouping, pacotestOptions$withEstUncert, finalComparison,
-                      data, svcmDataFrame, cPitData,
+                      grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
+                      as.matrix(data), svcmDataFrame, cPitData,
                       aggPvalsNumbRep, expMinSampleSize, trainingDataFraction,
                       penaltyParams[1], penaltyParams[2], gamma0Partition)
     

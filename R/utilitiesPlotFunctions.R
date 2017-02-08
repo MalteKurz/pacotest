@@ -18,12 +18,17 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     xlab(expression(u["4|23"])) + 
     ylab(expression(u["1|23"])) + 
     coord_fixed() +
+<<<<<<< HEAD
     theme_bw(base_size = 30) + 
     theme(panel.margin = unit(4, "lines"), legend.position = "none",
           legend.key.size = unit(1, "cm"),
           panel.margin = unit(2.5, "lines"),
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75))
+=======
+    theme_grey(base_size = 15) + 
+    theme(panel.spacing = unit(4, "lines"), legend.position = "none")
+>>>>>>> 16022071ac57e608b660c734d4736f3f7ffe924c
   
   
   xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
@@ -31,7 +36,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   indCentralSplit = xx$indVector
   p2 = xx$p + 
     scale_colour_manual(values = cbbPalette[2:3]) + 
-    theme(panel.margin = unit(30, "lines"), legend.position = "none")
+    theme(panel.spacing = unit(30, "lines"), legend.position = "none")
   
   p2<-ggplotGrob(p2)
   p2[[1]]$axis_l2 = p2[[1]]$axis_l1
@@ -47,7 +52,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     
     p3 = xx$p + 
       scale_colour_manual(values = cbbPalette[4:5]) + 
-      theme(panel.margin = unit(10, "lines"), legend.position = "none")
+      theme(panel.spacing = unit(10, "lines"), legend.position = "none")
     
     p3<-ggplotGrob(p3)
     p3[[1]]$axis_l2 = p3[[1]]$axis_l1
@@ -62,7 +67,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     
     p4 = xx$p + 
       scale_colour_manual(values = cbbPalette[6:7]) + 
-      theme(panel.margin = unit(10, "lines"), legend.position = "none")
+      theme(panel.spacing = unit(10, "lines"), legend.position = "none")
     
     p4<-ggplotGrob(p4)
     p4[[1]]$axis_l2 = p4[[1]]$axis_l1

@@ -1,7 +1,7 @@
 \name{pacotestset}
 \alias{pacotestset}
 
-\title{Create / alter a pacotest options list}
+\title{Create and alter a pacotest options list}
 
 \description{ The function creates or updates a list object, which is required for applying the \code{\link{pacotest}} function.}
 
@@ -17,7 +17,7 @@ Possible values: \code{ECORR} | \code{VI}
 }
 
 \item{grouping}{
-For \code{TestType = ECORR}:
+For \code{testType = ECORR}:
 
 The grouping method which is used to obtain a partitioning of the support of the conditioning variable W.
 
@@ -25,13 +25,13 @@ Possible values: \code{TreeECORR} | \code{SumMedian} | \code{SumThirdsI} | \code
 }
 
 \item{expMinSampleSize}{
-For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
+For \code{testType = ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
 The minimum number of observations which are allocated to a group in the decision tree learning process. The default value is \code{100}.
 }
 
 \item{aggInfo}{
-For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
+For \code{testType = ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
 The method used for aggregating information in the conditioning set. The information in the conditioning set can be aggregated by either taking the mean of all variables or the pairwise mean. The result is added as an additional variable which can be used by the decision tree to partition the support of the conditioning variable W.
 
@@ -39,13 +39,19 @@ Possible values: \code{none} | \code{meanAll} | \code{meanPairwise}
 }
 
 \item{withEstUncert}{
-For \code{ECORR}:
+For \code{testType = ECORR}:
 
 A logical variable indicating whether the asymptotic-variance covariance matrix of the estimated correlations should be corrected for the estimation uncertainty of the probability integral transforms.
 }
 
+\item{estUncertWithRanks}{
+For \code{testType = ECORR}:
+
+A logical variable indicating whether the asymptotic-variance covariance matrix of the estimated correlations should be corrected for the estimation uncertainty induced by using a semiparametric estimtor for the vine copula, i.e., empirical cdf's for the univariate margins and parametric copula families as building blocks of the R-vine copula.
+}
+
 \item{finalComparison}{
-For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
+For \code{testType = ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
 A variable specifying whether at the end of the decision tree all subsets being part of the partition are compared against each other or whether only the pair with the highest value of the test statistic is used.
 
@@ -53,13 +59,13 @@ Possible values: \code{pairwiseMax} | \code{all}
 }
 
 \item{penaltyParams}{
-For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
+For \code{testType = ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
 A vector of length two, specifying the functional form of the penalty. The penalty is a function of the sample size n and choosen to be lambda(n) = cn^(-beta). The first entry of the vector is specifying the level c of the penalty and needs to be a positive real number. The second entry of the vector is specifying the power beta of the penalty and needs to be choosen from the interval (0,1).
 }
 
 \item{gamma0Partition}{
-For \code{ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
+For \code{testType = ECORR} with \code{grouping = TreeECORR | TreeECOV | TreeEC}:
 
 The gamma0 partition. I.e., the partition which is favoured via the penalty under the H0.
 
@@ -97,19 +103,19 @@ Calling with a string, that specifies the test type, gives back a option list wi
            \preformatted{pacotestOptions = pacotestset('ECORR')}
            \preformatted{pacotestOptions = pacotestset('VI')}
 
-Calling with pairs of parameter names and values creates an pacotestOptions list in which the named parameters have the specified values.
+Calling with pairs of parameter names and values creates an \code{pacotestOptions} list in which the named parameters have the specified values.
            \preformatted{pacotestOptions = pacotestset('Name1',Value1,'Name2',Value2,...)}
 
-Calling with an existing pacotestOptions list checks the list for consistency.
+Calling with an existing \code{pacotestOptions} list checks the list for consistency.
            \preformatted{pacotestset(pacotestOptions)}
 
-Calling with an existing pacotestOptions list and pairs of parameter names and values creates a copy of the existing list, where the named parameters are updated with the provided values.
+Calling with an existing \code{pacotestOptions} list and pairs of parameter names and values creates a copy of the existing list, where the named parameters are updated with the provided values.
            \preformatted{pacotestOptionsNew = pacotestset(pacotestOptions,'Name1',Value1,'Name2',Value2,...)}
 }
 
 
 
-\value{The function returns a \code{pacotestOptions} list which can be used as input argument for the functions \code{\link{pacotest}}, \code{\link{pacotestRvineSeq}} and \code{\link{pacotestRvineSingleCopula}}
+\value{The function returns a \code{pacotestOptions} list which can be used as input argument for the functions \code{\link{pacotest}}, \code{\link{pacotestRvineSeq}} and \code{\link{pacotestRvineSingleCopula}}.
 }
 \author{
 Malte S. Kurz
