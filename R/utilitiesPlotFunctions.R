@@ -24,18 +24,18 @@ GroupedScatterplot = function(Udata, W, decisionTree)
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75))
   
+  lM = matrix(NA, nrow=1, ncol=3)
+  lM[1,2] = 1
+  grobBaseNode <- arrangeGrob(p1, layout_matrix = lM, widths = c(1.5,1,1.5))
   
   xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
   
   indCentralSplit = xx$indVector
   
-  p2<-ggplotGrob(xx$pL)
-  p3<-ggplotGrob(xx$pR)
-  
-  p4 = ggplot()
-  p5 = ggplot()
-  p6 = ggplot()
-  p7 = ggplot()
+  lM = matrix(NA, nrow=1, ncol=5)
+  lM[1,2] = 1
+  lM[1,4] = 2
+  grobFirstTree <- arrangeGrob(xx$pL, xx$pR, layout_matrix = lM, widths = c(0.5,1,1,1,0.5))
   
   if (!is.null(decisionTree$LeftNode))
   {
@@ -43,8 +43,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
                         W[indCentralSplit==1,,drop=FALSE],
                         decisionTree$LeftNode$Variable, decisionTree$LeftNode$Threshold, dataLabels)
     
-    p4<-ggplotGrob(xx$pL)
-    p5<-ggplotGrob(xx$pR)
+    pLL<-xx$pL
+    pLR<-xx$pR
     
   }
   
@@ -54,52 +54,52 @@ GroupedScatterplot = function(Udata, W, decisionTree)
                         W[indCentralSplit==0,,drop=FALSE],
                         decisionTree$RightNode$Variable, decisionTree$RightNode$Threshold, dataLabels)
     
-    p6<-ggplotGrob(xx$pL)
-    p7<-ggplotGrob(xx$pR)
+    pRL<-xx$pL
+    pRR<-xx$pR
     
   }
   
   
   if (is.null(decisionTree$LeftNode) && is.null(decisionTree$RightNode))
   {
-    lM = matrix(NA, nrow=2, ncol=2)
-    lM[1,1:2] = 1
+    lM = matrix(NA, nrow=2, ncol=1)
+    lM[1,1] = 1
     lM[2,1] = 2
-    lM[2,2] = 3
-    grid.arrange(p1, p2, p3, layout_matrix = lM)
+    grid.arrange(grobBaseNode, grobFirstTree, layout_matrix = lM)
   }
   else
   {
-    lM = matrix(NA, nrow=3, ncol=4)
-    lM[1,2:3] = 1
-    lM[2,1:2] = 2
-    lM[2,3:4] = 3
     if (is.null(decisionTree$LeftNode))
     {
-      lM[3,1] = NA
-      lM[3,2] = NA
-      lM[3,3] = 4
-      lM[3,4] = 5
-      grid.arrange(p1, p2, p3, p6, p7, layout_matrix = lM)
+      lM = matrix(NA, nrow=1, ncol=4)
+      lM[1,3] = 1
+      lM[1,4] = 2
+      grobSecondTree <- arrangeGrob(pRL, pRR, layout_matrix = lM, widths = c(1,1,1,1))
     }
     else
     {
       if (is.null(decisionTree$RightNode))
       {
-        lM[3,1] = 4
-        lM[3,2] = 5
-        lM[3,3] = NA
-        lM[3,4] = NA
-        grid.arrange(p1, p2, p3, p4, p5, layout_matrix = lM)
+        lM = matrix(NA, nrow=1, ncol=4)
+        lM[1,1] = 1
+        lM[1,2] = 2
+        grobSecondTree <- arrangeGrob(pLL, pLR, layout_matrix = lM, widths = c(1,1,1,1))
       }
       else
       {
-        lM[3,1] = 4
-        lM[3,2] = 5
-        lM[3,3] = 6
-        lM[3,4] = 7
-        grid.arrange(p1, p2, p3, p4, p5, p6, p7, layout_matrix = lM)
+        lM = matrix(NA, nrow=1, ncol=4)
+        lM[1,1] = 1
+        lM[1,2] = 2
+        lM[1,3] = 3
+        lM[1,4] = 4
+        grobSecondTree <- arrangeGrob(pLL, pLR, pRL, pRR, layout_matrix = lM, widths = c(1,1,1,1))
       }
+      
+      lM = matrix(NA, nrow=3, ncol=1)
+      lM[1,1] = 1
+      lM[2,1] = 2
+      lM[3,1] = 3
+      grid.arrange(grobBaseNode, grobFirstTree, grobSecondTree, layout_matrix = lM)
     }
   }
   
