@@ -2,7 +2,7 @@ importFrom("Rcpp", "evalCpp")
 
 importFrom("numDeriv", "grad", "jacobian")
 
-importFrom("VineCopula", "BiCopPDF", "RVineMatrix", "RVineMatrixNormalize")
+importFrom("VineCopula", "BiCopPDF", "RVineMatrix", "RVineMatrixNormalize", "BiCopHfunc1", "BiCopHfunc2")
 
 importFrom("ggplot2", "ggplot", "aes_string", "geom_point", "rel", "scale_colour_manual",
            "ggtitle", "scale_y_continuous", "scale_x_continuous", "xlab", "ylab",

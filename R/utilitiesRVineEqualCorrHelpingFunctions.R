@@ -21,15 +21,17 @@ getParAsScalars = function(nPar,par)
 
 hfun = function(family,cPit1,cPit2,params)
 {
-  out = .C("Hfunc1",
-           as.integer(family),
-           as.integer(length(cPit1)), 
-           as.double(cPit1), 
-           as.double(cPit2), 
-           as.double(params[1]),
-           as.double(params[2]), 
-           as.double(rep(0, length(cPit1))), 
-           PACKAGE = "VineCopula")[[7]]
+  out = BiCopHfunc1(cPit2, cPit1, family, params[1], params[2])
+  
+  #out = .C("Hfunc1",
+  #         as.integer(family),
+  #         as.integer(length(cPit1)), 
+  #         as.double(cPit1), 
+  #         as.double(cPit2), 
+  #         as.double(params[1]),
+  #         as.double(params[2]), 
+  #         as.double(rep(0, length(cPit1))), 
+  #         PACKAGE = "VineCopula")[[7]]
   
   return(out)
 }
@@ -37,15 +39,17 @@ hfun = function(family,cPit1,cPit2,params)
 
 vfun = function(family,cPit1,cPit2,params)
 {
-  out = .C("Hfunc2",
-           as.integer(family),
-           as.integer(length(cPit1)), 
-           as.double(cPit2), 
-           as.double(cPit1), 
-           as.double(params[1]),
-           as.double(params[2]), 
-           as.double(rep(0, length(cPit1))), 
-           PACKAGE = "VineCopula")[[7]]
+  out = BiCopHfunc2(cPit2, cPit1, family, params[1], params[2])
+  
+  #out = .C("Hfunc2",
+  #         as.integer(family),
+  #         as.integer(length(cPit1)), 
+  #         as.double(cPit2), 
+  #         as.double(cPit1), 
+  #         as.double(params[1]),
+  #         as.double(params[2]), 
+  #         as.double(rep(0, length(cPit1))), 
+  #         PACKAGE = "VineCopula")[[7]]
   
   return(out)
 }
