@@ -1,7 +1,7 @@
 ## Test environments
 
 * local ubuntu 14.04 install: R 3.3.2
-* ubuntu 12.04 (on travis-ci): R-release (R 3.3.2), R-devel (2017-02-13 r72167)
+* ubuntu 12.04 (on travis-ci): R-release (R 3.3.2), R-devel (2017-02-14 r72169)
 * OS X El Capitan 10.11.6 (on travis-ci): R-release (R 3.3.2)
 * Windows Server 2012 R2 x64: R-release (R 3.3.2)
 
