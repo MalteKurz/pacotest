@@ -2,13 +2,13 @@ Package: pacotest
 Type: Package
 Title: Testing for Partial Copulas and the Simplifying Assumption in Vine Copulas
 Version: 0.2
-Date: 2017-02-01
+Date: 2017-02-13
 Authors@R: person("Malte S.", "Kurz", email = "malte.kurz@stat.uni-muenchen.de",
   role = c("aut", "cre"))
 Maintainer: Malte S. Kurz <malte.kurz@stat.uni-muenchen.de>
 Description: The pacotest package provides different functions, which allow to test for partial copulas / the simplifying assumption in vine copulas.
 License: MIT + file LICENSE
-Imports: Rcpp (>= 0.11.4), VineCopula (>= 2.0.5), numDeriv, ggplot2(>= 2.0.0), gridExtra
+Imports: Rcpp (>= 0.11.4), VineCopula (>= 2.0.5), numDeriv, ggplot2(>= 2.0.0), gridExtra, methods
 LinkingTo: Rcpp, RcppArmadillo
 Suggests: testthat, covr
 BugReports: http://github.com/MalteKurz/pacotest/issues
