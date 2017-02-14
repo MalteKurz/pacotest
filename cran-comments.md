@@ -7,7 +7,7 @@
 
 ## R CMD check results
 
-0 ERRORs | 0 WARNING | 4 NOTEs
+0 ERRORs | 0 WARNING | 2 NOTEs
 
 ```
 checking CRAN incoming feasibility ... NOTE
