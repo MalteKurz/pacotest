@@ -8,7 +8,7 @@ This is a resubmission. The following adaptations are in place
 ## Test environments
 
 * local ubuntu 14.04 install: R 3.3.2
-* ubuntu 12.04 (on travis-ci): R-release (R 3.3.2), R-devel (2017-02-15 72177)
+* ubuntu 12.04 (on travis-ci): R-release (R 3.3.2), R-devel (2017-02-15)
 * OS X El Capitan 10.11.6 (on travis-ci): R-release (R 3.3.2)
 * Windows Server 2012 R2 x64: R-release (R 3.3.2)
 
@@ -30,4 +30,23 @@ sub-directories of 1Mb or more:
 libs   6.5Mb
 ```
 -> Due to compiled code in the libs sub-directory.
+
+## R CMD check results (Additional third note with R-devel)
+
+0 ERRORs | 0 WARNING | 3 NOTEs
+
+```
+checking compiled code ... NOTE
+
+File ‘pacotest/libs/pacotest.so’:
+
+  Found no calls to: ‘R_registerRoutines’, ‘R_useDynamicSymbols’
+
+It is good practice to register native routines and to disable symbol
+
+search.
+
+See ‘Writing portable packages’ in the ‘Writing R Extensions’ manual.
+```
+-> Known Rcpp issue (https://github.com/RcppCore/Rcpp/issues/636)
 
