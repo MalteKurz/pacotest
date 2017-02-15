@@ -6,7 +6,7 @@ Date: 2017-02-13
 Authors@R: person("Malte S.", "Kurz", email = "malte.kurz@stat.uni-muenchen.de",
   role = c("aut", "cre"))
 Maintainer: Malte S. Kurz <malte.kurz@stat.uni-muenchen.de>
-Description: The pacotest package provides different functions, which allow to test for partial copulas / the simplifying assumption in vine copulas.
+Description: R routines for two different test types, the Equal Correlation (ECORR) test and the Vectorial Independence (VI) test are provided. The tests can be applied to check whether a conditional copula coincides with its partial copula. Functions to test whether a regular vine copula satisfies the so-called simplifying assumption or to test a single copula within a regular vine copula to be a (j-1)-th order partial copula are available. The ECORR test comes with a decision tree approach to allow testing in high-dimensional settings.
 License: MIT + file LICENSE
 Imports: Rcpp (>= 0.11.4), VineCopula (>= 2.0.5), numDeriv, ggplot2(>= 2.0.0), gridExtra, methods
 LinkingTo: Rcpp, RcppArmadillo
