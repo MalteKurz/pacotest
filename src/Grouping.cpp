@@ -303,7 +303,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   // Initialize some variables needed to transfer the index vectors and (sub)data to the functions computing test statistics
   arma::umat ind(n,2);
   arma::uvec nObsPerGroup(2);
-  ind.fill(arma::datum::nan);
+  ind.fill(UINT_MAX);
   nObsPerGroup.zeros();
   
   // Split the dataset randomly into two pices
@@ -388,7 +388,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       nObsPerGroup(1) = n0-J(i+1,0)-1;
       
       a(j,i) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-      ind.fill(arma::datum::nan);
+      ind.fill(UINT_MAX);
       
     }
   }
@@ -473,7 +473,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           nObsPerGroup(1) = n1-J1(i+1,0)-1;
           
           a1(j,i) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.fill(arma::datum::nan);
+          ind.fill(UINT_MAX);
           
         }
       }
@@ -542,7 +542,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           nObsPerGroup(1) = n2-J2(i+1,0)-1;
           
           a2(j,i) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.fill(arma::datum::nan);
+          ind.fill(UINT_MAX);
           
         }
       }
@@ -574,29 +574,29 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
         nObsPerGroup(0) = R1_1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_1;
         nObsPerGroup(1) = R1_1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_1_2;
         b(0,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-        ind.col(1).fill(arma::datum::nan);
+        ind.col(1).fill(UINT_MAX);
         
         nObsPerGroup(1) = R1_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_1;
         b(1,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-        ind.col(1).fill(arma::datum::nan);
+        ind.col(1).fill(UINT_MAX);
         
         nObsPerGroup(1) = R1_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_2;
         b(2,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-        ind.fill(arma::datum::nan);
+        ind.fill(UINT_MAX);
         
         
         nObsPerGroup(0) = R1_1_2.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_2;
         nObsPerGroup(1) = R1_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_1;
         b(3,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-        ind.col(1).fill(arma::datum::nan);
+        ind.col(1).fill(UINT_MAX);
         
         nObsPerGroup(1) = R1_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_2;
         b(4,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-        ind.col(0).fill(arma::datum::nan);
+        ind.col(0).fill(UINT_MAX);
         
         nObsPerGroup(0) = R1_2_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_2_1;
         b(5,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-        ind.fill(arma::datum::nan);
+        ind.fill(UINT_MAX);
         
         b = abs(b);
         b.max(SplitVariable(3),SplitQuantile(3));
@@ -609,15 +609,15 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           nObsPerGroup(0) = R1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1;
           nObsPerGroup(1) = R1_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_1;
           b(3,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.col(1).fill(arma::datum::nan);
+          ind.col(1).fill(UINT_MAX);
           
           nObsPerGroup(1) = R1_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_2;
           b(4,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.col(0).fill(arma::datum::nan);
+          ind.col(0).fill(UINT_MAX);
           
           nObsPerGroup(0) = R1_2_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_2_1;
           b(5,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.fill(arma::datum::nan);
+          ind.fill(UINT_MAX);
         }
         
         if (R1_2_1.is_empty() && R1_2_2.is_empty())
@@ -625,15 +625,15 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           nObsPerGroup(0) = R1_1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_1;
           nObsPerGroup(1) = R1_1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_1_2;
           b(0,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.col(1).fill(arma::datum::nan);
+          ind.col(1).fill(UINT_MAX);
           
           nObsPerGroup(1) = R1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2;
           b(1,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.col(0).fill(arma::datum::nan);
+          ind.col(0).fill(UINT_MAX);
           
           nObsPerGroup(0) = R1_1_2.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_2;
           b(2,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
-          ind.fill(arma::datum::nan);
+          ind.fill(UINT_MAX);
         }
         
         b = abs(b);
