@@ -458,7 +458,7 @@ helpingfunctionBSspForEqualCorrWithRanks = function(data, cPitData, svcmDataFram
 }
 
 
-bsspEstEqEqualCorr =  function(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta, aInGroup, bInGroup)
+bsspEstEqEqualCorr =  function(data, svcmDataFrame, cPitData, copulaInd, indGroup, theta, aInGroup, bInGroup)
 {
   nObs = nrow(data)
   nObsPerGroup = length(indGroup)
@@ -489,6 +489,76 @@ bsspEstEqEqualCorr =  function(data, cPitData, svcmDataFrame, copulaInd, indGrou
   
   
   return(result)
+}
+
+likeMultCrossTermWithRanks =  function(params1,copulaInd1, data, svcmDataFrame, cPitData, yyEstEqWithCpitsDeriv, yyEstEq, indGroup)
+{
+  nObs = nrow(data)
+  nObsPerGroup = length(indGroup)
+  lambdaInGroup = nObsPerGroup/nObs
+  
+  xx1 = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  xx2 = scoresForBSspWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  
+  xx1 = xx1[indGroup]
+  xx2 = xx2[indGroup]
+  
+  cov1 = mean((xx1-mean(xx1))*(yyEstEqWithCpitsDeriv-mean(yyEstEqWithCpitsDeriv)))
+  cov2 = mean((xx2-mean(xx2))*(yyEstEqWithCpitsDeriv-mean(yyEstEqWithCpitsDeriv)))
+  cov3 = mean((xx1-mean(xx1))*(yyEstEq-mean(yyEstEq)))
+  
+  result = (cov1 + cov2 + cov3)/lambdaInGroup
+  
+  
+  return(result)
+}
+
+
+deriv1LikeMultWithRanks =  function(params1,copulaInd1, data, svcmDataFrame, cPitData, yyEstEqWithCpitsDeriv, yyEstEq, indGroup)
+{
+  result = grad(likeMultCrossTermWithRanks,params1, method='simple',
+                copulaInd1=copulaInd1,
+                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData,
+                yyEstEqWithCpitsDeriv = yyEstEqWithCpitsDeriv, yyEstEq = yyEstEq, indGroup = indGroup)
+  return(result)
+}
+
+
+bsspEstEqEqualCorrCrossTerms = function(data, svcmDataFrame, cPitData, copulaInd, indGroup, theta, aInGroup, bInGroup)
+{
+  
+  d <- ncol(data)
+  nObs = nrow(data)
+  nCopulas = d*(d-1)/2
+  
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  
+  bSsp = matrix(0,nrow=nParameters,ncol=5)
+  
+  yyEstEqWithCpitsDeriv = helpingfunctionBSspForEqualCorrWithRanks(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+  yyEstEq = cbind(aInGroup, bInGroup)
+  
+  for (jCopula in 1:nCopulas)
+  {
+    
+    if (svcmDataFrame$nPar[jCopula])
+    {
+      parVector1 = svcmDataFrame$par[[jCopula]]
+      
+      for (iTheta in 1:5)
+      {
+        bSsp[svcmDataFrame$parInd[[jCopula]],iTheta] =
+          deriv1LikeMultWithRanks(parVector1,jCopula, data, svcmDataFrame, cPitData,
+                                  yyEstEqWithCpitsDeriv[,iTheta], yyEstEq[,iTheta], indGroup)
+        
+      }
+      
+    }
+    
+  }
+  
+  return(bSsp)
+  
 }
 
 
