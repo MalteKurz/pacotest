@@ -335,6 +335,123 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
 
 
 
+computeEstEqWithCpitsDerivs = function(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+{
+  d <- ncol(data)
+  nObs = nrow(data)
+  
+  mu1WithCpitsDerivs = array(0, dim = c(nObs, d))
+  mu2WithCpitsDerivs = array(0, dim = c(nObs, d))
+  sigma1WithCpitsDerivs = array(0, dim = c(nObs, d))
+  sigma2WithCpitsDerivs = array(0, dim = c(nObs, d))
+  rhoWithCpitsDerivs = array(0, dim = c(nObs, d))
+  
+  
+  cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
+  cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  # Obtain the estimated parameters
+  mu1 = theta[1]
+  sigma2_1 = theta[2]
+  mu2 = theta[3]
+  sigma2_2 = theta[4]
+  rho = theta[5]
+  
+  # Obtain the subsample
+  cPit1InGroup = cPit1[indGroup]
+  cPit2InGroup = cPit2[indGroup]
+  
+  condset = svcmDataFrame$condset[[copulaInd]]
+  
+  cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var1[copulaInd])
+  cPit1DerivInGroup = cPit1Deriv[indGroup]
+  
+  mu1WithCpitsDerivs[indGroup, svcmDataFrame$var1[copulaInd]] = -cPit1DerivInGroup
+  sigma1WithCpitsDerivs[indGroup, svcmDataFrame$var1[copulaInd]] = -2*(cPit1InGroup-mu1)*cPit1DerivInGroup
+  rhoWithCpitsDerivs[indGroup, svcmDataFrame$var1[copulaInd]] = -cPit1DerivInGroup * (cPit2InGroup - mu2) / sqrt(sigma2_1*sigma2_2)
+  
+  cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var2[copulaInd])
+  cPit2DerivInGroup = cPit2Deriv[indGroup]
+  
+  mu2WithCpitsDerivs[indGroup, svcmDataFrame$var2[copulaInd]] = -cPit2DerivInGroup
+  sigma2WithCpitsDerivs[indGroup, svcmDataFrame$var2[copulaInd]] = -2*(cPit2InGroup-mu2)*cPit2DerivInGroup
+  rhoWithCpitsDerivs[indGroup, svcmDataFrame$var2[copulaInd]] = -cPit2DerivInGroup * (cPit1InGroup - mu1) / sqrt(sigma2_1*sigma2_2)
+  
+  
+  for (condsetVariable in condset)
+  {
+    cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
+    cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
+    
+    cPit1DerivInGroup = cPit1Deriv[indGroup]
+    cPit2DerivInGroup = cPit2Deriv[indGroup]
+    
+    mu1WithCpitsDerivs[indGroup, condsetVariable] = -cPit1DerivInGroup
+    sigma1WithCpitsDerivs[indGroup, condsetVariable] = -2*(cPit1InGroup-mu1)*cPit1DerivInGroup
+    
+    mu2WithCpitsDerivs[indGroup, condsetVariable] = -cPit2DerivInGroup
+    sigma2WithCpitsDerivs[indGroup, condsetVariable] = -2*(cPit2InGroup-mu2)*cPit2DerivInGroup
+    
+    rhoWithCpitsDerivs[indGroup, condsetVariable] = (-cPit1DerivInGroup * (cPit2InGroup - mu2) - cPit2DerivInGroup * (cPit1InGroup - mu1)) / sqrt(sigma2_1*sigma2_2)
+    
+    
+  }
+  
+  
+  return(list(mu1WithCpitsDerivs = mu1WithCpitsDerivs, sigma1WithCpitsDerivs = sigma1WithCpitsDerivs,
+              mu2WithCpitsDerivs = mu2WithCpitsDerivs, sigma2WithCpitsDerivs = sigma2WithCpitsDerivs,
+              rhoWithCpitsDerivs = rhoWithCpitsDerivs))
+  
+}
+
+helpingfunctionBSspForEqualCorrWithRanks = function(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+{
+  d <- ncol(data)
+  nObs = nrow(data)
+  
+  wMu1WithCpitsDerivs = array(0, dim = c(nObs, d))
+  wMu2WithCpitsDerivs = array(0, dim = c(nObs, d))
+  wSigma1WithCpitsDerivs = array(0, dim = c(nObs, d))
+  wSigma2WithCpitsDerivs = array(0, dim = c(nObs, d))
+  wRhoWithCpitsDerivs = array(0, dim = c(nObs, d))
+  
+  estEqWithCpitsDerivs = computeEstEqWithCpitsDerivs(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+  
+  orderingInds = apply(data,2,order, decreasing=TRUE)
+  
+  for (iVar in 1:d)
+  {
+    xx = estEqWithCpitsDerivs$mu1WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wMu1WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$mu2WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wMu2WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$sigma1WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wSigma1WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$sigma2WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wSigma2WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$rhoWithCpitsDerivs[orderingInds[,iVar], iVar]
+    wRhoWithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+  }
+  
+  
+  sumOfWMu1WithCpitsDerivs = apply(wMu1WithCpitsDerivs,1,sum)
+  sumOfWMu2WithCpitsDerivs = apply(wMu2WithCpitsDerivs,1,sum)
+  sumOfWSigma1WithCpitsDerivs = apply(wSigma1WithCpitsDerivs,1,sum)
+  sumOfWSigma2WithCpitsDerivs = apply(wSigma2WithCpitsDerivs,1,sum)
+  sumOfWRhoWithCpitsDerivs = apply(wRhoWithCpitsDerivs,1,sum)
+  
+  return(list(sumOfWMu1WithCpitsDerivs = sumOfWMu1WithCpitsDerivs, sumOfWMu2WithCpitsDerivs = sumOfWMu2WithCpitsDerivs,
+              sumOfWSigma1WithCpitsDerivs = sumOfWSigma1WithCpitsDerivs, sumOfWSigma2WithCpitsDerivs = sumOfWSigma2WithCpitsDerivs,
+              sumOfWRhoWithCpitsDerivs = sumOfWRhoWithCpitsDerivs))
+  
+  
+}
+
 getOmegaWithLikesE = function(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
 {
   
