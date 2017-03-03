@@ -617,6 +617,63 @@ getOmegaWithLikesE = function(data, svcmDataFrame, indList, cPitData, listOfMult
 }
 
 
+omegaMuSigmaRho = function(data, indList, cPit1, cPit2, theta)
+{
+  nObs = nrow(data)
+  # Obtain the subsamples
+  nGroups = length(indList)
+  
+  omega = matrix(0,nrow = 4*nGroups+nGroups,ncol = 4*nGroups+nGroups)
+  
+  aInGroups = vector("list",nGroups)
+  bInGroups = vector("list",nGroups)
+  
+  for (iGroup in 1:nGroups)
+  {
+    # Obtain the subsample
+    cPit1InGroup = cPit1[indList[[iGroup]]]
+    cPit2InGroup = cPit2[indList[[iGroup]]]
+    
+    # Obtain the estimated parameters
+    mu1 = theta[(1 + 4*(iGroup-1))]
+    var1 = theta[(2 + 4*(iGroup-1))]
+    mu2 = theta[(3 + 4*(iGroup-1))]
+    var2 = theta[(4 + 4*(iGroup-1))]
+    rho = theta[(4*nGroups+iGroup)]
+    
+    nObsPerGroup = length(cPit1InGroup)
+    lambdaInGroup = nObsPerGroup/nObs
+    
+    bInGroups[[iGroup]] = rho - (cPit1InGroup - mu1) * (cPit2InGroup - mu2) / sqrt(var1*var2)
+    
+    aInGroups[[iGroup]] = cbind(mu1-cPit1InGroup,
+                                var1-(cPit1InGroup-mu1)^2,
+                                mu2-cPit2InGroup,
+                                var2-(cPit2InGroup-mu2)^2)
+    
+    thisGroupStartIndMuSigma = 4*(iGroup-1)
+    thisGroupMuSigmaIndexSet = (1 + thisGroupStartIndMuSigma):(4 + thisGroupStartIndMuSigma)
+    thisGroupRhoIndex = 4*nGroups + iGroup
+    
+    omega[thisGroupMuSigmaIndexSet, thisGroupMuSigmaIndexSet] =
+      1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% aInGroups[[iGroup]])/lambdaInGroup
+    
+    omega[thisGroupRhoIndex, thisGroupMuSigmaIndexSet] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% bInGroups[[iGroup]])/lambdaInGroup
+    
+    omega[thisGroupRhoIndex, thisGroupRhoIndex] = mean(bInGroups[[iGroup]]^2)/lambdaInGroup
+    
+  }
+  
+  listOfMultipliers = list(aInGroups=aInGroups,bInGroups=bInGroups)
+  
+  xx = t(omega)
+  omega[upper.tri(omega)] = xx[upper.tri(xx)]
+  
+  return(list(omega =omega, listOfMultipliers = listOfMultipliers))
+  
+}
+
+
 
 omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta, withRanks)
 {
@@ -637,51 +694,12 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta, withRanks)
   nGroups = length(indList)
   
   omega = matrix(0,nrow=nParameters+4*nGroups+nGroups,ncol=nParameters+4*nGroups+nGroups)
-  bb = matrix(0,nGroups,4*nGroups)
-  cc = matrix(0,nGroups,nGroups)
   
-  aInGroups = vector("list",nGroups)
-  bInGroups = vector("list",nGroups)
+  xx = omegaMuSigmaRho(data, indList, cPit1, cPit2, theta)
   
-  for (iGroup in 1:nGroups)
-  {
-    # Obtain the subsample
-    cPit1InGroup = cPit1[indList[[iGroup]]]
-    cPit2InGroup = cPit2[indList[[iGroup]]]
-    dataInGroup = data[indList[[iGroup]],]
-    
-    # Obtain the estimated parameters
-    mu1 = theta[(1 + 4*(iGroup-1))]
-    var1 = theta[(2 + 4*(iGroup-1))]
-    mu2 = theta[(3 + 4*(iGroup-1))]
-    var2 = theta[(4 + 4*(iGroup-1))]
-    
-    nObsPerGroup = length(cPit1InGroup)
-    lambdaInGroup = nObsPerGroup/nObs
-    
-    bInGroups[[iGroup]] = theta[(4*nGroups+iGroup)] - (cPit1InGroup - mu1) * (cPit2InGroup - mu2) / sqrt(var1*var2)
-    
-    aInGroups[[iGroup]] = cbind(mu1-cPit1InGroup,
-                        var1-(cPit1InGroup-mu1)^2,
-                        mu2-cPit2InGroup,
-                        var2-(cPit2InGroup-mu2)^2)
-    
-    omega[(nParameters+1 + 4*(iGroup-1)):(nParameters+4 + 4*(iGroup-1)),
-          (nParameters+1 + 4*(iGroup-1)):(nParameters+4 + 4*(iGroup-1))] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% aInGroups[[iGroup]])/lambdaInGroup
-    
-    bb[iGroup,(1 + 4*(iGroup-1)):(4 + 4*(iGroup-1))] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% bInGroups[[iGroup]])/lambdaInGroup
-    
-    cc[iGroup,iGroup] = mean(bInGroups[[iGroup]]^2)/lambdaInGroup
-    
-  }
+  omega[(nParameters+1):(nParameters+5*nGroups), (nParameters+1):(nParameters+5*nGroups)] = xx$omega
   
-  
-  omega[(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups),(nParameters+1):(nParameters+4*nGroups)] = bb
-  
-  omega[(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups),(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups)] = cc
-  
-
-  listOfMultipliers = list(aInGroups=aInGroups,bInGroups=bInGroups)
+  listOfMultipliers = xx$listOfMultipliers
 
   if (nParameters)
   {
