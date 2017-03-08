@@ -38,10 +38,8 @@ branches:
   only: 
     - master
 
-r_github_packages: kevinushey/sourcetools
-
 before_script:
-  - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR")); sourcetools:::register_routines()'
+  - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
 
 after_success:
   - if [[ "$DO_CODECOV" == "true" ]]; then travis_wait 30 Rscript -e 'covr::codecov()'; fi
