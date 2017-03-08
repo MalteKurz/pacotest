@@ -15,6 +15,7 @@ Applying a test with options specified in \code{pacotestOptions}
            \preformatted{out = pacotest(U,W,pacotestOptions)}
 }
 
+
 \arguments{ 
 \item{U}{
 A (n x 2) matrix of [0,1] data (probability integral transforms), which are the arguments of the  conditional copula of (Y,Z)|W for which the simplifying assumption should be tested. The first column is given by the conditional distribution function of Y|W evaluated at the observed values of Y and W. Analogously, the second column is defined as the conditional distribution function of Z|W evaluated at the observed values of Z and W. If the probability integral transforms are obtained from the partial vine copula (PVC), i.e., partial probability integral transforms (PPITs) are used, the function can be used to test for (j-1)-th order partial copulas. 
