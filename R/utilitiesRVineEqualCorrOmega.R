@@ -335,6 +335,306 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
 
 
 
+computeEstEqWithCpitsDerivs = function(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+{
+  d <- ncol(data)
+  nObs = nrow(data)
+  
+  cPit1 = getCpit1(cPitData, svcmDataFrame, copulaInd)
+  cPit2 = getCpit2(cPitData, svcmDataFrame, copulaInd)
+  
+  # Obtain the subsample
+  cPit1InGroup = cPit1[indGroup]
+  cPit2InGroup = cPit2[indGroup]
+  nObsPerGroup = length(cPit1InGroup)
+  
+  mu1WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  mu2WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  sigma1WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  sigma2WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  rhoWithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  
+  
+  
+  # Obtain the estimated parameters
+  mu1 = theta[1]
+  sigma2_1 = theta[2]
+  mu2 = theta[3]
+  sigma2_2 = theta[4]
+  rho = theta[5]
+  
+  
+  condset = svcmDataFrame$condset[[copulaInd]]
+  
+  cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var1[copulaInd])
+  cPit1DerivInGroup = cPit1Deriv[indGroup]
+  
+  mu1WithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = -cPit1DerivInGroup
+  sigma1WithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = -2*(cPit1InGroup-mu1)*cPit1DerivInGroup
+  rhoWithCpitsDerivs[, svcmDataFrame$var1[copulaInd]] = -cPit1DerivInGroup * (cPit2InGroup - mu2) / sqrt(sigma2_1*sigma2_2)
+  
+  cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, svcmDataFrame$var2[copulaInd])
+  cPit2DerivInGroup = cPit2Deriv[indGroup]
+  
+  mu2WithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = -cPit2DerivInGroup
+  sigma2WithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = -2*(cPit2InGroup-mu2)*cPit2DerivInGroup
+  rhoWithCpitsDerivs[, svcmDataFrame$var2[copulaInd]] = -cPit2DerivInGroup * (cPit1InGroup - mu1) / sqrt(sigma2_1*sigma2_2)
+  
+  
+  for (condsetVariable in condset)
+  {
+    cPit1Deriv = getCpit1Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
+    cPit2Deriv = getCpit2Deriv(cPitData, svcmDataFrame, copulaInd, condsetVariable)
+    
+    cPit1DerivInGroup = cPit1Deriv[indGroup]
+    cPit2DerivInGroup = cPit2Deriv[indGroup]
+    
+    mu1WithCpitsDerivs[, condsetVariable] = -cPit1DerivInGroup
+    sigma1WithCpitsDerivs[, condsetVariable] = -2*(cPit1InGroup-mu1)*cPit1DerivInGroup
+    
+    mu2WithCpitsDerivs[, condsetVariable] = -cPit2DerivInGroup
+    sigma2WithCpitsDerivs[, condsetVariable] = -2*(cPit2InGroup-mu2)*cPit2DerivInGroup
+    
+    rhoWithCpitsDerivs[, condsetVariable] = (-cPit1DerivInGroup * (cPit2InGroup - mu2) - cPit2DerivInGroup * (cPit1InGroup - mu1)) / sqrt(sigma2_1*sigma2_2)
+    
+    
+  }
+  
+  
+  return(list(mu1WithCpitsDerivs = mu1WithCpitsDerivs, sigma1WithCpitsDerivs = sigma1WithCpitsDerivs,
+              mu2WithCpitsDerivs = mu2WithCpitsDerivs, sigma2WithCpitsDerivs = sigma2WithCpitsDerivs,
+              rhoWithCpitsDerivs = rhoWithCpitsDerivs))
+  
+}
+
+helpingfunctionBSspForEqualCorrWithRanks = function(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+{
+  d <- ncol(data)
+  nObs = nrow(data)
+  dataInGroup = data[indGroup,]
+  nObsPerGroup = length(indGroup)
+  
+  wMu1WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  wMu2WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  wSigma1WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  wSigma2WithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  wRhoWithCpitsDerivs = array(0, dim = c(nObsPerGroup, d))
+  
+  result = array(0, dim = c(nObsPerGroup, 5))
+  
+  estEqWithCpitsDerivs = computeEstEqWithCpitsDerivs(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+  
+  orderingInds = apply(dataInGroup,2,order, decreasing=TRUE)
+  
+  for (iVar in 1:d)
+  {
+    xx = estEqWithCpitsDerivs$mu1WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wMu1WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$mu2WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wMu2WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$sigma1WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wSigma1WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$sigma2WithCpitsDerivs[orderingInds[,iVar], iVar]
+    wSigma2WithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+    xx = estEqWithCpitsDerivs$rhoWithCpitsDerivs[orderingInds[,iVar], iVar]
+    wRhoWithCpitsDerivs[orderingInds[,iVar], iVar] = cumsum(xx)/nObs
+    
+  }
+  
+  
+  result[,1] = apply(wMu1WithCpitsDerivs,1,sum)
+  result[,3] = apply(wMu2WithCpitsDerivs,1,sum)
+  result[,2] = apply(wSigma1WithCpitsDerivs,1,sum)
+  result[,4] = apply(wSigma2WithCpitsDerivs,1,sum)
+  result[,5] = apply(wRhoWithCpitsDerivs,1,sum)
+  
+  return(result)
+  
+  
+}
+
+
+bsspEstEqEqualCorrSingleGroup =  function(data, svcmDataFrame, cPitData, copulaInd, indGroup, theta, aInGroup, bInGroup)
+{
+  nObs = nrow(data)
+  nObsPerGroup = length(indGroup)
+  lambdaInGroup = nObsPerGroup/nObs
+  
+  xx = helpingfunctionBSspForEqualCorrWithRanks(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+  yy = cbind(aInGroup, bInGroup)
+  
+  result = matrix(0, 5, 5)
+  
+  for (iEstEq in 1:5)
+  {
+    for (jEstEq in iEstEq:5)
+    {
+      cov1 = mean((xx[,iEstEq]-mean(xx[,iEstEq]))*(xx[,jEstEq]-mean(xx[,jEstEq])))
+      cov2 = mean((yy[,iEstEq]-mean(yy[,iEstEq]))*(xx[,jEstEq]-mean(xx[,jEstEq])))
+      cov3 = mean((xx[,iEstEq]-mean(xx[,iEstEq]))*(yy[,jEstEq]-mean(yy[,jEstEq])))
+      
+      result[jEstEq, iEstEq] = (cov1 + cov2 + cov3)/lambdaInGroup
+      
+    }
+    
+  }
+  
+  
+  xx = t(result)
+  result[upper.tri(result)] = xx[upper.tri(xx)]
+  
+  
+  return(result)
+}
+
+bsspEstEqEqualCorr =  function(data, svcmDataFrame, indList, cPitData, copulaInd, theta, listOfMultipliers)
+{
+  nObs = nrow(data)
+  # Obtain the subsamples
+  nGroups = length(indList)
+  
+  bSsp = matrix(0,nrow = 4*nGroups+nGroups,ncol = 4*nGroups+nGroups)
+  
+  for (iGroup in 1:nGroups)
+  {
+    aInGroup = listOfMultipliers$aInGroups[[iGroup]]
+    bInGroup = listOfMultipliers$bInGroups[[iGroup]]
+    
+    # Obtain the estimated parameters
+    thetaInGroup = c(theta[(1 + 4*(iGroup-1)) : (4 + 4*(iGroup-1))], theta[(4*nGroups+iGroup)])
+    indGroup = indList[[iGroup]]
+    
+    xx = bsspEstEqEqualCorrSingleGroup(data, svcmDataFrame, cPitData, copulaInd, indGroup, thetaInGroup, aInGroup, bInGroup)
+    
+    thisGroupStartIndMuSigma = 4*(iGroup-1)
+    thisGroupMuSigmaIndexSet = (1 + thisGroupStartIndMuSigma):(4 + thisGroupStartIndMuSigma)
+    thisGroupRhoIndex = 4*nGroups + iGroup
+    thisGroupIndexSet = c(thisGroupMuSigmaIndexSet, thisGroupRhoIndex)
+    
+    bSsp[thisGroupIndexSet, thisGroupIndexSet] = xx
+    
+  }
+  
+  xx = t(bSsp)
+  bSsp[upper.tri(bSsp)] = xx[upper.tri(xx)]
+  
+  
+  return(bSsp)
+  
+}
+
+likeMultCrossTermWithRanks =  function(params1,copulaInd1, data, svcmDataFrame, cPitData, yyEstEqWithCpitsDeriv, yyEstEq, indGroup)
+{
+  nObs = nrow(data)
+  nObsPerGroup = length(indGroup)
+  lambdaInGroup = nObsPerGroup/nObs
+  
+  xx1 = helpingfunctionBSspForCovWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  xx2 = scoresForBSspWithRanks(params1, data, svcmDataFrame, cPitData, copulaInd1)
+  
+  xx1 = xx1[indGroup]
+  xx2 = xx2[indGroup]
+  
+  cov1 = mean((xx1-mean(xx1))*(yyEstEqWithCpitsDeriv-mean(yyEstEqWithCpitsDeriv)))
+  cov2 = mean((xx2-mean(xx2))*(yyEstEqWithCpitsDeriv-mean(yyEstEqWithCpitsDeriv)))
+  cov3 = mean((xx1-mean(xx1))*(yyEstEq-mean(yyEstEq)))
+  
+  result = (cov1 + cov2 + cov3)/lambdaInGroup
+  
+  
+  return(result)
+}
+
+
+deriv1LikeMultWithRanks =  function(params1,copulaInd1, data, svcmDataFrame, cPitData, yyEstEqWithCpitsDeriv, yyEstEq, indGroup)
+{
+  result = grad(likeMultCrossTermWithRanks,params1, method='simple',
+                copulaInd1=copulaInd1,
+                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData,
+                yyEstEqWithCpitsDeriv = yyEstEqWithCpitsDeriv, yyEstEq = yyEstEq, indGroup = indGroup)
+  return(result)
+}
+
+
+bsspEstEqEqualCorrCrossTermsSinglegroup = function(data, svcmDataFrame, cPitData, copulaInd, indGroup, theta, aInGroup, bInGroup)
+{
+  
+  d <- ncol(data)
+  nObs = nrow(data)
+  nCopulas = d*(d-1)/2-1
+  
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  
+  bSsp = matrix(0,nrow=nParameters,ncol=5)
+  
+  yyEstEqWithCpitsDeriv = helpingfunctionBSspForEqualCorrWithRanks(data, cPitData, svcmDataFrame, copulaInd, indGroup, theta)
+  yyEstEq = cbind(aInGroup, bInGroup)
+  
+  for (jCopula in 1:nCopulas)
+  {
+    
+    if (svcmDataFrame$nPar[jCopula])
+    {
+      parVector1 = svcmDataFrame$par[[jCopula]]
+      
+      for (iTheta in 1:5)
+      {
+        bSsp[svcmDataFrame$parInd[[jCopula]],iTheta] =
+          deriv1LikeMultWithRanks(parVector1,jCopula, data, svcmDataFrame, cPitData,
+                                  yyEstEqWithCpitsDeriv[,iTheta], yyEstEq[,iTheta], indGroup)
+        
+      }
+      
+    }
+    
+  }
+  
+  return(bSsp)
+  
+}
+
+bsspEstEqEqualCorrCrossTerms =  function(data, svcmDataFrame, indList, cPitData, copulaInd, theta, listOfMultipliers)
+{
+  d <- ncol(data)
+  nObs = nrow(data)
+  nCopulas = d*(d-1)/2-1
+  nParameters = sum(svcmDataFrame$nPar[1:nCopulas])
+  
+  # Obtain the subsamples
+  nGroups = length(indList)
+  
+  bSsp = matrix(0,nrow=4*nGroups+nGroups,ncol=nParameters)
+  
+  for (iGroup in 1:nGroups)
+  {
+    aInGroup = listOfMultipliers$aInGroups[[iGroup]]
+    bInGroup = listOfMultipliers$bInGroups[[iGroup]]
+    
+    # Obtain the estimated parameters
+    thetaInGroup = c(theta[(1 + 4*(iGroup-1)) : (4 + 4*(iGroup-1))], theta[(4*nGroups+iGroup)])
+    indGroup = indList[[iGroup]]
+    
+    xx = bsspEstEqEqualCorrCrossTermsSinglegroup(data, svcmDataFrame, cPitData, copulaInd, indGroup, thetaInGroup, aInGroup, bInGroup)
+    
+    thisGroupStartIndMuSigma = 4*(iGroup-1)
+    thisGroupMuSigmaIndexSet = (1 + thisGroupStartIndMuSigma):(4 + thisGroupStartIndMuSigma)
+    thisGroupRhoIndex = 4*nGroups + iGroup
+    thisGroupIndexSet = c(thisGroupMuSigmaIndexSet, thisGroupRhoIndex)
+    
+    bSsp[thisGroupIndexSet, ] = t(xx)
+    
+  }
+  
+  
+  return(bSsp)
+  
+}
+
+
 getOmegaWithLikesE = function(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
 {
   
@@ -388,6 +688,83 @@ getOmegaWithLikesE = function(data, svcmDataFrame, indList, cPitData, listOfMult
   
 }
 
+omegaMuSigmaRhoInSingleGroup = function(cPit1InGroup, cPit2InGroup, theta, nObs)
+{
+  
+  omega = matrix(0,nrow = 5,ncol = 5)
+  
+  # Obtain the estimated parameters
+  mu1 = theta[1]
+  var1 = theta[2]
+  mu2 = theta[3]
+  var2 = theta[4]
+  rho = theta[5]
+  
+  nObsPerGroup = length(cPit1InGroup)
+  lambdaInGroup = nObsPerGroup/nObs
+  
+  bInGroups = rho - (cPit1InGroup - mu1) * (cPit2InGroup - mu2) / sqrt(var1*var2)
+  
+  aInGroups = cbind(mu1-cPit1InGroup,
+                    var1-(cPit1InGroup-mu1)^2,
+                    mu2-cPit2InGroup,
+                    var2-(cPit2InGroup-mu2)^2)
+  
+  omega[1:4, 1:4] = 1/nObsPerGroup *(t(aInGroups) %*% aInGroups)/lambdaInGroup
+  
+  omega[5, 1:4] = 1/nObsPerGroup *(t(aInGroups) %*% bInGroups)/lambdaInGroup
+  
+  omega[5, 5] = mean(bInGroups^2)/lambdaInGroup
+  
+  return(list(aInGroups = aInGroups, bInGroups = bInGroups, omega = omega))
+  
+}
+
+
+omegaMuSigmaRho = function(data, indList, cPit1, cPit2, theta)
+{
+  nObs = nrow(data)
+  # Obtain the subsamples
+  nGroups = length(indList)
+  
+  omega = matrix(0,nrow = 4*nGroups+nGroups,ncol = 4*nGroups+nGroups)
+  
+  aInGroups = vector("list",nGroups)
+  bInGroups = vector("list",nGroups)
+  
+  for (iGroup in 1:nGroups)
+  {
+    # Obtain the subsample
+    cPit1InGroup = cPit1[indList[[iGroup]]]
+    cPit2InGroup = cPit2[indList[[iGroup]]]
+    
+    # Obtain the estimated parameters
+    thetaInGroup = c(theta[(1 + 4*(iGroup-1)) : (4 + 4*(iGroup-1))], theta[(4*nGroups+iGroup)])
+    
+    xx = omegaMuSigmaRhoInSingleGroup(cPit1InGroup, cPit2InGroup, thetaInGroup, nObs)
+    
+    bInGroups[[iGroup]] = xx$bInGroups
+    
+    aInGroups[[iGroup]] = xx$aInGroups
+    
+    thisGroupStartIndMuSigma = 4*(iGroup-1)
+    thisGroupMuSigmaIndexSet = (1 + thisGroupStartIndMuSigma):(4 + thisGroupStartIndMuSigma)
+    thisGroupRhoIndex = 4*nGroups + iGroup
+    thisGroupIndexSet = c(thisGroupMuSigmaIndexSet, thisGroupRhoIndex)
+    
+    omega[thisGroupIndexSet, thisGroupIndexSet] = xx$omega
+    
+  }
+  
+  listOfMultipliers = list(aInGroups=aInGroups,bInGroups=bInGroups)
+  
+  xx = t(omega)
+  omega[upper.tri(omega)] = xx[upper.tri(xx)]
+  
+  return(list(omega =omega, listOfMultipliers = listOfMultipliers))
+  
+}
+
 
 
 omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta, withRanks)
@@ -409,63 +786,38 @@ omegaRvine = function(data, svcmDataFrame, indList, cPitData, theta, withRanks)
   nGroups = length(indList)
   
   omega = matrix(0,nrow=nParameters+4*nGroups+nGroups,ncol=nParameters+4*nGroups+nGroups)
-  bb = matrix(0,nGroups,4*nGroups)
-  cc = matrix(0,nGroups,nGroups)
   
-  aInGroups = vector("list",nGroups)
-  bInGroups = vector("list",nGroups)
+  xx = omegaMuSigmaRho(data, indList, cPit1, cPit2, theta)
   
-  for (iGroup in 1:nGroups)
+  omegaCorrelations = xx$omega
+  listOfMultipliers = xx$listOfMultipliers
+  
+  if(withRanks)
   {
-    # Obtain the subsample
-    cPit1InGroup = cPit1[indList[[iGroup]]]
-    cPit2InGroup = cPit2[indList[[iGroup]]]
-    dataInGroup = data[indList[[iGroup]],]
-    
-    # Obtain the estimated parameters
-    mu1 = theta[(1 + 4*(iGroup-1))]
-    var1 = theta[(2 + 4*(iGroup-1))]
-    mu2 = theta[(3 + 4*(iGroup-1))]
-    var2 = theta[(4 + 4*(iGroup-1))]
-    
-    nObsPerGroup = length(cPit1InGroup)
-    lambdaInGroup = nObsPerGroup/nObs
-    
-    bInGroups[[iGroup]] = theta[(4*nGroups+iGroup)] - (cPit1InGroup - mu1) * (cPit2InGroup - mu2) / sqrt(var1*var2)
-    
-    aInGroups[[iGroup]] = cbind(mu1-cPit1InGroup,
-                        var1-(cPit1InGroup-mu1)^2,
-                        mu2-cPit2InGroup,
-                        var2-(cPit2InGroup-mu2)^2)
-    
-    omega[(nParameters+1 + 4*(iGroup-1)):(nParameters+4 + 4*(iGroup-1)),
-          (nParameters+1 + 4*(iGroup-1)):(nParameters+4 + 4*(iGroup-1))] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% aInGroups[[iGroup]])/lambdaInGroup
-    
-    bb[iGroup,(1 + 4*(iGroup-1)):(4 + 4*(iGroup-1))] = 1/nObsPerGroup *(t(aInGroups[[iGroup]]) %*% bInGroups[[iGroup]])/lambdaInGroup
-    
-    cc[iGroup,iGroup] = mean(bInGroups[[iGroup]]^2)/lambdaInGroup
-    
+    bSsp = bsspEstEqEqualCorr(data, svcmDataFrame, indList, cPitData, copulaInd, theta, listOfMultipliers)
+    omegaCorrelations = omegaCorrelations + bSsp
   }
   
+  omega[(nParameters+1):(nParameters+5*nGroups), (nParameters+1):(nParameters+5*nGroups)] = omegaCorrelations
   
-  omega[(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups),(nParameters+1):(nParameters+4*nGroups)] = bb
-  
-  omega[(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups),(nParameters+4*nGroups+1):(nParameters+4*nGroups+nGroups)] = cc
-  
-
-  listOfMultipliers = list(aInGroups=aInGroups,bInGroups=bInGroups)
 
   if (nParameters)
   {
     omegaWithLikesD = getOmegaWithLikesD(data, svcmDataFrame, cPitData)
+    omegasWithLikesE = getOmegaWithLikesE(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
+    
     if(withRanks)
     {
       bSsp = bSspForCovWithRanks(data, svcmDataFrame, cPitData)
       omegaWithLikesD = omegaWithLikesD + bSsp
+      
+      bSsp = bsspEstEqEqualCorrCrossTerms(data, svcmDataFrame, indList, cPitData, copulaInd, theta, listOfMultipliers)
+      omegasWithLikesE = omegasWithLikesE + bSsp
     }
-    omega[1:nParameters,1:nParameters] = omegaWithLikesD
     
-    omega[(nParameters+1):(nParameters+4*nGroups+nGroups),1:nParameters] = getOmegaWithLikesE(data, svcmDataFrame, indList, cPitData, listOfMultipliers)
+    omega[1:nParameters,1:nParameters] = omegaWithLikesD
+    omega[(nParameters+1):(nParameters+4*nGroups+nGroups),1:nParameters] = omegasWithLikesE
+    
   }
   
   
