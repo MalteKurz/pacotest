@@ -126,7 +126,11 @@ hfunDerivCpit1 = function(family,cPit1,cPit2,params)
 
 hfunDerivCpit2 = function(family,cPit1,cPit2,params)
 {
-  result = grad(hfunCpit2,cPit2, method='simple', family=family, cPit1=cPit1, params=params)
+  xxSide = vector(length=length(cPit2))
+  xxSide[] = NA
+  xxSide[cPit2>0.99] = -1
+  xxSide[cPit2<0.01] = 1
+  result = grad(hfunCpit2,cPit2, side = xxSide, method='simple', family=family, cPit1=cPit1, params=params)
   
   return(result)
 }
@@ -140,7 +144,11 @@ vfunCpit1 =  function(cPit1, family, cPit2, params)
 
 vfunDerivCpit1 = function(family,cPit1,cPit2,params)
 {
-  result = grad(vfunCpit1,cPit1, method='simple', family=family, cPit2=cPit2, params=params)
+  xxSide = vector(length=length(cPit1))
+  xxSide[] = NA
+  xxSide[cPit1>0.99] = -1
+  xxSide[cPit1<0.01] = 1
+  result = grad(vfunCpit1,cPit1, side = xxSide, method='simple', family=family, cPit2=cPit2, params=params)
   
   return(result)
 }
