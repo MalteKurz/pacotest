@@ -21,15 +21,17 @@ getParAsScalars = function(nPar,par)
 
 hfun = function(family,cPit1,cPit2,params)
 {
-  out = .C("Hfunc1",
-           as.integer(family),
-           as.integer(length(cPit1)), 
-           as.double(cPit1), 
-           as.double(cPit2), 
-           as.double(params[1]),
-           as.double(params[2]), 
-           as.double(rep(0, length(cPit1))), 
-           PACKAGE = "VineCopula")[[7]]
+  out = BiCopHfunc1(cPit2, cPit1, family, params[1], params[2])
+  
+  #out = .C("Hfunc1",
+  #         as.integer(family),
+  #         as.integer(length(cPit1)), 
+  #         as.double(cPit1), 
+  #         as.double(cPit2), 
+  #         as.double(params[1]),
+  #         as.double(params[2]), 
+  #         as.double(rep(0, length(cPit1))), 
+  #         PACKAGE = "VineCopula")[[7]]
   
   return(out)
 }
@@ -37,15 +39,17 @@ hfun = function(family,cPit1,cPit2,params)
 
 vfun = function(family,cPit1,cPit2,params)
 {
-  out = .C("Hfunc2",
-           as.integer(family),
-           as.integer(length(cPit1)), 
-           as.double(cPit2), 
-           as.double(cPit1), 
-           as.double(params[1]),
-           as.double(params[2]), 
-           as.double(rep(0, length(cPit1))), 
-           PACKAGE = "VineCopula")[[7]]
+  out = BiCopHfunc2(cPit2, cPit1, family, params[1], params[2])
+  
+  #out = .C("Hfunc2",
+  #         as.integer(family),
+  #         as.integer(length(cPit1)), 
+  #         as.double(cPit2), 
+  #         as.double(cPit1), 
+  #         as.double(params[1]),
+  #         as.double(params[2]), 
+  #         as.double(rep(0, length(cPit1))), 
+  #         PACKAGE = "VineCopula")[[7]]
   
   return(out)
 }
@@ -122,7 +126,11 @@ hfunDerivCpit1 = function(family,cPit1,cPit2,params)
 
 hfunDerivCpit2 = function(family,cPit1,cPit2,params)
 {
-  result = grad(hfunCpit2,cPit2, method='simple', family=family, cPit1=cPit1, params=params)
+  xxSide = vector(length=length(cPit2))
+  xxSide[] = NA
+  xxSide[cPit2>0.99] = -1
+  xxSide[cPit2<0.01] = 1
+  result = grad(hfunCpit2,cPit2, side = xxSide, method='simple', family=family, cPit1=cPit1, params=params)
   
   return(result)
 }
@@ -136,7 +144,11 @@ vfunCpit1 =  function(cPit1, family, cPit2, params)
 
 vfunDerivCpit1 = function(family,cPit1,cPit2,params)
 {
-  result = grad(vfunCpit1,cPit1, method='simple', family=family, cPit2=cPit2, params=params)
+  xxSide = vector(length=length(cPit1))
+  xxSide[] = NA
+  xxSide[cPit1>0.99] = -1
+  xxSide[cPit1<0.01] = 1
+  result = grad(vfunCpit1,cPit1, side = xxSide, method='simple', family=family, cPit2=cPit2, params=params)
   
   return(result)
 }

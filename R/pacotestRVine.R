@@ -40,7 +40,15 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       svcmDataFrame = rVineDataFrameRep(subRVM$RVM)
       
       # Compute CPITs for the whole vine
-      cPitData = getCpitsFromVine(subRVM$data, svcmDataFrame, withDerivs = TRUE)
+      if (exists('estUncertWithRanks', pacotestOptions))
+      {
+        withDerivs = pacotestOptions$estUncertWithRanks
+      }
+      else
+      {
+        withDerivs = FALSE
+      }
+      cPitData = getCpitsFromVine(subRVM$data, svcmDataFrame, withDerivs)
       
       # Obtain the cPits to be tested
       copulaInd = nrow(svcmDataFrame)
@@ -133,7 +141,15 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   svcmDataFrame = rVineDataFrameRep(subRVM$RVM)
   
   # Compute CPITs for the whole vine
-  cPitData = getCpitsFromVine(subRVM$data, svcmDataFrame, withDerivs = TRUE)
+  if (exists('estUncertWithRanks', pacotestOptions))
+  {
+    withDerivs = pacotestOptions$estUncertWithRanks
+  }
+  else
+  {
+    withDerivs = FALSE
+  }
+  cPitData = getCpitsFromVine(subRVM$data, svcmDataFrame, withDerivs) # derivatives are only needed for asmpt with ranks
   
   # Obtain the cPits to be tested
   copulaInd = nrow(svcmDataFrame)

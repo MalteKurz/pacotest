@@ -51,7 +51,7 @@ Malte S. Kurz
 \references{
 Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
 
-Spanhel, F. and M. S. Kurz (2015). Simplified vine copula models: Approximations based on the simplifying assumption. ArXiv e-prints http://arxiv.org/abs/1510.06971.
+Spanhel, F. and M. S. Kurz (2015). "Simplified vine copula models: Approximations based on the simplifying assumption". ArXiv e-prints http://arxiv.org/abs/1510.06971.
 }
 
 \examples{
@@ -59,16 +59,26 @@ Spanhel, F. and M. S. Kurz (2015). Simplified vine copula models: Approximations
 # from the documentation of RVineStructureSelect
 # of the VineCopula package.
 
+# Obtain sample data
 data(daxreturns, package ="VineCopula")
 dataSet = daxreturns[1:750,1:4]
-RVM = VineCopula::RVineStructureSelect(dataSet, c(1:6), progress = TRUE)
+
+# Specify an R-vine copula model
+# (can be obtained by calling: RVM = VineCopula::RVineStructureSelect(dataSet))
+vineStructure = matrix(c(3,4,1,2,0,2,4,1,0,0,1,4,0,0,0,4),4,4)
+families = matrix(c(0,5,2,2,0,0,2,14,0,0,0,14,0,0,0,0),4,4)
+par = matrix(c(0,0.8230664,0.1933472,0.6275062,
+             0,0,0.2350109,1.6619945,
+             0,0,0,1.599363,
+             0,0,0,0),4,4)
+par2 = matrix(c(0,0,11.757700,4.547847,
+             0,0,17.15717,0,
+             0,0,0,0,0,0,0,0),4,4)
+RVM = VineCopula::RVineMatrix(vineStructure, families, par, par2)
+
 
 # Specify a pacotestOptions list:
-# For illustrating the functioning of the decision tree,
-# grouped scatterplots and a decision tree plot are activated.
-pacotestOptions = pacotestset(testType='ECORR',
-                               groupedScatterplots = TRUE,
-                               decisionTreePlot = TRUE)
+pacotestOptions = pacotestset('ECORR')
 
 # Test for the simplifying assumption.
 pacotestResultList = pacotestRvineSeq(dataSet, RVM,

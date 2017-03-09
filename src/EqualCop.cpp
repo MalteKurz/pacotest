@@ -60,6 +60,8 @@ double EqualCopTestStat(double *Xdata, double *Ydata, int n1, int n2)
 //declare variables
     double Sn1n2=0, A=0, B=0, C=0;
     int i,j;
+    double n1_double = (double) n1;
+    double n2_double = (double) n2;
     
     vector<double> U1(n1);
     vector<double> U2(n1);
@@ -97,10 +99,10 @@ double EqualCopTestStat(double *Xdata, double *Ydata, int n1, int n2)
     }
     
     double h1,h2,h3,h4,h;
-    h3 = n1*n2;
-    h1 = pow(n1,2);
-    h2 = pow(n2,2);
-    h4 = n1 + n2;
+    h3 = n1_double*n2_double;
+    h1 = pow(n1_double,2);
+    h2 = pow(n2_double,2);
+    h4 = n1_double + n2_double;
     h= h3/h4;
     
     Sn1n2 = h*(A/h1-2.0*B/h3+C/h2);
@@ -458,8 +460,9 @@ static void GetAAMatrices (double *A1, double *A2, double *A1plush, double *A1mi
 static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, double *A1plush, double *A1minush, double *B1plush, double *B1minush, double *A2plush, double *A2minush, double *B2plush, double *B2minush, double *AB1, double *AB2, double *IntABij, int n1, int n2, double h1, double h2)
 {
     int i,j,o,p;
-    
-    double N1 =n1, N2=n2;
+  
+    double n1_double = (double) n1;
+    double n2_double = (double) n2;
     
     
     for (i=0;i<n1;i++)
@@ -472,19 +475,19 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
             {
                 if (B1minush[p]>AB1[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (B1plush[p]-B1minush[p])*(1-AB2[p*n1+i])/(N2*2*h2);
+                    IntABij[j*n1+i] -= (B1plush[p]-B1minush[p])*(1-AB2[p*n1+i])/(n2_double*2*h2);
                 }
                 else if (B1plush[p]>AB1[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (B1plush[p]-AB1[j*n1+i])*(1-AB2[p*n1+i])/(N2*2*h2);
+                    IntABij[j*n1+i] -= (B1plush[p]-AB1[j*n1+i])*(1-AB2[p*n1+i])/(n2_double*2*h2);
                 }
                 if (B2minush[p]>AB2[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (B2plush[p]-B2minush[p])*(1-AB1[p*n1+i])/(N2*2*h2);
+                    IntABij[j*n1+i] -= (B2plush[p]-B2minush[p])*(1-AB1[p*n1+i])/(n2_double*2*h2);
                 }
                 else if (B2plush[p]>AB2[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (B2plush[p]-AB2[j*n1+i])*(1-AB1[p*n1+i])/(N2*2*h2);
+                    IntABij[j*n1+i] -= (B2plush[p]-AB2[j*n1+i])*(1-AB1[p*n1+i])/(n2_double*2*h2);
                 }
             }
             
@@ -492,19 +495,19 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
             {
                 if (A1minush[o]>AB1[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (A1plush[o]-A1minush[o])*(1-AB2[j*n1+o])/(N1*2*h1);
+                    IntABij[j*n1+i] -= (A1plush[o]-A1minush[o])*(1-AB2[j*n1+o])/(n1_double*2*h1);
                 }
                 else if (A1plush[o]>AB1[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (A1plush[o]-AB1[j*n1+i])*(1-AB2[j*n1+o])/(N1*2*h1);
+                    IntABij[j*n1+i] -= (A1plush[o]-AB1[j*n1+i])*(1-AB2[j*n1+o])/(n1_double*2*h1);
                 }
                 if (A2minush[o]>AB2[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (A2plush[o]-A2minush[o])*(1-AB1[j*n1+o])/(N1*2*h1);
+                    IntABij[j*n1+i] -= (A2plush[o]-A2minush[o])*(1-AB1[j*n1+o])/(n1_double*2*h1);
                 }
                 else if (A2plush[o]>AB2[j*n1+i])
                 {
-                    IntABij[j*n1+i] -= (A2plush[o]-AB2[j*n1+i])*(1-AB1[j*n1+o])/(N1*2*h1);
+                    IntABij[j*n1+i] -= (A2plush[o]-AB2[j*n1+i])*(1-AB1[j*n1+o])/(n1_double*2*h1);
                 }
                 
                 for (p=0;p<n2;p++)
@@ -513,22 +516,22 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
                     {
                         if (B2minush[p]>AB2[j*n1+o])
                         {
-                            IntABij[j*n1+i] += (A1plush[o]-A1minush[o])*(B2plush[p]-B2minush[p])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (A1plush[o]-A1minush[o])*(B2plush[p]-B2minush[p])/(n1_double*n2_double*4*h1*h2);
                         }
                         else if (B2plush[p]>AB2[j*n1+o])
                         {
-                            IntABij[j*n1+i] += (A1plush[o]-A1minush[o])*(B2plush[p]-AB2[j*n1+o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (A1plush[o]-A1minush[o])*(B2plush[p]-AB2[j*n1+o])/(n1_double*n2_double*4*h1*h2);
                         }
                     }
                     else if (A1plush[o]>AB1[p*n1+i])
                     {
                         if (B2minush[p]>AB2[j*n1+o])
                         {
-                            IntABij[j*n1+i] += (A1plush[o]-AB1[p*n1+i])*(B2plush[p]-B2minush[p])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (A1plush[o]-AB1[p*n1+i])*(B2plush[p]-B2minush[p])/(n1_double*n2_double*4*h1*h2);
                         }
                         else if (B2plush[p]>AB2[j*n1+o])
                         {
-                            IntABij[j*n1+i] += (A1plush[o]-AB1[p*n1+i])*(B2plush[p]-AB2[j*n1+o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (A1plush[o]-AB1[p*n1+i])*(B2plush[p]-AB2[j*n1+o])/(n1_double*n2_double*4*h1*h2);
                         }
                     }
                     
@@ -536,22 +539,22 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
                     {
                         if (A2minush[o]>AB2[p*n1+i])
                         {
-                            IntABij[j*n1+i] += (B1plush[p]-B1minush[p])*(A2plush[o]-A2minush[o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (B1plush[p]-B1minush[p])*(A2plush[o]-A2minush[o])/(n1_double*n2_double*4*h1*h2);
                         }
                         else if (A2plush[o]>AB2[p*n1+i])
                         {
-                            IntABij[j*n1+i] += (B1plush[p]-B1minush[p])*(A2plush[o]-AB2[p*n1+i])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (B1plush[p]-B1minush[p])*(A2plush[o]-AB2[p*n1+i])/(n1_double*n2_double*4*h1*h2);
                         }
                     }
                     else if (B1plush[p]>AB1[j*n1+o])
                     {
                         if (A2minush[o]>AB2[p*n1+i])
                         {
-                            IntABij[j*n1+i] += (B1plush[p]-AB1[j*n1+o])*(A2plush[o]-A2minush[o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (B1plush[p]-AB1[j*n1+o])*(A2plush[o]-A2minush[o])/(n1_double*n2_double*4*h1*h2);
                         }
                         else if (A2plush[o]>AB2[p*n1+i])
                         {
-                            IntABij[j*n1+i] += (B1plush[p]-AB1[j*n1+o])*(A2plush[o]-AB2[p*n1+i])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (B1plush[p]-AB1[j*n1+o])*(A2plush[o]-AB2[p*n1+i])/(n1_double*n2_double*4*h1*h2);
                         }
                     }
                     
@@ -561,14 +564,14 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
                         {
                             if (B1plush[p]>A1minush[o])
                             {
-                                IntABij[j*n1+i] += (B1plush[p] - A1minush[o])*(1-AB2[n1*p+o])/(N1*N2*4*h1*h2);
+                                IntABij[j*n1+i] += (B1plush[p] - A1minush[o])*(1-AB2[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                             }
                         }
                         else
                         {
                             if (A1plush[o]>B1minush[p])
                             {
-                                IntABij[j*n1+i] += (A1plush[o] - B1minush[p])*(1-AB2[n1*p+o])/(N1*N2*4*h1*h2);
+                                IntABij[j*n1+i] += (A1plush[o] - B1minush[p])*(1-AB2[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                             }
                         }
                     }
@@ -576,11 +579,11 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
                     {
                         if (A1[o]>B1[p])
                         {
-                            IntABij[j*n1+i] += (B1plush[p] - AB1[n1*j+i])*(1-AB2[n1*p+o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (B1plush[p] - AB1[n1*j+i])*(1-AB2[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                         }
                         else
                         {
-                            IntABij[j*n1+i] += (A1plush[o] - AB1[n1*j+i])*(1-AB2[n1*p+o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (A1plush[o] - AB1[n1*j+i])*(1-AB2[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                         }
                     }
                     
@@ -590,14 +593,14 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
                         {
                             if (B2plush[p]>A2minush[o])
                             {
-                                IntABij[j*n1+i] += (B2plush[p] - A2minush[o])*(1-AB1[n1*p+o])/(N1*N2*4*h1*h2);
+                                IntABij[j*n1+i] += (B2plush[p] - A2minush[o])*(1-AB1[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                             }
                         }
                         else
                         {
                             if (A2plush[o]>B2minush[p])
                             {
-                                IntABij[j*n1+i] += (A2plush[o] - B2minush[p])*(1-AB1[n1*p+o])/(N1*N2*4*h1*h2);
+                                IntABij[j*n1+i] += (A2plush[o] - B2minush[p])*(1-AB1[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                             }
                         }
                     }
@@ -605,11 +608,11 @@ static void GetABMatrices (double *A1,  double *B1, double *A2,  double *B2, dou
                     {
                         if (A2[o]>B2[p])
                         {
-                            IntABij[j*n1+i] += (B2plush[p] - AB2[n1*j+i])*(1-AB1[n1*p+o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (B2plush[p] - AB2[n1*j+i])*(1-AB1[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                         }
                         else
                         {
-                            IntABij[j*n1+i] += (A2plush[o] - AB2[n1*j+i])*(1-AB1[n1*p+o])/(N1*N2*4*h1*h2);
+                            IntABij[j*n1+i] += (A2plush[o] - AB2[n1*j+i])*(1-AB1[n1*p+o])/(n1_double*n2_double*4*h1*h2);
                         }
                     }
                 }
@@ -631,7 +634,7 @@ static void IntASquared (double *A1, double *A2, double *A1plush, double *A1minu
     
     vector<double> IntASquaredij(n1*n1);
     
-    double N1 =n1;
+    double n1_double =n1;
     
     GetAAMatrices (A1,A2,A1plush,A1minush,A2plush,A2minush,AA2, &IntASquaredij[0],n1,h);
     
@@ -644,7 +647,7 @@ static void IntASquared (double *A1, double *A2, double *A1plush, double *A1minu
                 IntA[k] += X[i*N+k]*X[j*N+k]*IntASquaredij[j*n1+i];
             }
         }
-        IntA[k] /= N1;
+        IntA[k] /= n1_double;
     }
     
     return;
@@ -657,7 +660,7 @@ static void IntBSquared (double *B1, double *B2, double *B1plush, double *B1minu
     
     vector<double> IntBSquaredij(n2*n2);
     
-    double N2 =n2;
+    double n2_double = (double) n2;
     
     GetAAMatrices (B2,B1,B2plush,B2minush,B1plush,B1minush,BB1, &IntBSquaredij[0],n2,h);
     
@@ -670,7 +673,7 @@ static void IntBSquared (double *B1, double *B2, double *B1plush, double *B1minu
                 IntB[k] += X[i*N+k]*X[j*N+k]*IntBSquaredij[j*n2+i];
             }
         }
-        IntB[k] /= N2;
+        IntB[k] /= n2_double;
     }
     
     return;
@@ -710,6 +713,9 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
 //declare variables
     double A=0, B=0, C=0;
     int i,j;
+    
+    double n1_double = (double) n1;
+    double n2_double = (double) n2;
     
     vector<double> U1;
     vector<double> U2;
@@ -796,10 +802,10 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
     }
     
     double hh1,hh2,hh3,hh4,hh;
-    hh3 = n1*n2;
-    hh1 = pow(n1,2);
-    hh2 = pow(n2,2);
-    hh4 = n1 + n2;
+    hh3 = n1_double*n2_double;
+    hh1 = pow(n1_double,2);
+    hh2 = pow(n2_double,2);
+    hh4 = n1_double + n2_double;
     hh= hh3/hh4;
     
     vector<double> U1plush(n1);
@@ -918,8 +924,11 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     n1 = (int) Xdata.n_rows;
     n2 = (int) Ydata.n_rows;
     
-    double h1 = 1/sqrt((double)n1);
-    double h2 = 1/sqrt((double)n2);
+    double n1_double = (double) n1;
+    double n2_double = (double) n2;
+    
+    double h1 = 1/sqrt(n1_double);
+    double h2 = 1/sqrt(n2_double);
     
     arma::mat Xi(N,n1);
     arma::mat Eta(N,n2);
@@ -938,10 +947,9 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     *TestStat = TwoCopTest(Xdata.begin(),Ydata.begin(),Xi.begin(),Eta.begin(),n1,n2,h1,h2,N,&CC[0],&DD[0],&CD[0]);
     
     // Computing the multiplier bootstrapped values of the test statistic
-    double N1 =n1, N2 =n2;
     for (k=0;k<N;k++)
     {
-        S[k] = (N2*CC[k]+N1*DD[k]-2*CD[k])/(N1+N2);
+        S[k] = (n2_double*CC[k]+n1_double*DD[k]-2*CD[k])/(n1_double+n2_double);
     }
     
     *pValue = accu(S>*TestStat)/((double)N);

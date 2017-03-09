@@ -2,17 +2,19 @@ importFrom("Rcpp", "evalCpp")
 
 importFrom("numDeriv", "grad", "jacobian")
 
-importFrom("VineCopula", "BiCopPDF", "RVineMatrix", "RVineMatrixNormalize")
+importFrom("VineCopula", "BiCopPDF", "RVineMatrix", "RVineMatrixNormalize", "BiCopHfunc1", "BiCopHfunc2")
 
-importFrom("ggplot2", "ggplot", "aes_string", "geom_point",
-           "scale_colour_manual", "scale_y_continuous", "scale_x_continuous",
-           "xlab", "ylab", "xlim", "ylim", "coord_fixed", "coord_equal",
-           "theme_grey", "theme", "unit", "element_blank",
-           "facet_wrap", "ggplotGrob", "annotate")
+importFrom("ggplot2", "ggplot", "aes_string", "geom_point", "rel", "scale_colour_manual",
+           "ggtitle", "scale_y_continuous", "scale_x_continuous", "xlab", "ylab",
+           "coord_fixed", "theme_bw", "element_line", "annotate",
+           "xlim", "ylim", "theme", "element_blank", "guides", "coord_equal",
+           "element_text")
 
-importFrom("gridExtra", "grid.arrange")
+importFrom("gridExtra", "grid.arrange", "arrangeGrob")
 
 importFrom("stats", "pchisq", "quantile")
+
+importFrom("methods", "is")
 
 importFrom("utils", "combn", "getFromNamespace")
 
