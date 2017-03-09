@@ -5,14 +5,9 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
   names(Udata) = c("V1", "V2")
   
-<<<<<<< HEAD
-  cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
-  cbbPalette = c("black", "black", "black", "black", "black","black","black")
-  
-=======
+
   rho = momentBasedCorr(Udata)
   titleStr = paste("\nrho = ", format(rho,dig=4))
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
   
   p1 = ggplot(Udata,
               aes_string("V1", "V2")) +
@@ -25,14 +20,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     ylab(expression(u["1|23"])) + 
     coord_fixed() +
     theme_bw() + 
-<<<<<<< HEAD
-    theme(legend.position = "none",
-          legend.key.size = unit(1, "cm"),
-          panel.spacing = unit(2.5, "lines"),
-=======
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
           axis.title = element_text(size = rel(0.75)),
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75))
   
@@ -74,57 +63,24 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
   if (is.null(decisionTree$LeftNode) && is.null(decisionTree$RightNode))
   {
-<<<<<<< HEAD
-    lM = matrix(NA, nrow=2, ncol=2)
-    lM[1,] = 1
-    lM[2,] = 2
-    p = grid.arrange(p1, p2, layout_matrix = lM)
-=======
     lM = matrix(NA, nrow=2, ncol=1)
     lM[1,1] = 1
     lM[2,1] = 2
     grid.arrange(grobBaseNode, grobFirstTree, layout_matrix = lM)
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
   }
   else
   {
     if (is.null(decisionTree$LeftNode))
     {
-<<<<<<< HEAD
-      lM = matrix(NA, nrow=3, ncol=2)
-      lM[1,] = 1
-      lM[2,] = 2
-      lM[3,1] = NA
-      lM[3,2] = 3
-      p = grid.arrange(p1, p2, p4, layout_matrix = lM)
-=======
       lM = matrix(NA, nrow=1, ncol=4)
       lM[1,3] = 1
       lM[1,4] = 2
       grobSecondTree <- arrangeGrob(pRL, pRR, layout_matrix = lM, widths = c(1,1,1,1))
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
     }
     else
     {
       if (is.null(decisionTree$RightNode))
       {
-<<<<<<< HEAD
-        lM = matrix(NA, nrow=3, ncol=2)
-        lM[1,] = 1
-        lM[2,] = 2
-        lM[3,1] = 3
-        lM[3,2] = NA
-        p = grid.arrange(p1, p2, p3, layout_matrix = lM)
-      }
-      else
-      {
-        lM = matrix(NA, nrow=3, ncol=2)
-        lM[1,] = 1
-        lM[2,] = 2
-        lM[3,1] = 3
-        lM[3,2] = 4
-        p = grid.arrange(p1, p2, p3, p4, layout_matrix = lM)
-=======
         lM = matrix(NA, nrow=1, ncol=4)
         lM[1,1] = 1
         lM[1,2] = 2
@@ -138,7 +94,6 @@ GroupedScatterplot = function(Udata, W, decisionTree)
         lM[1,3] = 3
         lM[1,4] = 4
         grobSecondTree <- arrangeGrob(pLL, pLR, pRL, pRR, layout_matrix = lM, widths = c(1,1,1,1))
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
       }
       
       lM = matrix(NA, nrow=3, ncol=1)
@@ -209,31 +164,14 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
   
   data = transform(Udata, split = splitFactorVec)
   
-<<<<<<< HEAD
-  
-  p = ggplot(data,
-             aes_string("V1", "V2", colour="split")) +
-    geom_point(data = transform(data, split = NULL), colour = "grey70") + 
-    geom_point() +  
-    facet_wrap(~split, scales="fixed", labeller=label_parsed) +
-=======
   pBase = ggplot(data,
                  aes_string("V1", "V2", colour="split")) +
     geom_point() + 
     guides(colour=FALSE) + 
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
     coord_equal() +
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab("") + 
-<<<<<<< HEAD
-    ylab("") + 
-    theme_bw() +
-    theme(legend.key.size = unit(1, "cm"),
-          panel.spacing = unit(2.5, "lines"),
-          panel.grid.major = element_line(colour = "grey85", size = .75),
-          panel.grid.minor = element_line(colour = "grey85", size = .75))
-=======
     ylab("") +
     coord_fixed(ratio=1) +
     theme_bw() + 
@@ -248,7 +186,6 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
   pR = pBase +
     ggtitle(levelNames[2]) + 
     scale_colour_manual(values=c("grey85", "black"))
->>>>>>> e702c73c138d692a4a55b57fbc3f3eee0e49080b
   
   
   return(list(pL=pL, pR=pR, indVector = indVector))
