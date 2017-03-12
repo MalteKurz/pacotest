@@ -100,29 +100,29 @@ GroupedScatterplot = function(Udata, W, decisionTree)
       lM[1,1] = 1
       lM[2,1] = 2
       lM[3,1] = 3
-      grid.arrange(grobBaseNode, grobFirstTree, grobSecondTree, layout_matrix = lM)
+      p = grid.arrange(grobBaseNode, grobFirstTree, grobSecondTree, layout_matrix = lM)
     }
   }
   
-  df <- data.frame(x = c(0.55,0.95), y = c(0,0.07))
-  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
-  pBla<-ggplotGrob(pBla)
-  lines <- pBla$grobs[[4]][["children"]][[3]]
+  #df <- data.frame(x = c(0.55,0.95), y = c(0,0.07))
+  #pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  #pBla<-ggplotGrob(pBla)
+  #lines <- pBla$grobs[[4]][["children"]][[3]]
   
-  df <- data.frame(x = c(0.1,0.5), y = c(0.07,0))
-  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
-  pBla<-ggplotGrob(pBla)
-  lines2 <- pBla$grobs[[4]][["children"]][[3]]
+  #df <- data.frame(x = c(0.1,0.5), y = c(0.07,0))
+  #pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  #pBla<-ggplotGrob(pBla)
+  #lines2 <- pBla$grobs[[4]][["children"]][[3]]
   
-  df <- data.frame(x = c(0.275,0.575,0.775), y = c(0,0.06,0))
-  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
-  pBla<-ggplotGrob(pBla)
-  lines3 <- pBla$grobs[[4]][["children"]][[3]]
+  #df <- data.frame(x = c(0.275,0.575,0.775), y = c(0,0.06,0))
+  #pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  #pBla<-ggplotGrob(pBla)
+  #lines3 <- pBla$grobs[[4]][["children"]][[3]]
   
-  df <- data.frame(x = c(0.275,0.475,0.775), y = c(0,0.06,0))
-  pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
-  pBla<-ggplotGrob(pBla)
-  lines4 <- pBla$grobs[[4]][["children"]][[3]]
+  #df <- data.frame(x = c(0.275,0.475,0.775), y = c(0,0.06,0))
+  #pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  #pBla<-ggplotGrob(pBla)
+  #lines4 <- pBla$grobs[[4]][["children"]][[3]]
   
   #bla <- gtable_add_grob(p, lines, l=1, t=1, b=1, z=Inf)
   #bla <- gtable_add_grob(bla, lines2, l=2, t=1, b=1, z=Inf)
@@ -312,9 +312,10 @@ partitionPlot = function(decisionTree, W)
     xlab(names(W)[1]) +
     ylab(names(W)[2])
   
-  kendall = ggplot() + geom_tile(data = gg, aes(x, y, z = z, fill = z)) + 
+  kendall = ggplot(gg, aes(x, y)) +
+    geom_tile(aes(fill = z)) +
     scale_fill_gradient(low="gray90", high="gray10") + 
-    labs(fill = "Kendall's\nTau") +
+    labs(fill = expression(paste("Kendall's ", tau))) +
     xlab(names(W)[1]) +
     ylab(names(W)[2])
   
@@ -341,7 +342,7 @@ partitionPlot = function(decisionTree, W)
     xlab(expression(u["2"])) + 
     ylab(expression(u["3"])) + 
     theme_bw(base_size = 30) +
-    theme(legend.margin = unit(1, "lines"),
+    theme(legend.spacing = unit(1, "lines"),
         legend.key.size = unit(1, "cm"),
         panel.spacing = unit(2.5, "lines"),
         panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -357,7 +358,7 @@ partitionPlot = function(decisionTree, W)
     xlab(expression(u["2"])) + 
     ylab(expression(u["3"])) + 
     theme_bw(base_size = 30) +
-    theme(legend.margin = unit(1, "lines"),
+    theme(legend.spacing = unit(1, "lines"),
           legend.key.size = unit(1, "cm"),
           panel.spacing = unit(2.5, "lines"),
           panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -414,7 +415,7 @@ partitionPlot = function(decisionTree, W)
       xlab(expression(u["2"])) + 
       ylab(expression(u["3"])) + 
       theme_bw(base_size = 30) +
-      theme(legend.margin = unit(1, "lines"),
+      theme(legend.spacing = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
             panel.spacing = unit(2.5, "lines"),
             panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -430,7 +431,7 @@ partitionPlot = function(decisionTree, W)
       xlab(expression(u["2"])) + 
       ylab(expression(u["3"])) + 
       theme_bw(base_size = 30) +
-      theme(legend.margin = unit(1, "lines"),
+      theme(legend.spacing = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
             panel.spacing = unit(2.5, "lines"),
             panel.grid.major = element_line(colour = "grey85", size = .75),
