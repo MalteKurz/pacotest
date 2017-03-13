@@ -80,7 +80,6 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
   {
     int testTypeNumber = (int) TestTypeNumber;
     int grouping = (int) Grouping;
-    int aggPvalsNumbRep = (int) AggPvalsNumbRep;
     int intWithEstUncert = (int) doubleWithEstUncert;
     int intEstUncertWithRanks = (int) doubleEstUncertWithRanks;
     int gamma0Partition = (int) Gamma0Partition;
@@ -88,7 +87,6 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
     
     // Associate outputs
     double pValue;
-    unsigned int i=0;
     
     if ((!arma::is_finite(AggPvalsNumbRep) && !arma::is_finite(TrainingDataFraction)) || AggPvalsNumbRep == 0)
     {

@@ -355,11 +355,7 @@ void EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &ind
   arma::vec cPit1InGroupStandardized;
   arma::vec cPit2InGroupStandardized;
   
-  //double rhoInGroup;
-  double lambdaInGroup;
-  
   double nObs = Udata.n_rows;
-  double nObsInGroup;
   
   for (iGroup=0;iGroup<nGroups;iGroup++)
   {
@@ -380,8 +376,6 @@ void EqualCorrChi2WithEstimationTestStat(const arma::mat &Udata, arma::umat &ind
     // Obtain standardized CPITs
     cPit1InGroupStandardized = (cPit1InGroup-theta(0 + 4*iGroup))/sqrt(theta(1 + 4*iGroup));
     cPit2InGroupStandardized = (cPit2InGroup-theta(2 + 4*iGroup))/sqrt(theta(3 + 4*iGroup));
-    
-    nObsInGroup = cPit1InGroup.n_elem;
     
     // Place the correlation parameters in the parameter vector
     theta(4*nGroups+iGroup) = mean(cPit1InGroupStandardized  % cPit2InGroupStandardized); // Rho in the group

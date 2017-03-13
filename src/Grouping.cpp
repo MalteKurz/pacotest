@@ -438,7 +438,6 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
     // Prepare the (left) data sets for the second split
     if (!(SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
     {
-      unsigned int N1;
       if ((SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
       {
         iStart = 1;
@@ -507,8 +506,6 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
     // Prepare the (right) data sets for the second split
     if (!(SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
     {
-      
-      unsigned int N2;
       if ((SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
       {
         iStart = 1;
