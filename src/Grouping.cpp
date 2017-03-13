@@ -521,9 +521,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       }
       
       J2(0,0) = 0;
-      J2(1,0) = floor(n2/4)-1;
-      J2(2,0) = floor(n2/2)-1;
-      J2(3,0) = floor(3*n2/4)-1;
+      J2(1,0) = floor(n2Double/4)-1;
+      J2(2,0) = floor(n2Double/2)-1;
+      J2(3,0) = floor(3*n2Double/4)-1;
       
       // Learn the second split
       arma::mat a2(m,3);
