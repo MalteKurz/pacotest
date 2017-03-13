@@ -15,7 +15,7 @@ void ranks(double *X, int n, vector<double> &U, vector<double> &V)
 
     std::sort(&XX[0],&XX[n]);
     
-    unsigned int Replications;
+    int Replications;
     
     for (i=0;i<n;i++)
     {
