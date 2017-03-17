@@ -82,8 +82,7 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
     int grouping = (int) Grouping;
     int intWithEstUncert = (int) doubleWithEstUncert;
     int intEstUncertWithRanks = (int) doubleEstUncertWithRanks;
-    int gamma0Partition = (int) Gamma0Partition;
-    
+    int gamma0Partition;
     
     // Associate outputs
     double pValue;
@@ -100,6 +99,7 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       
       if (arma::is_finite(penaltyLevel) && arma::is_finite(penaltyPower) && arma::is_finite(Gamma0Partition))
       {
+        gamma0Partition = (int) Gamma0Partition;
         if (testTypeNumber == 1)
         {
           EqualCovTestWithPenalty(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);

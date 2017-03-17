@@ -129,7 +129,7 @@ finalComparisonToNumber = function(finalComparisonIdentifier = NULL)
 {
   if (is.null(finalComparisonIdentifier))
   {
-    finalComparison = NA_real_
+    finalComparison = 999
   }
   else
   {
