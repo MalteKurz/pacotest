@@ -8,7 +8,7 @@ This is a patch to fix installation problems on CRAN solaris and memtest notes. 
 
 * local ubuntu 14.04 install: R 3.3.3
 * local ubuntu 14.04 install: R 3.3.3 with clang compiler
-* ubuntu 12.04 (on travis-ci): R-release (R 3.3.2), R-devel (2017-03-10)
+* ubuntu 12.04 (on travis-ci): R-release (R 3.3.2), R-devel (2017-03-20)
 * OS X El Capitan 10.11.6 (on travis-ci): R-release (R 3.3.3)
 
 ## R CMD check results
