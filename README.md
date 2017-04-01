@@ -9,7 +9,7 @@
     ```
 
 -   the latest development version from GitHub using install_github from the R-package devtools with
-``` r
-install.packages("devtools")
-devtools::install_github(repo = "MalteKurz/pacotest")
-```
+    ``` r
+    install.packages("devtools")
+    devtools::install_github(repo = "MalteKurz/pacotest")
+    ```
