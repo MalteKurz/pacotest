@@ -7,7 +7,11 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
 
   rho = momentBasedCorr(Udata)
-  titleStr = paste("\nrho = ", format(rho,dig=4))
+  titleStrElements = list()
+  titleStrElements$partIdentifier = "0"
+  titleStrElements$corrInGroup = format(rho,dig=3)
+  titleStr = bquote(Lambda[.(titleStrElements$partIdentifier)] ~ ":" ~
+                      hat(r) ~ "=" ~ .(titleStrElements$corrInGroup))
   
   p1 = ggplot(Udata,
               aes_string("V1", "V2")) +
@@ -19,7 +23,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     xlab(expression(u["4|23"])) + 
     ylab(expression(u["1|23"])) + 
     coord_fixed() +
-    theme_bw() + 
+    theme_bw(base_size = 30) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
           axis.title = element_text(size = rel(0.75)),
           panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -29,7 +33,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   lM[1,2] = 1
   grobBaseNode <- arrangeGrob(p1, layout_matrix = lM, widths = c(1.5,1,1.5))
   
-  xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels)
+  partIdentifier = c("(0,l)", "(0,r)")
+  xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels, partIdentifier)
   
   indCentralSplit = xx$indVector
   
@@ -40,9 +45,10 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
   if (!is.null(decisionTree$LeftNode))
   {
+    partIdentifier = c("(0,l,l)", "(0,l,r)")
     xx = getGroupedPlot(Udata[indCentralSplit==1,,drop=FALSE],
                         W[indCentralSplit==1,,drop=FALSE],
-                        decisionTree$LeftNode$Variable, decisionTree$LeftNode$Threshold, dataLabels)
+                        decisionTree$LeftNode$Variable, decisionTree$LeftNode$Threshold, dataLabels, partIdentifier)
     
     pLL<-xx$pL
     pLR<-xx$pR
@@ -51,9 +57,10 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
   if (!is.null(decisionTree$RightNode))
   {
+    partIdentifier = c("(0,r,l)", "(0,r,r)")
     xx = getGroupedPlot(Udata[indCentralSplit==0,,drop=FALSE],
                         W[indCentralSplit==0,,drop=FALSE],
-                        decisionTree$RightNode$Variable, decisionTree$RightNode$Threshold, dataLabels)
+                        decisionTree$RightNode$Variable, decisionTree$RightNode$Threshold, dataLabels, partIdentifier)
     
     pRL<-xx$pL
     pRR<-xx$pR
@@ -104,8 +111,28 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     }
   }
   
+  
+  # Switch to viewport for first set of arrows
+  vp = viewport(x = 0, y=0, width=2, height=2)
+  pushViewport(vp)
+  
+  #grid.rect(gp=gpar(fill="black", alpha=0.1))
+  
+  grid.lines(x=c(0.881,0.921),y=c(0.9175,0.91), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.881,0.841),y=c(0.9175,0.91), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  
+  grid.lines(x=c(0.8185,0.8085),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.8185,0.8285),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  
+  grid.lines(x=c(0.9435,0.9335),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.9435,0.9535),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  
+  popViewport()
+  
+  
+  
   #df <- data.frame(x = c(0.55,0.95), y = c(0,0.07))
-  #pBla = p1 + geom_path(data = df, aes(x, y), size = 2)
+  #pBla = grobBaseNode + geom_path(data = df, aes(x, y), size = 2)
   #pBla<-ggplotGrob(pBla)
   #lines <- pBla$grobs[[4]][["children"]][[3]]
   
@@ -133,8 +160,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   #grid.newpage()
   #grid.draw(p)
   
-  #dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20)
-  #dev.off()
+  dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20)
+  dev.off()
   
   return(p)
   #}
@@ -142,7 +169,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
 }
 
 
-getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
+getGroupedPlot = function(Udata, W, variable, threshold, dataLabels, partIdentifier)
 {
   indVector = W[,variable]<=threshold
   
@@ -154,10 +181,46 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
                         "\nrho = ", format(rho,dig=4))
   splitFactorVec[indVector==1] = levelNames[1]
   
+  titleStrElements = list()
+  titleStrElements$partIdentifier = partIdentifier[1]
+  titleStrElements$threshold = format(threshold,dig=3)
+  titleStrElements$corrInGroup = format(rho,dig=3)
+  xx = getIndicesFromVariable(variable)
+  if (xx$barForU)
+  {
+    titleStrL = bquote(Lambda[.(titleStrElements$partIdentifier)] ~ ":" ~
+                         bar(u)[.(xx$indicesForU)] ~ "<=" ~ .(titleStrElements$threshold) ~ "," ~
+                         hat(r) ~ "=" ~ .(titleStrElements$corrInGroup))
+  }
+  else
+  {
+    titleStrL = bquote(Lambda[.(titleStrElements$partIdentifier)] ~ ":" ~
+                         u[.(xx$indicesForU)] ~ "<=" ~ .(titleStrElements$threshold) ~ "," ~
+                         hat(r) ~ "=" ~ .(titleStrElements$corrInGroup))
+  }
+  
   rho = momentBasedCorr(Udata[indVector==0,])
   levelNames[2] = paste(variable, " > ", format(threshold,dig=4),
                         "\nrho = ", format(rho,dig=4))
   splitFactorVec[indVector==0] = levelNames[2]
+  
+  titleStrElements = list()
+  titleStrElements$partIdentifier = partIdentifier[2]
+  titleStrElements$threshold = format(threshold,dig=3)
+  titleStrElements$corrInGroup = format(rho,dig=3)
+  xx = getIndicesFromVariable(variable)
+  if (xx$barForU)
+  {
+    titleStrR = bquote(Lambda[.(titleStrElements$partIdentifier)] ~ ":" ~
+                         bar(u)[.(xx$indicesForU)] ~ ">" ~ .(titleStrElements$threshold) ~ "," ~
+                         hat(r) ~ "=" ~ .(titleStrElements$corrInGroup))
+  }
+  else
+  {
+    titleStrR = bquote(Lambda[.(titleStrElements$partIdentifier)] ~ ":" ~
+                         u[.(xx$indicesForU)] ~ ">" ~ .(titleStrElements$threshold) ~ "," ~
+                         hat(r) ~ "=" ~ .(titleStrElements$corrInGroup))
+  }
   
   splitFactorVec = factor(splitFactorVec, levelNames)
   
@@ -171,25 +234,48 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels)
     coord_equal() +
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab("") + 
-    ylab("") +
-    coord_fixed(ratio=1) +
-    theme_bw() + 
+    xlab(expression(u["4|23"])) + 
+    ylab(expression(u["1|23"])) + 
+    coord_fixed() +
+    theme_bw(base_size = 30) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
+          axis.title = element_text(size = rel(0.75)),
           panel.grid.major = element_line(colour = "grey85", size = .75),
           panel.grid.minor = element_line(colour = "grey85", size = .75))
   
+  
   pL = pBase +
-    ggtitle(levelNames[1]) + 
+    ggtitle(titleStrL) + 
     scale_colour_manual(values=c("black", "grey85"))
   
   pR = pBase +
-    ggtitle(levelNames[2]) + 
+    ggtitle(titleStrR) + 
     scale_colour_manual(values=c("grey85", "black"))
   
   
   return(list(pL=pL, pR=pR, indVector = indVector))
   
+}
+
+getIndicesFromVariable = function(variable)
+{
+  if (variable == "V2")
+  {
+    indicesForU = "2"
+    barForU = FALSE
+  }
+  else if (variable == "V3")
+  {
+    indicesForU = "3"
+    barForU = FALSE
+  }
+  else if (variable == "Mean(V2, V3)")
+  {
+    indicesForU = "2:3"
+    barForU = TRUE
+  }
+   
+  return(list(indicesForU = indicesForU, barForU = barForU)) 
 }
 
 
@@ -243,16 +329,16 @@ decisionTreePlot = function(DecisionTree)
       annotate("segment", x = -0.1, xend = 0.15, y = 0, yend = -0.6, colour = "black")
     
     
-    p = p + annotate("text",label='Omega["(0,l,l)"]', x=-0.35, y= -0.7, size=rel(4), parse=T) + 
+    p = p + annotate("text",label='Lambda["(0,l,l)"]', x=-0.35, y= -0.7, size=rel(4), parse=T) + 
       annotate("rect", xmin = -0.55, xmax = -0.15, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
     
-    p = p + annotate("text",label='Omega["(0,l,r)"]', x=0.15, y= -0.7, size=rel(4), parse=T) + 
+    p = p + annotate("text",label='Lambda["(0,l,r)"]', x=0.15, y= -0.7, size=rel(4), parse=T) + 
       annotate("rect", xmin = -0.05, xmax = 0.35, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
     
   }
   else
   {
-    p = p + annotate("text",label='Omega["(0,l)"]', x=-0.1, y= 0.1, size=rel(4), parse=T) + 
+    p = p + annotate("text",label='Lambda["(0,l)"]', x=-0.1, y= 0.1, size=rel(4), parse=T) + 
       annotate("rect", xmin = -0.3, xmax = 0.1, ymin = 0, ymax = 0.2, color="black", alpha=0.2)
     
   }
@@ -272,16 +358,16 @@ decisionTreePlot = function(DecisionTree)
       annotate("segment", x = 1.1, xend = 1.35, y = 0, yend = -0.6, colour = "black")
     
     
-    p = p + annotate("text",label='Omega["(0,r,l)"]', x=0.85, y= -0.7, size=rel(4), parse=T) + 
+    p = p + annotate("text",label='Lambda["(0,r,l)"]', x=0.85, y= -0.7, size=rel(4), parse=T) + 
       annotate("rect", xmin = 0.65, xmax = 1.05, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
     
-    p = p + annotate("text",label='Omega["(0,r,r)"]', x=1.35, y= -0.7, size=rel(4), parse=T) + 
+    p = p + annotate("text",label='Lambda["(0,r,r)"]', x=1.35, y= -0.7, size=rel(4), parse=T) + 
       annotate("rect", xmin = 1.15, xmax = 1.55, ymin = -0.8, ymax = -0.6, color="black", alpha=0.2) 
   }
   else
   {
     
-    p = p + annotate("text",label='Omega["(0,r)"]', x=1.1, y= 0.1, size=rel(4), parse=T) + 
+    p = p + annotate("text",label='Lambda["(0,r)"]', x=1.1, y= 0.1, size=rel(4), parse=T) + 
       annotate("rect", xmin = 0.9, xmax = 1.3, ymin = 0, ymax = 0.2, color="black", alpha=0.2)
   }
   
@@ -328,8 +414,8 @@ partitionPlot = function(decisionTree, W)
   partitionForPlot = getPartitionForPlot(decisionTree, W)
   
   data1 = partitionForPlot[is.element(partitionForPlot$subset, c('l','r')),]
-  PartitionLabeling = c(expression(Omega["(0,r)"]),
-                        expression(Omega["(0,l)"]))
+  PartitionLabeling = c(expression(Lambda["(0,r)"]),
+                        expression(Lambda["(0,l)"]))
   partitionBreaks = c('r', 'l')
   
   p1WithPoints = points +
@@ -369,9 +455,9 @@ partitionPlot = function(decisionTree, W)
   {
     data2 = partitionForPlot[is.element(partitionForPlot$subset, c('l','rl','rr')),]
     
-    PartitionLabeling = c(expression(Omega["(0,r,r)"]),
-                          expression(Omega["(0,r,l)"]),
-                          expression(Omega["(0,l)"]))
+    PartitionLabeling = c(expression(Lambda["(0,r,r)"]),
+                          expression(Lambda["(0,r,l)"]),
+                          expression(Lambda["(0,l)"]))
     partitionBreaks = c('rr','rl','l')
     cols = cbbPalette[c(2,6,7)]
     
@@ -381,9 +467,9 @@ partitionPlot = function(decisionTree, W)
   {
     data2 = partitionForPlot[is.element(partitionForPlot$subset, c('ll','lr','r')),]
     
-    PartitionLabeling = c(expression(Omega["(0,r)"]),
-                          expression(Omega["(0,l,r)"]),
-                          expression(Omega["(0,l,l)"]))
+    PartitionLabeling = c(expression(Lambda["(0,r)"]),
+                          expression(Lambda["(0,l,r)"]),
+                          expression(Lambda["(0,l,l)"]))
     partitionBreaks = c('r','lr','ll')
     cols = cbbPalette[c(4,5,3)]
     
@@ -393,10 +479,10 @@ partitionPlot = function(decisionTree, W)
   {
     data2 = partitionForPlot[is.element(partitionForPlot$subset, c('ll','lr','rl','rr')),]
     
-    PartitionLabeling = c(expression(Omega["(0,r,r)"]),
-                          expression(Omega["(0,r,l)"]),
-                          expression(Omega["(0,l,r)"]),
-                          expression(Omega["(0,l,l)"]))
+    PartitionLabeling = c(expression(Lambda["(0,r,r)"]),
+                          expression(Lambda["(0,r,l)"]),
+                          expression(Lambda["(0,l,r)"]),
+                          expression(Lambda["(0,l,l)"]))
     partitionBreaks = c('rr','rl','lr','ll')
     cols = cbbPalette[4:7]
     
