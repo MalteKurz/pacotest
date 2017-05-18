@@ -1,12 +1,12 @@
 context("Regression tests for pacotestRvineSingleCopula")
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula1", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
+  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -26,12 +26,12 @@ test_that("pacotestRvineSingleCopula1", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula2", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeECORR', 'all', 'splitTrainEvaluate', 'TRUE')
+  values = c('CCC', 'TreeCCC', 'all', 'splitTrainEvaluate', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -52,12 +52,12 @@ test_that("pacotestRvineSingleCopula2", {
 
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula3", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
+  values = c('CCC', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -77,12 +77,12 @@ test_that("pacotestRvineSingleCopula3", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula4", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeEC', 'all', 'splitTrainEvaluate', 'TRUE')
+  values = c('CCC', 'TreeEC', 'all', 'splitTrainEvaluate', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -102,12 +102,12 @@ test_that("pacotestRvineSingleCopula4", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula5", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'penalty', 'TRUE', 'FALSE')
+  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'penalty', 'TRUE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -127,11 +127,11 @@ test_that("pacotestRvineSingleCopula5", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula6", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('ECORR', 'TreeECORR', 'all', 'penalty', 'TRUE', 'FALSE')
+  values = c('CCC', 'TreeCCC', 'all', 'penalty', 'TRUE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -152,12 +152,12 @@ test_that("pacotestRvineSingleCopula6", {
 
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula7", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('ECORR', 'TreeEC', 'pairwiseMax', 'penalty', 'TRUE', 'FALSE')
+  values = c('CCC', 'TreeEC', 'pairwiseMax', 'penalty', 'TRUE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -177,12 +177,12 @@ test_that("pacotestRvineSingleCopula7", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula8", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('ECORR', 'TreeEC', 'all', 'penalty', 'TRUE', 'FALSE')
+  values = c('CCC', 'TreeEC', 'all', 'penalty', 'TRUE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -202,12 +202,12 @@ test_that("pacotestRvineSingleCopula8", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = SumMedian, withEstUncert = TRUE")
+        testType=CCC, grouping = SumMedian, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula9", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'withEstUncert')
-  values = c('ECORR', 'SumMedian', 'TRUE')
+  values = c('CCC', 'SumMedian', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -227,12 +227,12 @@ test_that("pacotestRvineSingleCopula9", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = ProdThirdsII, withEstUncert = TRUE")
+testType=CCC, grouping = ProdThirdsII, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula10", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'withEstUncert')
-  values = c('ECORR', 'ProdThirdsII', 'TRUE')
+  values = c('CCC', 'ProdThirdsII', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -252,12 +252,12 @@ test_that("pacotestRvineSingleCopula10", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = SumThirdsIII, withEstUncert = TRUE")
+testType=CCC, grouping = SumThirdsIII, withEstUncert = TRUE")
 test_that("pacotestRvineSingleCopula11", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'withEstUncert')
-  values = c('ECORR', 'SumThirdsIII', 'TRUE')
+  values = c('CCC', 'SumThirdsIII', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -277,12 +277,12 @@ test_that("pacotestRvineSingleCopula11", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
 test_that("pacotestRvineSingleCopula12", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'penalty', 'TRUE', 'TRUE')
+  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'penalty', 'TRUE', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -302,11 +302,11 @@ test_that("pacotestRvineSingleCopula12", {
 })
 
 context("unit tests for pacotest with options:
-        testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
 test_that("pacotestRvineSingleCopula13", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('ECORR', 'TreeECORR', 'all', 'penalty', 'TRUE', 'TRUE')
+  values = c('CCC', 'TreeCCC', 'all', 'penalty', 'TRUE', 'TRUE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   

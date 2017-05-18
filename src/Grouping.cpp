@@ -206,7 +206,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   
   switch(GroupingMethod){
     case 1: // TreeECOV
-    case 2: // TreeECORR
+    case 2: // TreeCCC
     case 3: // TreeEC
     {
       TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
@@ -226,7 +226,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
   
   switch(GroupingMethod){
     case 1: // TreeECOV
-    case 2: // TreeECORR
+    case 2: // TreeCCC
     case 3: // TreeEC
     {
       double TrainingDataFraction = 1;

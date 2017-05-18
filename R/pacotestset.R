@@ -1,11 +1,11 @@
-pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, estUncertWithRanks = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
+pacotestset = function(pacotestOptions=list(testType = 'CCC', grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, estUncertWithRanks = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
   {
   # Display possible values
   Nargs = nargs()
   if(Nargs==0){
-    cat('                   testType: [ ECORR | VI ]\n\n')
-    cat(' Options for testType = [ ECORR ]:\n')
-    cat('                   grouping: [ TreeECORR | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles | TreeECOV | TreeEC ]\n')
+    cat('                   testType: [ CCC | VI ]\n\n')
+    cat(' Options for testType = [ CCC ]:\n')
+    cat('                   grouping: [ TreeCCC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles | TreeECOV | TreeEC ]\n')
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
     cat('              withEstUncert: [ logical | 0 | 1 ]\n')
@@ -82,7 +82,7 @@ pacotestset = function(pacotestOptions=list(testType = 'ECORR', grouping = 'Tree
 
 checkAndAssignOptions = function(testType, pacotestOptions, argList)
 {
-  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="ECORR")
+  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="CCC")
   {
     pacotestOptions = checkAndAssignOptionsEcorrOrEcov(pacotestOptions, argList)
     
@@ -324,13 +324,13 @@ checkAndAssignOptionsVI = function(pacotestOptions, argList)
 
 getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKeepingMethod = NULL, ...)
 {
-  if (is.element(testType, c("ECORR","ECOV")))
+  if (is.element(testType, c("CCC","ECOV")))
   {
     defaultTreeGrouping = paste('Tree', testType, sep = "")
     
     if (is.null(sizeKeepingMethod) || is.na(sizeKeepingMethod) || sizeKeepingMethod == 'penalty')
     {
-      if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+      if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
       {
         pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
@@ -341,7 +341,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
     }
     else if (sizeKeepingMethod == 'splitTrainEvaluate')
     {
-      if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+      if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
       {
         pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
       }
@@ -353,9 +353,9 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
   }
   else if (testType=="EC")
   {
-    if (is.na(grouping) || is.element(grouping, c('TreeECORR', 'TreeECOV','TreeEC')))
+    if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
     {
-      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeECORR', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
     }
     else
     {
@@ -408,9 +408,16 @@ CheckLogical = function(Value,Fieldname)
 
 CheckGrouping = function(Value,Fieldname)
 {
-  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeECOV', 'TreeECORR'))))
+  if (Value=="TreeECORR")
   {
-    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeECORR', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
+    warning("grouping TreeECORR is deprecated; please use treeCCC instead.", 
+            call. = FALSE)
+    Value = "treeCCC"
+  }
+  
+  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeECOV', 'TreeCCC'))))
+  {
+    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeCCC', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
   return(Value)
 }
@@ -481,10 +488,13 @@ CheckGamma0Partition = function(Value,Fieldname)
 CheckpacotestOptions = function(pacotestOptions)
 {
   
-  if (is.element(pacotestOptions$testType, c("ECOV", "ECORR")))
+  pacotestOptions$testType = renameEcorrIntoCcc(pacotestOptions$testType)
+  
+  
+  if (is.element(pacotestOptions$testType, c("ECOV", "CCC")))
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC")))
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeCCC", "TreeEC")))
     {
       if (pacotestOptions$sizeKeepingMethod=="splitTrainEvaluate")
       {
@@ -579,7 +589,7 @@ CheckpacotestOptions = function(pacotestOptions)
         warning('The field gamma0Partition is set to NULL')
       }
     }
-    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC")))
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeCCC", "TreeEC")))
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
@@ -629,7 +639,7 @@ CheckpacotestOptions = function(pacotestOptions)
   {
     CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeECORR", "TreeEC" )))
+    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeCCC", "TreeEC" )))
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
@@ -677,3 +687,19 @@ CheckpacotestOptions = function(pacotestOptions)
   return(pacotestOptions)
 }
 
+
+renameEcorrIntoCcc = function(testType)
+{
+  if (!is.null(testType))
+  {
+    if (testType=="ECORR")
+    {
+      warning("testType ECORR (equal correlation test) is deprecated; please use CCC (constant conditional correlation) instead.", 
+              call. = FALSE)
+      testType = "CCC"
+    }
+    
+  }
+  
+  return(testType)
+}

@@ -7,78 +7,78 @@ library("methods")
 ## Define all scenarios of pacotest that should be unit tested
 pacotestOptions = list()
 # Define the test types
-pacotestOptions[[1]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[1]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[2]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[2]] = pacotestset(testType='CCC', grouping = 'TreeCCC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[3]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[3]] = pacotestset(testType='CCC', grouping = 'TreeCCC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[4]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[4]] = pacotestset(testType='CCC', grouping = 'TreeCCC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[5]] = pacotestset(testType='ECORR',grouping = "SumMedian", withEstUncert = FALSE)
+pacotestOptions[[5]] = pacotestset(testType='CCC',grouping = "SumMedian", withEstUncert = FALSE)
 
-pacotestOptions[[6]] = pacotestset(testType='ECORR',grouping = "ProdThirdsII", withEstUncert = FALSE)
+pacotestOptions[[6]] = pacotestset(testType='CCC',grouping = "ProdThirdsII", withEstUncert = FALSE)
 
-pacotestOptions[[7]] = pacotestset(testType='ECORR',grouping = "SumThirdsIII", withEstUncert = FALSE)
+pacotestOptions[[7]] = pacotestset(testType='CCC',grouping = "SumThirdsIII", withEstUncert = FALSE)
 
-pacotestOptions[[8]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[8]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[9]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[9]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[10]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[10]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[11]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-
-
-pacotestOptions[[12]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[13]] = pacotestset(testType='ECORR', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[14]] = pacotestset(testType='ECORR', grouping = 'TreeEC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[15]] = pacotestset(testType='ECORR', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[16]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[17]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[18]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
-
-pacotestOptions[[19]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
+pacotestOptions[[11]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
 
-pacotestOptions[[20]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[12]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[21]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
+pacotestOptions[[13]] = pacotestset(testType='CCC', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[22]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[14]] = pacotestset(testType='CCC', grouping = 'TreeEC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[23]] = pacotestset(testType='ECORR', grouping = 'TreeECORR',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[15]] = pacotestset(testType='CCC', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[24]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[16]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[25]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
+pacotestOptions[[17]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[26]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[18]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
-pacotestOptions[[27]] = pacotestset(testType='ECORR', grouping = 'TreeECORR', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[19]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate")
 
 
-pacotestOptions[[28]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[20]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
-pacotestOptions[[29]] = pacotestset(testType='ECORR', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
+pacotestOptions[[21]] = pacotestset(testType='CCC', grouping = 'TreeCCC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
 
-pacotestOptions[[30]] = pacotestset(testType='ECORR', grouping = 'TreeEC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[22]] = pacotestset(testType='CCC', grouping = 'TreeCCC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
-pacotestOptions[[31]] = pacotestset(testType='ECORR', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[23]] = pacotestset(testType='CCC', grouping = 'TreeCCC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
-pacotestOptions[[32]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[24]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
-pacotestOptions[[33]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
+pacotestOptions[[25]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
 
-pacotestOptions[[34]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[26]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
-pacotestOptions[[35]] = pacotestset(testType='ECORR', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+pacotestOptions[[27]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+
+pacotestOptions[[28]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+pacotestOptions[[29]] = pacotestset(testType='CCC', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty")
+
+pacotestOptions[[30]] = pacotestset(testType='CCC', grouping = 'TreeEC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+pacotestOptions[[31]] = pacotestset(testType='CCC', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+pacotestOptions[[32]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+pacotestOptions[[33]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty")
+
+pacotestOptions[[34]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty")
+
+pacotestOptions[[35]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty")
 
 
 
