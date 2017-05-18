@@ -6,7 +6,7 @@ Testing for Partial Copulas and the Simplifying Assumption in Vine Copulas
 }
 \description{
 The \pkg{pacotest} package provides functions, which allow to test for partial copulas and the simplifying assumption in vine copulas.
-The package consists of two different test types, the Equal Correlation (ECORR) test and the Vectorial Independence (VI) test.
+The package consists of two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test.
 The function \code{\link{pacotestset}} can be used to create and alter pacotest options lists and the function \code{\link{pacotest}} can be used to test for the partial copula and the simplifying assumption for a single bivariate conditional copula.
 
 The function \code{\link{pacotestRvineSeq}} can be used with a \link[VineCopula]{RVineMatrix} from the \link[VineCopula]{VineCopula-package} to test all pair-copulas being building blocks in a R-vine copula to be (j-1)-th order partial copulas, which is equivalent to testing the simplifying assumption.
