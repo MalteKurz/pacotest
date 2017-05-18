@@ -324,6 +324,9 @@ checkAndAssignOptionsVI = function(pacotestOptions, argList)
 
 getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKeepingMethod = NULL, ...)
 {
+  
+  testType = renameEcorrIntoCcc(testType)
+  
   if (is.element(testType, c("CCC","ECOV")))
   {
     defaultTreeGrouping = paste('Tree', testType, sep = "")
@@ -694,7 +697,7 @@ renameEcorrIntoCcc = function(testType)
   {
     if (testType=="ECORR")
     {
-      warning("testType ECORR (equal correlation test) is deprecated; please use CCC (constant conditional correlation) instead.", 
+      warning("testType ECORR (equal correlation test) is deprecated; please use CCC (constant conditional correlation test) instead.", 
               call. = FALSE)
       testType = "CCC"
     }
