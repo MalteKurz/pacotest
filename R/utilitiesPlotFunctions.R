@@ -559,7 +559,7 @@ getPartitionForPlot = function(decisionTree, W)
     stop("partitionPlot is only implemented for the two-dimensional conditioning set, where the mean has been added as aggregated information.")
   }
   
-  eps = 0.015
+  eps = 0.007
   
   if (grepl('^Mean', decisionTree$CentralNode$Variable))
   {
