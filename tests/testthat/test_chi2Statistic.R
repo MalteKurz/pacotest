@@ -1,6 +1,6 @@
 context("chi2 test statistic regression tests")
 
-test_that("ECORR chi2 test statistic regression tests", {
+test_that("CCC chi2 test statistic regression tests", {
   testthat::skip_on_cran()
   
   set.seed(3141)

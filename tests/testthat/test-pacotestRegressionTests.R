@@ -1,12 +1,12 @@
 context("Regression tests for pacotest")
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
-test_that("ECORR1", {
+testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
+test_that("CCC1", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
+  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -15,12 +15,12 @@ test_that("ECORR1", {
 })
   
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
-test_that("ECORR2", {
+testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
+test_that("CCC2", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeECORR', 'all', 'splitTrainEvaluate', 'FALSE')
+  values = c('CCC', 'TreeCCC', 'all', 'splitTrainEvaluate', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -30,12 +30,12 @@ test_that("ECORR2", {
   
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
-test_that("ECORR3", {
+testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
+test_that("CCC3", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
+  values = c('CCC', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -44,12 +44,12 @@ test_that("ECORR3", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
-test_that("ECORR4", {
+testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
+test_that("CCC4", {
   testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeEC', 'all', 'splitTrainEvaluate', 'FALSE')
+  values = c('CCC', 'TreeEC', 'all', 'splitTrainEvaluate', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -58,11 +58,11 @@ test_that("ECORR4", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeECORR, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
-test_that("ECORR5", {
+testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
+test_that("CCC5", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeECORR', 'pairwiseMax', 'penalty', 'FALSE')
+  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'penalty', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -71,11 +71,11 @@ test_that("ECORR5", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeECORR, finalComparison = all, sizeKeepingMethod = penalty")
-test_that("ECORR6", {
+testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = penalty")
+test_that("CCC6", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeECORR', 'all', 'penalty', 'FALSE')
+  values = c('CCC', 'TreeCCC', 'all', 'penalty', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -85,11 +85,11 @@ test_that("ECORR6", {
 
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
-test_that("ECORR7", {
+testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
+test_that("CCC7", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeEC', 'pairwiseMax', 'penalty', 'FALSE')
+  values = c('CCC', 'TreeEC', 'pairwiseMax', 'penalty', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -98,11 +98,11 @@ test_that("ECORR7", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty")
-test_that("ECORR8", {
+testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty")
+test_that("CCC8", {
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('ECORR', 'TreeEC', 'all', 'penalty', 'FALSE')
+  values = c('CCC', 'TreeEC', 'all', 'penalty', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -111,11 +111,11 @@ test_that("ECORR8", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = SumMedian")
-test_that("ECORR9", {
+testType=CCC, grouping = SumMedian")
+test_that("CCC9", {
   
   properties = c('testType', 'grouping', 'withEstUncert')
-  values = c('ECORR', 'SumMedian', 'FALSE')
+  values = c('CCC', 'SumMedian', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -124,11 +124,11 @@ test_that("ECORR9", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = ProdThirdsII")
-test_that("ECORR9", {
+testType=CCC, grouping = ProdThirdsII")
+test_that("CCC10", {
   
   properties = c('testType', 'grouping', 'withEstUncert')
-  values = c('ECORR', 'ProdThirdsII', 'FALSE')
+  values = c('CCC', 'ProdThirdsII', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -137,11 +137,11 @@ test_that("ECORR9", {
 })
 
 context("unit tests for pacotest with options:
-testType=ECORR, grouping = SumThirdsIII")
-test_that("ECORR9", {
+testType=CCC, grouping = SumThirdsIII")
+test_that("CCC11", {
   
   properties = c('testType', 'grouping', 'withEstUncert')
-  values = c('ECORR', 'SumThirdsIII', 'FALSE')
+  values = c('CCC', 'SumThirdsIII', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
