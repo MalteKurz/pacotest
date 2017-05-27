@@ -415,7 +415,7 @@ CheckGrouping = function(Value,Fieldname)
   {
     warning("grouping TreeECORR is deprecated; please use treeCCC instead.", 
             call. = FALSE)
-    Value = "treeCCC"
+    Value = "TreeCCC"
   }
   
   if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeECOV', 'TreeCCC'))))
