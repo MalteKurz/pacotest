@@ -20,8 +20,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     ggtitle(titleStr) + 
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(expression(u["4|23"])) + 
-    ylab(expression(u["1|23"])) + 
+    xlab(expression(u["4|23"]^{"PVC"})) + 
+    ylab(expression(u["1|23"]^{"PVC"})) + 
     coord_fixed() +
     theme_bw(base_size = 30) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
@@ -234,8 +234,8 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels, partIdentif
     coord_equal() +
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(expression(u["4|23"])) + 
-    ylab(expression(u["1|23"])) + 
+    xlab(expression(u["4|23"]^{"PVC"})) + 
+    ylab(expression(u["1|23"]^{"PVC"})) + 
     coord_fixed() +
     theme_bw(base_size = 30) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
