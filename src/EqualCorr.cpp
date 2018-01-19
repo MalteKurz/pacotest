@@ -1,5 +1,56 @@
 #include <pacotest_header.h>
 
+void getMatrixForWeightedComparison(int nGroups, arma::mat &A, arma::uvec &nObsPerVector)
+{
+  
+  arma::vec nObsPerVectorDouble = arma::conv_to< arma::vec >::from(nObsPerVector);
+  
+  arma::vec nObs = cumsum(nObsPerVectorDouble);
+  arma::vec pi(4);
+  
+  switch ( nGroups )
+  {
+    
+  case 2 : 
+    A.set_size(1,2);
+    
+    pi(0) = nObsPerVectorDouble(0) / nObs(1);
+    pi(1) = nObsPerVectorDouble(1) / nObs(1);
+    
+    A(0,0) = sqrt(pi(0))* (1-pi(0)); A(0,1) = - sqrt(pi(0)) * pi(1);
+    //A(1,0) = -sqrt(pi(1))* pi(0);    A(1,1) = sqrt(pi(1))* (1-pi(1));
+    break;
+    
+  case 3 : 
+    A.set_size(2,3);
+    
+    pi(0) = nObsPerVectorDouble(0) / nObs(2);
+    pi(1) = nObsPerVectorDouble(1) / nObs(2);
+    pi(2) = nObsPerVectorDouble(2) / nObs(2);
+    
+    A(0,0) = sqrt(pi(0))* (1-pi(0));  A(0,1) = - sqrt(pi(0)) * pi(1);  A(0,2) = - sqrt(pi(0)) * pi(2);
+    A(1,0) = - sqrt(pi(1))* pi(0);    A(1,1) = sqrt(pi(1))* (1-pi(1)); A(1,2) = - sqrt(pi(1)) * pi(2);
+    //A(2,0) = - sqrt(pi(2))* pi(0);    A(2,1) = - sqrt(pi(2))* pi(1);   A(2,2) = sqrt(pi(2)) * (1-pi(2));
+    break;
+    
+  default : 
+    A.set_size(3,4);
+  
+    pi(0) = nObsPerVectorDouble(0) / nObs(3);
+    pi(1) = nObsPerVectorDouble(1) / nObs(3);
+    pi(2) = nObsPerVectorDouble(2) / nObs(3);
+    pi(3) = nObsPerVectorDouble(3) / nObs(3);
+  
+    A(0,0) = sqrt(pi(0))* (1-pi(0));  A(0,1) = - sqrt(pi(0)) * pi(1);  A(0,2) = - sqrt(pi(0)) * pi(2);   A(0,3) = - sqrt(pi(0)) * pi(3);
+    A(1,0) = - sqrt(pi(1))* pi(0);    A(1,1) = sqrt(pi(1))* (1-pi(1)); A(1,2) = - sqrt(pi(1)) * pi(2);   A(1,3) = - sqrt(pi(1)) * pi(3);
+    A(2,0) = - sqrt(pi(2))* pi(0);    A(2,1) = - sqrt(pi(2)) * pi(1);  A(2,2) = sqrt(pi(2)) * (1-pi(2)); A(2,3) = - sqrt(pi(2)) * pi(3);
+    //A(3,0) = - sqrt(pi(3))* pi(0);    A(3,1) = - sqrt(pi(3)) * pi(1);  A(3,2) = - sqrt(pi(3)) * pi(2);   A(3,3) = sqrt(pi(3)) * (1-pi(3));
+  
+  }
+  return;
+}
+
+
 void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
@@ -283,7 +334,18 @@ void EqualCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arm
   arma::mat A;
   getMatrixForPairwiseComparison(nGroups, A);
   
+  arma::mat B;
+  getMatrixForWeightedComparison(nGroups, B, nObsPerVector);
+  B.print();
+  
+  arma::vec bb(2);
+  
+  bb(0) = arma::as_scalar(nObs * (trans(B*rhos) * inv(B * sigmaRhos * trans(B)) * B*rhos));
+  
   *testStat = arma::as_scalar(nObs * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
+  
+  bb(1) = *testStat ;
+  bb.print();
   
   return;
   
