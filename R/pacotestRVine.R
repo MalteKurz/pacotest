@@ -101,7 +101,7 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       #return(list(pacotestResultLists=out,pValues = pValues))
     }
   }
-  return(list(pacotestResultLists=out,pValues = pValues))
+  return(list(pacotestResultLists=out,pValues = pValues, numbRejections = numbRejections))
 }
 
 
