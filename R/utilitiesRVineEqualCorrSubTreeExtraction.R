@@ -10,22 +10,19 @@ extractSubTree = function(RVM, tree, copulaNumber, data)
   newPar2 = matrix(0,nrow=tree+1,ncol=tree+1)
   
   newMatrix[,1] = RVM$Matrix[c(d-tree+1-copulaNumber,(d-tree+1):d),(d-tree+1-copulaNumber)]
-  newFamily[2:(tree+1),1] = RVM$family[c(d-tree+2-copulaNumber,(d-tree+2):d),(d-tree+1-copulaNumber)]
-  newPar[2:(tree+1),1] = RVM$par[c(d-tree+2-copulaNumber,(d-tree+2):d),(d-tree+1-copulaNumber)]
-  newPar2[2:(tree+1),1] = RVM$par2[c(d-tree+2-copulaNumber,(d-tree+2):d),(d-tree+1-copulaNumber)]
+  
+  newFamily[2:(tree+1),1] = RVM$family[c((d-tree+1):d),(d-tree+1-copulaNumber)]
+  newPar[2:(tree+1),1] = RVM$par[c((d-tree+1):d),(d-tree+1-copulaNumber)]
+  newPar2[2:(tree+1),1] = RVM$par2[c((d-tree+1):d),(d-tree+1-copulaNumber)]
   
   m = RVM$MaxMat[(d-tree+1), (d-tree+1-copulaNumber)]
   for (k in 1:(tree-1))
   {
     newMatrix[(k+1):(tree+1),(k+1)] = RVM$Matrix[c((d - m + 1),(d-tree+k+1):d),(d - m + 1)]
-    if (tree>2 && k<(tree-1))
-    {
-      xx = c((d - m + 2),(d-tree+k+2):d)
-    }
-    else
-    {
-      xx = (d - m + 2)
-    }
+    
+    xx = (d-tree+k+1):d
+    
+    
     newFamily[(k+2):(tree+1),(k+1)] = RVM$family[xx,(d - m + 1)]
     newPar[(k+2):(tree+1),(k+1)] = RVM$par[xx,(d - m + 1)]
     newPar2[(k+2):(tree+1),(k+1)] = RVM$par2[xx,(d - m + 1)]
