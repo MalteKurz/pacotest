@@ -336,7 +336,7 @@ void EqualCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arm
   
   arma::mat B;
   getMatrixForWeightedComparison(nGroups, B, nObsPerVector);
-  B.print();
+  //B.print();
   
   arma::vec bb(2);
   
@@ -345,7 +345,7 @@ void EqualCorrChi2TestStat(const arma::mat &Udata, arma::umat &indexVectors, arm
   *testStat = arma::as_scalar(nObs * (trans(A*rhos) * inv(A * sigmaRhos * trans(A)) * A*rhos));
   
   bb(1) = *testStat ;
-  bb.print();
+  //bb.print();
   
   return;
   
