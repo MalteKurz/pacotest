@@ -210,6 +210,16 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   
   pacotestResultList = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
   
+  indSplit = rowMeans(W) <= median(rowMeans(W))
+  
+  pairs.copuladata(as.copuladata(Udata), main = "all observations")
+  
+  pairs.copuladata(as.copuladata(Udata[indSplit,]),
+  main = paste(pacotestResultList$decisionTree$CentralNode$Variable, "<=", pacotestResultList$decisionTree$CentralNode$Threshold))
+  
+  pairs.copuladata(as.copuladata(Udata[!indSplit,]),
+  main = paste(pacotestResultList$decisionTree$CentralNode$Variable, ">", pacotestResultList$decisionTree$CentralNode$Threshold))
+  
   return(pacotestResultList)
   
 }
