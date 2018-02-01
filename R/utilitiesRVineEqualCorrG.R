@@ -249,22 +249,17 @@ getGinvD = function(data, svcmDataFrame, includeLastCopula = FALSE)
   }
   else
   {
-    dLowerRight = matrix(0,0,0)
-    dInvLowerRight = matrix(0,0,0)
+    dInvLowerRight = matrix(0, nParameters-nParametersFirstTree, nParameters-nParametersFirstTree)
   }
   
   if (nParametersFirstTree)
   {
     dLowerLeft = dLower[,1:nParametersFirstTree]
     xxForDInv = -dInvLowerRight %*% dLowerLeft %*% dInvUpperLeft
-    
-    
   }
   else
   {
-    dLowerLeft = matrix(0,0,0)
-    xxForDInv = matrix(0,0,0)
-    
+    xxForDInv = matrix(0, nParameters-nParametersFirstTree, nParametersFirstTree)
   }
   
   
