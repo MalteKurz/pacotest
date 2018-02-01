@@ -96,10 +96,11 @@ hessianLike = function(theta,u1,u2,family)
 }
 
 
-hessianLikeWithCpits = function(theta, data, svcmDataFrame, copulaInd)
+hessianLikeWithCpits = function(theta, thetaIsCloseToUpperBound, data, svcmDataFrame, copulaInd)
 {
-  #side = getSideIfParameterAtBound(theta,family)
-  result = jacobian(scoreWithCpits,theta, method='simple',data=data,svcmDataFrame=svcmDataFrame,copulaInd=copulaInd)
+  side = rep(NA, times = length(thetaIsCloseToUpperBound))
+  side[thetaIsCloseToUpperBound] = -1
+  result = jacobian(scoreWithCpits,theta, method='simple',data=data,svcmDataFrame=svcmDataFrame,copulaInd=copulaInd, side = side)
   
   return(result)
 }
@@ -161,9 +162,9 @@ cPit1_mult_cPit2 =  function(par, data, svcmDataFrame, copulaInd, mucPit1, mucPi
 }
 
 
-deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
+deriv1cPit2Mult = function(params, paramsIsCloseToUpperBound, data, svcmDataFrame, copulaInd, multFactor)
 {
-  side = vector(NA, length = length(paramsIsCloseToUpperBound))
+  side = rep(NA, times = length(paramsIsCloseToUpperBound))
   side[paramsIsCloseToUpperBound] = -1
   result = grad(cPit2Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor, side = side)
   
@@ -173,7 +174,7 @@ deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 
 deriv1cPit1Mult = function(params, paramsIsCloseToUpperBound, data, svcmDataFrame, copulaInd, multFactor)
 {
-  side = vector(NA, length = length(paramsIsCloseToUpperBound))
+  side = rep(NA, times = length(paramsIsCloseToUpperBound))
   side[paramsIsCloseToUpperBound] = -1
   result = grad(cPit1Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor, side = side)
   
@@ -181,9 +182,9 @@ deriv1cPit1Mult = function(params, paramsIsCloseToUpperBound, data, svcmDataFram
 }
 
 
-deriv1cPit1_mult_cPit2 = function(params, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
+deriv1cPit1_mult_cPit2 = function(params, paramsIsCloseToUpperBound, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
 {
-  side = vector(NA, length = length(paramsIsCloseToUpperBound))
+  side = rep(NA, times = length(paramsIsCloseToUpperBound))
   side[paramsIsCloseToUpperBound] = -1
   result = grad(cPit1_mult_cPit2, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor, side = side)
   
@@ -235,7 +236,8 @@ getGinvD = function(data, svcmDataFrame, includeLastCopula = FALSE)
       if (svcmDataFrame$nPar[jCopula])
       {
         parameters = extractParametersToVectors(svcmDataFrame, jCopula)
-        xx = hessianLikeWithCpits(parameters$parCpits, data, svcmDataFrame, jCopula)
+        xx = hessianLikeWithCpits(parameters$parCpits, parameters$parIsCloseToUpperBoundCpits,
+                                  data, svcmDataFrame, jCopula)
         dLower[svcmDataFrame$parInd[[jCopula]]-nParametersFirstTree,
                parameters$cPitsParInd] = xx #[((nrow(xx)-svcmDataFrame$nPar[jCopula]+1):nrow(xx)),]
       }

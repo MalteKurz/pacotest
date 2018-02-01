@@ -38,7 +38,7 @@ checkIfParIsCloseToUpperBound = function(params,family)
   
   delta = 1e-4
   
-  isClose = rep(NA,nPar)
+  isClose = rep(FALSE, nPar)
   
   if (family == 1 || family == 2)
   { # Gaussian & Student t
@@ -360,7 +360,7 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   
   copulaParInd = svcmDataFrame$parInd[[copulaInd]]
   parCopula = svcmDataFrame$par[[copulaInd]]
-  parIsCloseToUpperBoundCopula = svcmDataFrame$parIsCloseToUpperBound[copulaInd]
+  parIsCloseToUpperBoundCopula = svcmDataFrame$parIsCloseToUpperBound[[copulaInd]]
   
   # Collect everything in one variable
   cPitsParInd = sort(unique(c(copulaParInd,
@@ -386,11 +386,11 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   
   parIsCloseToUpperBoundCpitsWithoutCopula = unlist(svcmDataFrame$parIsCloseToUpperBound[cPitsWithoutCopulaCopulaInd])
   
-  return(list(parCopula=parCopula, copulaParInd=copulaParInd, copulaInd=copulaInd, parIsCloseToUpperBoundCopula,
-              parCpit1=parCpit1, cPit1ParInd=cPit1ParInd, cPit1CopulaInd=cPit1CopulaInd, parIsCloseToUpperBoundCpit1,
-              parCpit2=parCpit2, cPit2ParInd=cPit2ParInd, cPit2CopulaInd=cPit2CopulaInd, parIsCloseToUpperBoundCpit2,
-              parCpits=parCpits, cPitsParInd=cPitsParInd, cPitsCopulaInd=cPitsCopulaInd, parIsCloseToUpperBoundCpits,
-              parCpitsWithoutCopula=parCpitsWithoutCopula, cPitsWithoutCopulaParInd=cPitsWithoutCopulaParInd, cPitsWithoutCopulaCopulaInd=cPitsWithoutCopulaCopulaInd, parIsCloseToUpperBoundCpitsWithoutCopula))
+  return(list(parCopula=parCopula, copulaParInd=copulaParInd, copulaInd=copulaInd, parIsCloseToUpperBoundCopula=parIsCloseToUpperBoundCopula,
+              parCpit1=parCpit1, cPit1ParInd=cPit1ParInd, cPit1CopulaInd=cPit1CopulaInd, parIsCloseToUpperBoundCpit1=parIsCloseToUpperBoundCpit1,
+              parCpit2=parCpit2, cPit2ParInd=cPit2ParInd, cPit2CopulaInd=cPit2CopulaInd, parIsCloseToUpperBoundCpit2=parIsCloseToUpperBoundCpit2,
+              parCpits=parCpits, cPitsParInd=cPitsParInd, cPitsCopulaInd=cPitsCopulaInd, parIsCloseToUpperBoundCpits=parIsCloseToUpperBoundCpits,
+              parCpitsWithoutCopula=parCpitsWithoutCopula, cPitsWithoutCopulaParInd=cPitsWithoutCopulaParInd, cPitsWithoutCopulaCopulaInd=cPitsWithoutCopulaCopulaInd, parIsCloseToUpperBoundCpitsWithoutCopula=parIsCloseToUpperBoundCpitsWithoutCopula))
   
 }
 

@@ -34,7 +34,7 @@ likeMultDeriv =  function(params1,u1,u2,family1,params2,v1,v2,family2)
 deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 {
   side = getSideIfParameterAtBound(params1,family1)
-  result = jacobian(likeMultDeriv,params1, method='simple',u1=u1,u2=u2,family1=family1,params2=params2,v1=v1,v2=v2,family2=family2)
+  result = jacobian(likeMultDeriv,params1, method='simple',u1=u1,u2=u2,family1=family1,params2=params2,v1=v1,v2=v2,family2=family2, side=side)
   
   return(result)
 }
@@ -217,7 +217,7 @@ deriv2LikeMultWithRanks = function(params1,copulaInd1, params2,copulaInd2, data,
   result = jacobian(likeMultDerivWithRanks,params1, method='simple',
                     copulaInd1=copulaInd1,
                     params2=params2,copulaInd2=copulaInd2,
-                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
+                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData, side=side)
   return(result)
 }
 
