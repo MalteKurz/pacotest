@@ -60,6 +60,7 @@ scoreWithCpits =  function(params, data, svcmDataFrame, copulaInd)
 }
 
 
+
 like =  function(params,u1,u2,family)
 {
   nPar = getNumbOfParameters(family)
@@ -70,7 +71,8 @@ like =  function(params,u1,u2,family)
 
 score =  function(params,u1,u2,family)
 {
-  result = grad(like,params, method='simple',u1=u1,u2=u2,family=family)
+  side = getSideIfParameterAtBound(params,family)
+  result = grad(like,params, method='simple',u1=u1,u2=u2,family=family, side=side)
   
   return(result)
 }
@@ -87,8 +89,8 @@ likeMultFactor =  function(params,u1,u2,family,multFactor)
 
 hessianLike = function(theta,u1,u2,family)
 {
-  
-  result = jacobian(score,theta, method='simple',u1=u1,u2=u2,family=family)
+  side = getSideIfParameterAtBound(theta,family)
+  result = jacobian(score,theta, method='simple',u1=u1,u2=u2,family=family, side=side)
   
   return(result)
 }
@@ -96,7 +98,7 @@ hessianLike = function(theta,u1,u2,family)
 
 hessianLikeWithCpits = function(theta, data, svcmDataFrame, copulaInd)
 {
-  
+  #side = getSideIfParameterAtBound(theta,family)
   result = jacobian(scoreWithCpits,theta, method='simple',data=data,svcmDataFrame=svcmDataFrame,copulaInd=copulaInd)
   
   return(result)
@@ -161,7 +163,8 @@ cPit1_mult_cPit2 =  function(par, data, svcmDataFrame, copulaInd, mucPit1, mucPi
 
 deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 {
-  
+  #xxFamily = svcmDataFrame$family[copulaInd]
+  #side = getSideIfParameterAtBound(params,xxFamily)
   result = grad(cPit2Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
   
   return(result)
@@ -170,7 +173,8 @@ deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 
 deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 {
-  
+  #xxFamily = svcmDataFrame$family[copulaInd]
+  #side = getSideIfParameterAtBound(params,xxFamily)
   result = grad(cPit1Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
   
   return(result)
@@ -179,7 +183,8 @@ deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 
 deriv1cPit1_mult_cPit2 = function(params, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
 {
-  
+  #xxFamily = svcmDataFrame$family[copulaInd]
+  #side = getSideIfParameterAtBound(params,xxFamily)
   result = grad(cPit1_mult_cPit2, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor)
   
   return(result)
