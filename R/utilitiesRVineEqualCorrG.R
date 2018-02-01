@@ -263,7 +263,7 @@ getGinvD = function(data, svcmDataFrame, includeLastCopula = FALSE)
   else
   {
     dLowerLeft = matrix(0,0,0)
-    xxForDInv = matrix(0,3,0)
+    xxForDInv = matrix(0,0,0)
     
   }
   
