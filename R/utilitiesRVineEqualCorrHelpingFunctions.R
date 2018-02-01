@@ -21,47 +21,59 @@ getParAsScalars = function(nPar,par)
 
 getSideIfParameterAtBound = function(params,family)
 {
+  parIsCloseToUpperBound = checkIfParIsCloseToUpperBound(params,family)
+  
+  nPar = getNumbOfParameters(family)
+  side = rep(NA,nPar)
+  
+  side[parIsCloseToUpperBound] = -1
+  
+  return(side)
+}
+
+checkIfParIsCloseToUpperBound = function(params,family)
+{
   nPar = getNumbOfParameters(family)
   par = getParAsScalars(nPar,params)
   
   delta = 1e-4
   
-  side = rep(NA,nPar)
+  isClose = rep(NA,nPar)
   
   if (family == 1 || family == 2)
   { # Gaussian & Student t
-    if (par[1] + delta >= 1) { side[1] = -1 }
+    if (par[1] + delta >= 1) { isClose[1] = TRUE }
   } else if (family == 23 || family == 33)
   { # Rotated Clayton (90 and 270 degrees)
-    if (par[1] + delta >= 0) { side[1] = -1 }
+    if (par[1] + delta >= 0) { isClose[1] = TRUE }
   } else if (family == 5)
   { # Frank
-    if (par[1] + delta == 0){ side[1] = -1 }
+    if (par[1] + delta == 0){ isClose[1] = TRUE }
   } else if (family == 24 || family == 34 || family == 26 || family == 36)
   { # Rotated Gumbel (90 and 270 degrees) & Rotated Joe (90 and 270 degrees)
-    if (par[1] + delta >= -1){ side[1] = -1 }
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
   }  else if (family == 27 || family == 37)
   { # Rotated BB1 (90 and 270 degrees)
-    if (par[1] + delta >= 0){ side[1] = -1 }
-    if (par[2] + delta >= -1){ side[2] = -1 }
+    if (par[1] + delta >= 0){ isClose[1] = TRUE }
+    if (par[2] + delta >= -1){ isClose[2] = TRUE }
   }   else if (family == 28 || family == 38)
   { # Rotated BB6 (90 and 270 degrees)
-    if (par[1] + delta >= -1){ side[1] = -1 }
-    if (par[2] + delta >= -1){ side[2] = -1 }
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+    if (par[2] + delta >= -1){ isClose[2] = TRUE }
   }    else if (family == 29 || family == 39 || family == 30 || family == 40)
   { # Rotated BB7 (90 and 270 degrees) & Rotated BB8 (90 and 270 degrees)
-    if (par[1] + delta >= -1){ side[1] = -1 }
-    if (par[2] + delta >= 0){ side[2] = -1 }
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+    if (par[2] + delta >= 0){ isClose[2] = TRUE }
   }    else if (family == 10 || family == 20 || family == 104 || family == 114 || family == 204 || family == 214)
   { # (Survival) BB8 & (Survival) Tawn type 1 & (Survival) Tawn type 2
-    if (par[2] + delta >= 1){ side[2] = -1 }
+    if (par[2] + delta >= 1){ isClose[2] = TRUE }
   } else if (family == 124 || family == 134 || family == 224 || family == 234)
   { # Tawn type 1 (90 and 270 degrees) & Tawn type 2 (90 and 270 degrees)
-    if (par[1] + delta >= -1){ side[1] = -1 }
-    if (par[2] + delta >= 1){ side[2] = -1 }
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+    if (par[2] + delta >= 1){ isClose[2] = TRUE }
   } 
   
-  return(side)
+  return(isClose)
   
 }
 

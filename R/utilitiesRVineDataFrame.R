@@ -61,6 +61,7 @@ rVineDataFrameRep = function(rvm)
   nPar = rep(0, nCopulas)
   par = rep(list(numeric(0)), nCopulas)
   parInd = rep(list(numeric(0)), nCopulas)
+  parIsCloseToUpperBound = rep(list(numeric(0)), nCopulas)
   for (jCopula in 1:nCopulas)
   {
     nPar[jCopula] = getNumbOfParameters(family[jCopula])
@@ -69,11 +70,13 @@ rVineDataFrameRep = function(rvm)
     {
       par[[jCopula]] = par1[jCopula]
       parInd[[jCopula]] = sum(nPar[1:jCopula])
+      parIsCloseToUpperBound[[jCopula]] = checkIfParIsCloseToUpperBound(par1[jCopula],family[jCopula])
     }
     else if (nPar[jCopula] == 2)
     {
       par[[jCopula]] = c(par1[jCopula],par2[jCopula])
       parInd[[jCopula]] = seq(to=sum(nPar[1:jCopula]), by=1, length.out=2)
+      parIsCloseToUpperBound[[jCopula]] = checkIfParIsCloseToUpperBound(par[[jCopula]] ,family[jCopula])
     }
   }
   
@@ -134,7 +137,7 @@ rVineDataFrameRep = function(rvm)
   rownames = paste(paste("C",paste(var1, var2, sep=","),sep="_"), unlist(lapply(condset, paste, collapse=",")), sep = '; ')
   
   svcmDataFrame = data.frame(copulaInd, tree, var1, var2, I(condset), family,
-                         I(par),nPar, I(parInd),
+                         I(par),nPar, I(parInd), I(parIsCloseToUpperBound),
                          hfun, vfun,
                          cPit1Ind, cPit1hfun, I(cPit1CopulaInd), I(cPit1ParInd),
                          cPit2Ind, cPit2hfun, I(cPit2CopulaInd), I(cPit2ParInd),
