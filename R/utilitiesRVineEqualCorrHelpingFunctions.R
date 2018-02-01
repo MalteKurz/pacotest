@@ -355,8 +355,12 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   parCpit1 = unlist(svcmDataFrame$par[cPit1CopulaInd])
   parCpit2 = unlist(svcmDataFrame$par[cPit2CopulaInd])
   
+  parIsCloseToUpperBoundCpit1 = unlist(svcmDataFrame$parIsCloseToUpperBound[cPit1CopulaInd])
+  parIsCloseToUpperBoundCpit2 = unlist(svcmDataFrame$parIsCloseToUpperBound[cPit2CopulaInd])
+  
   copulaParInd = svcmDataFrame$parInd[[copulaInd]]
   parCopula = svcmDataFrame$par[[copulaInd]]
+  parIsCloseToUpperBoundCopula = svcmDataFrame$parIsCloseToUpperBound[copulaInd]
   
   # Collect everything in one variable
   cPitsParInd = sort(unique(c(copulaParInd,
@@ -366,7 +370,10 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   cPitsCopulaInd = sort(unique(c(copulaInd,
                                  cPit1CopulaInd,
                                  cPit2CopulaInd)))
+  
   parCpits = unlist(svcmDataFrame$par[cPitsCopulaInd])
+  
+  parIsCloseToUpperBoundCpits = unlist(svcmDataFrame$parIsCloseToUpperBound[cPitsCopulaInd])
   
   # The same but without the parameters of the last copula
   cPitsWithoutCopulaParInd = sort(unique(c(cPit1ParInd,
@@ -377,11 +384,13 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   
   parCpitsWithoutCopula = unlist(svcmDataFrame$par[cPitsWithoutCopulaCopulaInd])
   
-  return(list(parCopula=parCopula, copulaParInd=copulaParInd, copulaInd=copulaInd, 
-              parCpit1=parCpit1, cPit1ParInd=cPit1ParInd, cPit1CopulaInd=cPit1CopulaInd, 
-              parCpit2=parCpit2, cPit2ParInd=cPit2ParInd, cPit2CopulaInd=cPit2CopulaInd, 
-              parCpits=parCpits, cPitsParInd=cPitsParInd, cPitsCopulaInd=cPitsCopulaInd, 
-              parCpitsWithoutCopula=parCpitsWithoutCopula, cPitsWithoutCopulaParInd=cPitsWithoutCopulaParInd, cPitsWithoutCopulaCopulaInd=cPitsWithoutCopulaCopulaInd))
+  parIsCloseToUpperBoundCpitsWithoutCopula = unlist(svcmDataFrame$parIsCloseToUpperBound[cPitsWithoutCopulaCopulaInd])
+  
+  return(list(parCopula=parCopula, copulaParInd=copulaParInd, copulaInd=copulaInd, parIsCloseToUpperBoundCopula,
+              parCpit1=parCpit1, cPit1ParInd=cPit1ParInd, cPit1CopulaInd=cPit1CopulaInd, parIsCloseToUpperBoundCpit1,
+              parCpit2=parCpit2, cPit2ParInd=cPit2ParInd, cPit2CopulaInd=cPit2CopulaInd, parIsCloseToUpperBoundCpit2,
+              parCpits=parCpits, cPitsParInd=cPitsParInd, cPitsCopulaInd=cPitsCopulaInd, parIsCloseToUpperBoundCpits,
+              parCpitsWithoutCopula=parCpitsWithoutCopula, cPitsWithoutCopulaParInd=cPitsWithoutCopulaParInd, cPitsWithoutCopulaCopulaInd=cPitsWithoutCopulaCopulaInd, parIsCloseToUpperBoundCpitsWithoutCopula))
   
 }
 

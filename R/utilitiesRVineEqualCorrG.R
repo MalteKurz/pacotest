@@ -163,19 +163,19 @@ cPit1_mult_cPit2 =  function(par, data, svcmDataFrame, copulaInd, mucPit1, mucPi
 
 deriv1cPit2Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 {
-  #xxFamily = svcmDataFrame$family[copulaInd]
-  #side = getSideIfParameterAtBound(params,xxFamily)
-  result = grad(cPit2Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
+  side = vector(NA, length = length(paramsIsCloseToUpperBound))
+  side[paramsIsCloseToUpperBound] = -1
+  result = grad(cPit2Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor, side = side)
   
   return(result)
 }
 
 
-deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
+deriv1cPit1Mult = function(params, paramsIsCloseToUpperBound, data, svcmDataFrame, copulaInd, multFactor)
 {
-  #xxFamily = svcmDataFrame$family[copulaInd]
-  #side = getSideIfParameterAtBound(params,xxFamily)
-  result = grad(cPit1Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor)
+  side = vector(NA, length = length(paramsIsCloseToUpperBound))
+  side[paramsIsCloseToUpperBound] = -1
+  result = grad(cPit1Mult, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, multFactor=multFactor, side = side)
   
   return(result)
 }
@@ -183,9 +183,9 @@ deriv1cPit1Mult = function(params, data, svcmDataFrame, copulaInd, multFactor)
 
 deriv1cPit1_mult_cPit2 = function(params, data, svcmDataFrame, copulaInd, mucPit1, mucPit2, multFactor)
 {
-  #xxFamily = svcmDataFrame$family[copulaInd]
-  #side = getSideIfParameterAtBound(params,xxFamily)
-  result = grad(cPit1_mult_cPit2, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor)
+  side = vector(NA, length = length(paramsIsCloseToUpperBound))
+  side[paramsIsCloseToUpperBound] = -1
+  result = grad(cPit1_mult_cPit2, params, method='simple', data=data, svcmDataFrame=svcmDataFrame, copulaInd=copulaInd, mucPit1=mucPit1, mucPit2=mucPit2, multFactor=multFactor, side = side)
   
   return(result)
 }
@@ -297,6 +297,10 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
   parCpit2 = xx$parCpit2
   parCpitsPair = xx$parCpitsWithoutCopula
   
+  parIsCloseToUpperBoundCpit1 = xx$parIsCloseToUpperBoundCpit1
+  parIsCloseToUpperBoundCpit2 = xx$parIsCloseToUpperBoundCpit2
+  parIsCloseToUpperBoundCpitsPair = xx$parIsCloseToUpperBoundCpitsWithoutCopula
+  
   cPit1ParInd = xx$cPit1ParInd
   cPit2ParInd = xx$cPit2ParInd
   cPitsPairParInd = xx$cPitsWithoutCopulaParInd
@@ -320,26 +324,26 @@ gInvRvine = function(data, svcmDataFrame, indList, cPitData, theta)
     {
       # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
       J[1 + 4*(iGroup-1),cPit1ParInd] =
-        deriv1cPit1Mult(parCpit1, dataInGroup,svcmDataFrame , copulaInd ,-1)
+        deriv1cPit1Mult(parCpit1, parIsCloseToUpperBoundCpit1, dataInGroup,svcmDataFrame , copulaInd ,-1)
       # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
       J[2 + 4*(iGroup-1),cPit1ParInd] =
-        deriv1cPit1Mult(parCpit1, dataInGroup,svcmDataFrame , copulaInd ,-2*(cPit1InGroup-mu1))
+        deriv1cPit1Mult(parCpit1, parIsCloseToUpperBoundCpit1, dataInGroup,svcmDataFrame , copulaInd ,-2*(cPit1InGroup-mu1))
     }
     
     if (length(cPit2ParInd))
     {
       # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
       J[3 + 4*(iGroup-1),cPit2ParInd] =
-        deriv1cPit2Mult(parCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-1)
+        deriv1cPit2Mult(parCpit2, parIsCloseToUpperBoundCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-1)
       # Variance of the first CPIT (row) meets likelihood (copula parameter) columns
       J[4 + 4*(iGroup-1),cPit2ParInd] =
-        deriv1cPit2Mult(parCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-2*(cPit2InGroup-mu2))
+        deriv1cPit2Mult(parCpit2, parIsCloseToUpperBoundCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-2*(cPit2InGroup-mu2))
     }
     
     
     if (length(cPitsPairParInd))
     {
-      C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
+      C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, parIsCloseToUpperBoundCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1/sqrt(var1*var2))
     }
     
     # Next two lines are zero by construction
@@ -387,6 +391,10 @@ gInvRvineCov = function(data, svcmDataFrame, indList, cPitData, theta)
   parCpit2 = xx$parCpit2
   parCpitsPair = xx$parCpitsWithoutCopula
   
+  parIsCloseToUpperBoundCpit1 = xx$parIsCloseToUpperBoundCpit1
+  parIsCloseToUpperBoundCpit2 = xx$parIsCloseToUpperBoundCpit2
+  parIsCloseToUpperBoundCpitsPair = xx$parIsCloseToUpperBoundCpitsWithoutCopula
+  
   cPit1ParInd = xx$cPit1ParInd
   cPit2ParInd = xx$cPit2ParInd
   cPitsPairParInd = xx$cPitsWithoutCopulaParInd
@@ -408,20 +416,20 @@ gInvRvineCov = function(data, svcmDataFrame, indList, cPitData, theta)
     {
       # First moment of the first CPIT (row) meets likelihood (copula parameter) columns
       J[1 + 2*(iGroup-1),cPit1ParInd] =
-        deriv1cPit1Mult(parCpit1, dataInGroup,svcmDataFrame , copulaInd ,-1)
+        deriv1cPit1Mult(parCpit1, parIsCloseToUpperBoundCpit1, dataInGroup,svcmDataFrame , copulaInd ,-1)
     }
     
     if (length(cPit2ParInd))
     {
       # First moment of the second CPIT (row) meets likelihood (copula parameter) columns
       J[2 + 2*(iGroup-1),cPit2ParInd] =
-        deriv1cPit2Mult(parCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-1)
+        deriv1cPit2Mult(parCpit2, parIsCloseToUpperBoundCpit2, dataInGroup ,svcmDataFrame , copulaInd ,-1)
     }
     
     
     if (length(cPitsPairParInd))
     {
-      C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1)
+      C[iGroup,cPitsPairParInd] = deriv1cPit1_mult_cPit2(parCpitsPair, parIsCloseToUpperBoundCpitsPair, dataInGroup, svcmDataFrame , copulaInd , mu1, mu2, -1)
     }
     
     # Next two lines are zero by construction
