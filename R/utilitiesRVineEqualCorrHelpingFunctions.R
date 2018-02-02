@@ -52,6 +52,18 @@ checkIfParIsCloseToUpperBound = function(params,family)
   } else if (family == 24 || family == 34 || family == 26 || family == 36)
   { # Rotated Gumbel (90 and 270 degrees) & Rotated Joe (90 and 270 degrees)
     if (par[1] + delta >= -1){ isClose[1] = TRUE }
+  }  else if (family == 7 || family == 17 || family == 9 || family == 19)
+  { # (Survival) BB1 & (Survival) BB7
+    if (par[1] + delta >= 5){ isClose[1] = TRUE }
+    if (par[2] + delta >= 6){ isClose[2] = TRUE }
+  }  else if (family == 8 || family == 18)
+  { # (Survival) BB6
+    if (par[1] + delta >= 6){ isClose[1] = TRUE }
+    if (par[2] + delta >= 6){ isClose[2] = TRUE }
+  }  else if (family == 10 || family == 20)
+  { # (Survival) BB8
+    if (par[1] + delta >= 6){ isClose[1] = TRUE }
+    if (par[2] + delta >= 1){ isClose[2] = TRUE }
   }  else if (family == 27 || family == 37)
   { # Rotated BB1 (90 and 270 degrees)
     if (par[1] + delta >= 0){ isClose[1] = TRUE }
@@ -64,8 +76,8 @@ checkIfParIsCloseToUpperBound = function(params,family)
   { # Rotated BB7 (90 and 270 degrees) & Rotated BB8 (90 and 270 degrees)
     if (par[1] + delta >= -1){ isClose[1] = TRUE }
     if (par[2] + delta >= 0){ isClose[2] = TRUE }
-  }    else if (family == 10 || family == 20 || family == 104 || family == 114 || family == 204 || family == 214)
-  { # (Survival) BB8 & (Survival) Tawn type 1 & (Survival) Tawn type 2
+  }    else if (family == 104 || family == 114 || family == 204 || family == 214)
+  { # (Survival) Tawn type 1 & (Survival) Tawn type 2
     if (par[2] + delta >= 1){ isClose[2] = TRUE }
   } else if (family == 124 || family == 134 || family == 224 || family == 234)
   { # Tawn type 1 (90 and 270 degrees) & Tawn type 2 (90 and 270 degrees)
