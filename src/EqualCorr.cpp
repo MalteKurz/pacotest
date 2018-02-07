@@ -81,7 +81,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
     
 }
 
-void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int dimCondSet, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
   unsigned int n=Udata.n_rows;
@@ -95,7 +95,8 @@ void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, in
   double n_double = (double) n;
   double testStatWithPenalty;
   
-  Grouping(Udata, Wdata, indexVectorsGamma0, nObsPerVectorGamma0, gamma0Partition, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
+  // do not use aggInfo data for Gamma0 partitioning
+  Grouping(Udata, Wdata.cols(0, dimCondSet-1), indexVectorsGamma0, nObsPerVectorGamma0, gamma0Partition, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
   
   
   if (withEstUncert)
