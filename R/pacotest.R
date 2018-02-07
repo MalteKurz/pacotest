@@ -41,6 +41,10 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       svcmDataFrame = data.frame()
       cPitData = matrix()
     }
+    if (grouping == 4)
+    {
+      W = cbind(W, rowMeans(W))
+    }
     
     out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),
                       grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
