@@ -34,7 +34,7 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
   pValues = matrix(NA, nrow=d, ncol=d)
   
   for (k in (d-1):2) {
-    numbTests = sum((d-2):(k-1))
+    numbTests = sum((d-2):1)
     thisTreeLevel = level/numbTests
     
     # reset numbRejections in each tree
