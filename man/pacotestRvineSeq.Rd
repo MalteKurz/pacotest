@@ -28,6 +28,10 @@ The level of the test.
   \item{illustration}{
 Either 1 or 2. If illustration = 1, the p-value for each test for a (j-1)-th order partial copula is dislayed. If illustration = 2, a progress information is diplayed for each tree. It consists of the individual test level and the number of H0 rejections.
 }
+  \item{stopIfRejected}{
+  A logical variable indicating whether the sequential test procedure should be stopped in the first tree where an H0 for one of the conditional copulas is rejected.
+  }
+
 }
 
 \value{
