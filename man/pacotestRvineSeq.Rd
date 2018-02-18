@@ -42,6 +42,13 @@ A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}
 \item{pValues}{
 A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a p-value corresponding to the test result from a test for a (j-1)-th order partial copula.
 }
+\item{testResultSummary}{
+A data.frame summarizing the test results.
+The first column, Tree, is the tree number.
+The second column, NumbOfRejections, is the number of of rejections in the corresponding tree.
+The third column, IndividualTestLevel, is the level at which each individual test has been performed.
+The foruth column, Interpretation, provides an interpretation of the test result.
+}
 }
 
 \author{
