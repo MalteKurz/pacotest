@@ -2,12 +2,11 @@
 
 context("Unit test for the functionality of the extractSubTree() function")
 test_that("pacotestExtractSubTreeDim5", {
-  testthat::skip_on_cran()
   
   set.seed(3.141)
   d = 5
   families = 3:5
-  parametersRange = c(2,10)
+  parametersRange = c(3,8)
   
   # Generate random R-vine structure
   rvmMatrix = VineCopula::RVineMatrixSample(d, 1, naturalOrder = T)
@@ -16,7 +15,7 @@ test_that("pacotestExtractSubTreeDim5", {
   rvmFamilies[upper.tri(rvmFamilies,diag=T)]= 0
   
   rvmParameters = matrix(runif(d*d, parametersRange[1], parametersRange[2]), d, d)
-  rvmParameters[upper.tri(rvmParameters,diag=F)]= 0
+  rvmParameters[upper.tri(rvmParameters,diag=T)]= 0
   
   rvm = VineCopula::RVineMatrix(rvmMatrix[[1]], rvmFamilies, rvmParameters)
   
@@ -48,12 +47,11 @@ test_that("pacotestExtractSubTreeDim5", {
 
 
 test_that("pacotestExtractSubTreeDim9", {
-  testthat::skip_on_cran()
   
   set.seed(4)
   d = 9
   families = 3:5
-  parametersRange = c(2,9.87)
+  parametersRange = c(3,8)
   
   # Generate random R-vine structure
   rvmMatrix = VineCopula::RVineMatrixSample(d, 1, naturalOrder = T)
@@ -62,7 +60,7 @@ test_that("pacotestExtractSubTreeDim9", {
   rvmFamilies[upper.tri(rvmFamilies,diag=T)]= 0
   
   rvmParameters = matrix(runif(d*d, parametersRange[1], parametersRange[2]), d, d)
-  rvmParameters[upper.tri(rvmParameters,diag=F)]= 0
+  rvmParameters[upper.tri(rvmParameters,diag=T)]= 0
   
   rvm = VineCopula::RVineMatrix(rvmMatrix[[1]], rvmFamilies, rvmParameters)
   

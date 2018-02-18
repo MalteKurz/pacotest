@@ -12,6 +12,8 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     W = as.data.frame(W)
   }
   
+  dimCondSet = dim(W)[2]
+  
   # Prepare variables to be transfered to C++
   if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='CCC' || pacotestOptions$testType=='EC')
   {
@@ -42,7 +44,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
-    out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W),
+    out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W), dimCondSet,
                       grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
                       as.matrix(data), svcmDataFrame, cPitData,
                       aggPvalsNumbRep, expMinSampleSize, trainingDataFraction,

@@ -1,4 +1,4 @@
-pacotestset = function(pacotestOptions=list(testType = 'CCC', grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, estUncertWithRanks = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
+pacotestset = function(pacotestOptions=list(testType = 'CCC', grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "meanAll", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian"), testType = NA_character_, grouping= NA_character_, expMinSampleSize = NA_real_, aggInfo = NA_character_, withEstUncert = NA, estUncertWithRanks = NA, finalComparison = NA_character_, penaltyParams = c(NA_real_,NA_real_), gamma0Partition = NA_character_, groupedScatterplots = NA, decisionTreePlot = NA, numbBoot = NA_real_, ...)
   {
   # Display possible values
   Nargs = nargs()
@@ -335,7 +335,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
     {
       if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
       {
-        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "meanAll", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
       else
       {
@@ -346,7 +346,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
     {
       if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
       {
-        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "none", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
+        pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "meanAll", withEstUncert = FALSE, estUncertWithRanks = FALSE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
       }
       else
       {
@@ -358,7 +358,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
   {
     if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
     {
-      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "none")
+      pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "meanAll")
     }
     else
     {
