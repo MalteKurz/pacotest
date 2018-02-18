@@ -46,6 +46,9 @@ checkIfParIsCloseToUpperBound = function(params,family)
   } else if (family == 23 || family == 33)
   { # Rotated Clayton (90 and 270 degrees)
     if (par[1] + delta >= 0) { isClose[1] = TRUE }
+  } else if (family == 4 || family == 14)
+  { # (Survival) Gumbel
+    if (par[1] + delta >= 100) { isClose[1] = TRUE }
   } else if (family == 5)
   { # Frank
     if (par[1] + delta == 0){ isClose[1] = TRUE }
