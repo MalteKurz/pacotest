@@ -34,7 +34,7 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
   pValues = matrix(NA, nrow=d, ncol=d)
   
   for (k in (d-1):2) {
-    numbTests = sum((d-2):1)
+    numbTests = (d-2)*(d-1)/2
     thisTreeLevel = level/numbTests
     
     # reset numbRejections in each tree
@@ -99,25 +99,20 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
     
     testResultSummary[(d-k), 1:3] = c((d-k+1), numbRejections, thisTreeLevel)
     
-    if (rejectH0)
+    
+    if (numbRejections > 0)
     {
-      testResultSummary[(d-k), 4] = "No interpretation due to a rejection in a lower tree"
-    } else 
+      testResultSummary[(d-k), 4] = paste(numbRejections, "rejections at a individual test level of ",
+                                          thisTreeLevel, "--> Sequential test procedure can be stopped due to a rejection")
+    } else if (numbRejections == 0)
     {
-      if (numbRejections > 0)
+      if (k == 2)
       {
-        testResultSummary[(d-k), 4] = paste(numbRejections, "rejections at a individual test level of ",
-                                            thisTreeLevel, "--> Stop the sequential test due to a rejection")
-      } else if (numbRejections == 0)
+        testResultSummary[(d-k), 4] = paste("Simplifying assumption can not be rejected at a ", level*100, " % level")
+      }
+      else
       {
-        if (k == 2)
-        {
-          testResultSummary[(d-k), 4] = paste("Simplifying assumption can not be rejected at a ", level*100, " % level")
-        }
-        else
-        {
-          testResultSummary[(d-k), 4] = "No rejection --> Continue the sequential test in the next tree"
-        }
+        testResultSummary[(d-k), 4] = "No rejection --> Continue the sequential test in the next tree"
       }
     }
     
