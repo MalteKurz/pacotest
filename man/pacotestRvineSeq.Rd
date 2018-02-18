@@ -9,7 +9,8 @@ Sequentially Testing the Simplifying Assumption for R-Vine Copulas
 The function can be used to test the simplifying assumption for R-vine copulas in a sequential manner. Each pair-copula from the second tree on is tested to be a (j-1)-th order partial copula. To apply the function one needs to provide the data and a specified/estimated R-vine copula model in form of a \link[VineCopula]{RVineMatrix} from the \link[VineCopula]{VineCopula-package}. Additionally, a pacotest options list, which can be generated with the \code{\link{pacotestset}} function, needs to be provided.
 }
 \usage{
-pacotestRvineSeq(data, RVM, pacotestOptions, level = 0.05, illustration = 2, stopIfRejected = TRUE)
+pacotestRvineSeq(data, RVM, pacotestOptions,
+  level = 0.05, illustration = 2, stopIfRejected = TRUE)
 }
 
 \arguments{
