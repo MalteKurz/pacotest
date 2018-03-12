@@ -1,4 +1,4 @@
-# pacotest 0.2.1
+# pacotest 0.3
 ## Updates
 * Renaming of `ECORR` test to `CCC` test to be in line with the corresponding paper (Kurz and Spanhel (2017) <https://arxiv.org/abs/1706.02338>)
 * Added an additional, more informative, output, `testResultSummary`, to `pacotestRvineSeq()`
