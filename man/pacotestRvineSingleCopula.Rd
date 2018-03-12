@@ -42,7 +42,7 @@ The p-value of the test.
 The value of the test statistic.
 }
 \item{decisionTree}{
-The decision tree used to partition the support Omega0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
+The decision tree used to partition the support Lmabda0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
 }
 \item{S}{
 The boostrapped values of the test statistic (only for the test type \code{VI}).

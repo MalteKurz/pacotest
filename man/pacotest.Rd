@@ -1,7 +1,7 @@
 \name{pacotest}
 \alias{pacotest}
 
-\title{Testing for the Partial copula and the Simplifying Assumption for a Single Bivariate Conditional Copula}
+\title{Testing for the Partial Copula and the Simplifying Assumption for a Single Bivariate Conditional Copula}
 
 \description{
 The function can be used to test for the partial copula and the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test are implemeted. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
@@ -38,7 +38,7 @@ The p-value of the test.
 The value of the test statistic.
 }
 \item{decisionTree}{
-The decision tree used to partition the support Omega0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
+The decision tree used to partition the support Lambda0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
 }
 \item{S}{
 The boostrapped values of the test statistic (only for the test type \code{VI}).

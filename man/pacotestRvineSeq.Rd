@@ -45,10 +45,10 @@ A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}
 }
 \item{testResultSummary}{
 A data.frame summarizing the test results.
-The first column, Tree, is the tree number.
-The second column, NumbOfRejections, is the number of of rejections in the corresponding tree.
-The third column, IndividualTestLevel, is the level at which each individual test has been performed.
-The foruth column, Interpretation, provides an interpretation of the test result.
+The first column, \code{Tree}, is the tree number.
+The second column, \code{NumbOfRejections}, is the number of of rejections in the corresponding tree.
+The third column, \code{IndividualTestLevel}, is the level at which each individual test has been performed.
+The fourth column, \code{Interpretation}, provides an interpretation of the test result.
 }
 }
 
