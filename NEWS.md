@@ -1,6 +1,6 @@
 # pacotest 0.3
 ## Updates
-* Renaming of `ECORR` test to `CCC` test to be in line with the corresponding paper (Kurz and Spanhel (2017) <arXiv:1706.02338>)
+* Renaming of `ECORR` test to `CCC` test to be in line with the corresponding paper (Kurz and Spanhel (2017) <https://arxiv.org/abs/1706.02338>)
 * Added an additional, more informative, output, `testResultSummary`, to `pacotestRvineSeq()`
 * Option, `stopIfRejected`, added to `pacotestRvineSeq()`, which allows the user to stop the sequential test procedure in case of a rejection
 * Usage of Bonferroni correction in `pacotestRvineSeq()`
