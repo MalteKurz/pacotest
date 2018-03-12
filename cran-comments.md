@@ -30,3 +30,7 @@ checking installed package size ... NOTE
 ```
 -> This is all compiled code in the libs/ directory.
 
+## Reverse dependencies:
+
+The only reverse dependency `pencopulaCond` was checked successfully.
+
