@@ -1,5 +1,5 @@
 ## Submission comments
-This submission includes a number of updates to align the package with the corresponding paper (Kurz and Spanhel (2017) <https://arxiv.org/abs/1706.02338>) and several minor improvements and bug fixes.
+This submission includes a number of updates to align the package with the corresponding paper (Kurz and Spanhel (2017) <arXiv:1706.02338>) and several minor improvements and bug fixes.
 
 ## Test environments
 
