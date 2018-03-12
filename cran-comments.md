@@ -10,17 +10,7 @@ This submission includes a number of updates to align the package with the corre
 
 ## R CMD check results
 
-0 ERRORs | 0 WARNING | 2 NOTEs
-
-```
-checking CRAN incoming feasibility ... NOTE
-License components with restrictions and base license permitting such:
-MIT + file LICENSE
-File 'LICENSE':
-  YEAR: 2017
-  COPYRIGHT HOLDER: Malte S. Kurz
-```
--> The package is MIT licensed.
+0 ERRORs | 0 WARNING | 1 NOTE
 
 ```
 checking installed package size ... NOTE
