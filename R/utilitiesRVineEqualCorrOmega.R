@@ -2,8 +2,8 @@
 
 deriv1LikeMult = function(theta,u1,u2,family,multFactor)
 {
-  
-  result = grad(likeMultFactor,theta, method='simple',u1=u1,u2=u2,family=family,multFactor=multFactor)
+  side = getSideIfParameterAtBound(theta,family)
+  result = grad(likeMultFactor,theta, method='simple',u1=u1,u2=u2,family=family,multFactor=multFactor, side=side)
   
   return(result)
 }
@@ -25,15 +25,16 @@ likeMult =  function(params2,v1,v2,family2,params1,u1,u2,family1)
 
 likeMultDeriv =  function(params1,u1,u2,family1,params2,v1,v2,family2)
 {
-  result = grad(likeMult,params2, method='simple',v1=v1,v2=v2,family2=family2,params1=params1,u1=u1,u2=u2,family1=family1)
+  side = getSideIfParameterAtBound(params2,family2)
+  result = grad(likeMult,params2, method='simple',v1=v1,v2=v2,family2=family2,params1=params1,u1=u1,u2=u2,family1=family1, side=side)
   return(result)
 }
 
 
 deriv2LikeMult = function(params1,u1,u2,family1,params2,v1,v2,family2)
 {
-  
-  result = jacobian(likeMultDeriv,params1, method='simple',u1=u1,u2=u2,family1=family1,params2=params2,v1=v1,v2=v2,family2=family2)
+  side = getSideIfParameterAtBound(params1,family1)
+  result = jacobian(likeMultDeriv,params1, method='simple',u1=u1,u2=u2,family1=family1,params2=params2,v1=v1,v2=v2,family2=family2, side=side)
   
   return(result)
 }
@@ -199,21 +200,24 @@ likeMultWithRanks =  function(params2,copulaInd2, params1,copulaInd1, data, svcm
 
 likeMultDerivWithRanks =  function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData)
 {
+  xxFamily2 = svcmDataFrame$family[copulaInd2]
+  side = getSideIfParameterAtBound(params2,xxFamily2)
   result = grad(likeMultWithRanks,params2, method='simple',
                 copulaInd2=copulaInd2,
                 params1=params1,copulaInd1=copulaInd1,
-                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
+                data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData, side=side)
   return(result)
 }
 
 
 deriv2LikeMultWithRanks = function(params1,copulaInd1, params2,copulaInd2, data, svcmDataFrame, cPitData)
 {
-  
+  xxFamily1 = svcmDataFrame$family[copulaInd1]
+  side = getSideIfParameterAtBound(params1,xxFamily1)
   result = jacobian(likeMultDerivWithRanks,params1, method='simple',
                     copulaInd1=copulaInd1,
                     params2=params2,copulaInd2=copulaInd2,
-                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData)
+                    data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData, side=side)
   return(result)
 }
 
@@ -552,10 +556,12 @@ likeMultCrossTermWithRanks =  function(params1,copulaInd1, data, svcmDataFrame, 
 
 deriv1LikeMultWithRanks =  function(params1,copulaInd1, data, svcmDataFrame, cPitData, yyEstEqWithCpitsDeriv, yyEstEq, indGroup)
 {
+  xxFamily1 = svcmDataFrame$family[copulaInd1]
+  side = getSideIfParameterAtBound(params1,xxFamily1)
   result = grad(likeMultCrossTermWithRanks,params1, method='simple',
                 copulaInd1=copulaInd1,
                 data=data, svcmDataFrame=svcmDataFrame, cPitData=cPitData,
-                yyEstEqWithCpitsDeriv = yyEstEqWithCpitsDeriv, yyEstEq = yyEstEq, indGroup = indGroup)
+                yyEstEqWithCpitsDeriv = yyEstEqWithCpitsDeriv, yyEstEq = yyEstEq, indGroup = indGroup, side=side)
   return(result)
 }
 

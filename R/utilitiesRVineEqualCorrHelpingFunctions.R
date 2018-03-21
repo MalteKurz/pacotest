@@ -19,6 +19,81 @@ getParAsScalars = function(nPar,par)
 }
 
 
+getSideIfParameterAtBound = function(params,family)
+{
+  parIsCloseToUpperBound = checkIfParIsCloseToUpperBound(params,family)
+  
+  nPar = getNumbOfParameters(family)
+  side = rep(NA,nPar)
+  
+  side[parIsCloseToUpperBound] = -1
+  
+  return(side)
+}
+
+checkIfParIsCloseToUpperBound = function(params,family)
+{
+  nPar = getNumbOfParameters(family)
+  par = getParAsScalars(nPar,params)
+  
+  delta = 1e-4
+  
+  isClose = rep(FALSE, nPar)
+  
+  if (family == 1 || family == 2)
+  { # Gaussian & Student t
+    if (par[1] + delta >= 1) { isClose[1] = TRUE }
+  } else if (family == 23 || family == 33)
+  { # Rotated Clayton (90 and 270 degrees)
+    if (par[1] + delta >= 0) { isClose[1] = TRUE }
+  } else if (family == 4 || family == 14)
+  { # (Survival) Gumbel
+    if (par[1] + delta >= 100) { isClose[1] = TRUE }
+  } else if (family == 5)
+  { # Frank
+    if (par[1] + delta == 0){ isClose[1] = TRUE }
+  } else if (family == 24 || family == 34 || family == 26 || family == 36)
+  { # Rotated Gumbel (90 and 270 degrees) & Rotated Joe (90 and 270 degrees)
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+  }  else if (family == 7 || family == 17 || family == 9 || family == 19)
+  { # (Survival) BB1 & (Survival) BB7
+    if (par[1] + delta >= 5){ isClose[1] = TRUE }
+    if (par[2] + delta >= 6){ isClose[2] = TRUE }
+  }  else if (family == 8 || family == 18)
+  { # (Survival) BB6
+    if (par[1] + delta >= 6){ isClose[1] = TRUE }
+    if (par[2] + delta >= 6){ isClose[2] = TRUE }
+  }  else if (family == 10 || family == 20)
+  { # (Survival) BB8
+    if (par[1] + delta >= 6){ isClose[1] = TRUE }
+    if (par[2] + delta >= 1){ isClose[2] = TRUE }
+  }  else if (family == 27 || family == 37)
+  { # Rotated BB1 (90 and 270 degrees)
+    if (par[1] + delta >= 0){ isClose[1] = TRUE }
+    if (par[2] + delta >= -1){ isClose[2] = TRUE }
+  }   else if (family == 28 || family == 38)
+  { # Rotated BB6 (90 and 270 degrees)
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+    if (par[2] + delta >= -1){ isClose[2] = TRUE }
+  }    else if (family == 29 || family == 39 || family == 30 || family == 40)
+  { # Rotated BB7 (90 and 270 degrees) & Rotated BB8 (90 and 270 degrees)
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+    if (par[2] + delta >= 0){ isClose[2] = TRUE }
+  }    else if (family == 104 || family == 114 || family == 204 || family == 214)
+  { # (Survival) Tawn type 1 & (Survival) Tawn type 2
+    if (par[2] + delta >= 1){ isClose[2] = TRUE }
+  } else if (family == 124 || family == 134 || family == 224 || family == 234)
+  { # Tawn type 1 (90 and 270 degrees) & Tawn type 2 (90 and 270 degrees)
+    if (par[1] + delta >= -1){ isClose[1] = TRUE }
+    if (par[2] + delta >= 1){ isClose[2] = TRUE }
+  } 
+  
+  return(isClose)
+  
+}
+
+
+
 hfun = function(family,cPit1,cPit2,params)
 {
   out = BiCopHfunc1(cPit2, cPit1, family, params[1], params[2])
@@ -295,8 +370,12 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   parCpit1 = unlist(svcmDataFrame$par[cPit1CopulaInd])
   parCpit2 = unlist(svcmDataFrame$par[cPit2CopulaInd])
   
+  parIsCloseToUpperBoundCpit1 = unlist(svcmDataFrame$parIsCloseToUpperBound[cPit1CopulaInd])
+  parIsCloseToUpperBoundCpit2 = unlist(svcmDataFrame$parIsCloseToUpperBound[cPit2CopulaInd])
+  
   copulaParInd = svcmDataFrame$parInd[[copulaInd]]
   parCopula = svcmDataFrame$par[[copulaInd]]
+  parIsCloseToUpperBoundCopula = svcmDataFrame$parIsCloseToUpperBound[[copulaInd]]
   
   # Collect everything in one variable
   cPitsParInd = sort(unique(c(copulaParInd,
@@ -306,7 +385,10 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   cPitsCopulaInd = sort(unique(c(copulaInd,
                                  cPit1CopulaInd,
                                  cPit2CopulaInd)))
+  
   parCpits = unlist(svcmDataFrame$par[cPitsCopulaInd])
+  
+  parIsCloseToUpperBoundCpits = unlist(svcmDataFrame$parIsCloseToUpperBound[cPitsCopulaInd])
   
   # The same but without the parameters of the last copula
   cPitsWithoutCopulaParInd = sort(unique(c(cPit1ParInd,
@@ -317,11 +399,13 @@ extractParametersToVectors = function(svcmDataFrame, copulaInd)
   
   parCpitsWithoutCopula = unlist(svcmDataFrame$par[cPitsWithoutCopulaCopulaInd])
   
-  return(list(parCopula=parCopula, copulaParInd=copulaParInd, copulaInd=copulaInd, 
-              parCpit1=parCpit1, cPit1ParInd=cPit1ParInd, cPit1CopulaInd=cPit1CopulaInd, 
-              parCpit2=parCpit2, cPit2ParInd=cPit2ParInd, cPit2CopulaInd=cPit2CopulaInd, 
-              parCpits=parCpits, cPitsParInd=cPitsParInd, cPitsCopulaInd=cPitsCopulaInd, 
-              parCpitsWithoutCopula=parCpitsWithoutCopula, cPitsWithoutCopulaParInd=cPitsWithoutCopulaParInd, cPitsWithoutCopulaCopulaInd=cPitsWithoutCopulaCopulaInd))
+  parIsCloseToUpperBoundCpitsWithoutCopula = unlist(svcmDataFrame$parIsCloseToUpperBound[cPitsWithoutCopulaCopulaInd])
+  
+  return(list(parCopula=parCopula, copulaParInd=copulaParInd, copulaInd=copulaInd, parIsCloseToUpperBoundCopula=parIsCloseToUpperBoundCopula,
+              parCpit1=parCpit1, cPit1ParInd=cPit1ParInd, cPit1CopulaInd=cPit1CopulaInd, parIsCloseToUpperBoundCpit1=parIsCloseToUpperBoundCpit1,
+              parCpit2=parCpit2, cPit2ParInd=cPit2ParInd, cPit2CopulaInd=cPit2CopulaInd, parIsCloseToUpperBoundCpit2=parIsCloseToUpperBoundCpit2,
+              parCpits=parCpits, cPitsParInd=cPitsParInd, cPitsCopulaInd=cPitsCopulaInd, parIsCloseToUpperBoundCpits=parIsCloseToUpperBoundCpits,
+              parCpitsWithoutCopula=parCpitsWithoutCopula, cPitsWithoutCopulaParInd=cPitsWithoutCopulaParInd, cPitsWithoutCopulaCopulaInd=cPitsWithoutCopulaCopulaInd, parIsCloseToUpperBoundCpitsWithoutCopula=parIsCloseToUpperBoundCpitsWithoutCopula))
   
 }
 
@@ -453,4 +537,5 @@ computeCpits <- function(data, svcmDataFrame, copulaInd, whichCpit)
   return(cPitOut)
   
 }
+
 

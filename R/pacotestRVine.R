@@ -1,5 +1,7 @@
-pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustration=2)
+pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustration=2, stopIfRejected = TRUE)
 {
+  pacotestOptions = pacotestset(pacotestOptions)
+  
   data <- as.matrix(data)
   d <- dim(RVM$Matrix)[1]
   o <- diag(RVM$Matrix)
@@ -23,14 +25,20 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
     data <- data[, o[length(o):1]]
   }
   
-  numbRejections = 0
+  testResultSummary = data.frame(matrix(ncol = 4, nrow = d-2))
+  names(testResultSummary) = c("Tree", "NumbOfRejections", "IndividualTestLevel", "Interpretation")
+  
+  rejectH0 = FALSE
   
   out = matrix(list(),nrow = d, ncol =d)
   pValues = matrix(NA, nrow=d, ncol=d)
   
   for (k in (d-1):2) {
-    numbTests = sum((d-2):(k-1))
+    numbTests = (d-2)*(d-1)/2
     thisTreeLevel = level/numbTests
+    
+    # reset numbRejections in each tree
+    numbRejections = 0
     
     for (i in (k - 1):1) {
       
@@ -88,25 +96,48 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
       }
     }
     
+    
+    testResultSummary[(d-k), 1:3] = c((d-k+1), numbRejections, thisTreeLevel)
+    
+    
+    if (numbRejections > 0)
+    {
+      testResultSummary[(d-k), 4] = paste(numbRejections, "rejections at a individual test level of ",
+                                          thisTreeLevel, "--> Sequential test procedure can be stopped due to a rejection")
+    } else if (numbRejections == 0)
+    {
+      if (k == 2)
+      {
+        testResultSummary[(d-k), 4] = paste("Simplifying assumption can not be rejected at a ", level*100, " % level")
+      }
+      else
+      {
+        testResultSummary[(d-k), 4] = "No rejection --> Continue the sequential test in the next tree"
+      }
+    }
+    
+    rejectH0 = any(rejectH0, numbRejections>0)
+    
     if (illustration == 2)
     {
       message((d-k+1),". Tree: ",
-              numbRejections," rejections at a individual test level of ",
-              thisTreeLevel)
+              testResultSummary$Interpretation[(d-k)])
     }
     
-    if (numbRejections>0)
+    if (rejectH0 & stopIfRejected)
     {
       message("Stopped the sequential test due to a rejection")
-      #return(list(pacotestResultLists=out,pValues = pValues))
+      return(list(pacotestResultLists=out, pValues = pValues, testResultSummary = testResultSummary))
     }
+    
   }
-  return(list(pacotestResultLists=out,pValues = pValues))
+  return(list(pacotestResultLists = out, pValues = pValues, testResultSummary = testResultSummary))
 }
 
 
 pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNumber)
 {
+  pacotestOptions = pacotestset(pacotestOptions)
   
   data <- as.matrix(data)
   d <- dim(RVM$Matrix)[1]

@@ -3,34 +3,13 @@ addAggInfo = function(W, aggInfoType=NULL, sizeKeepingMethod=NULL)
 {
   if (!is.null(aggInfoType))
   {
-    if (is.null(sizeKeepingMethod) || sizeKeepingMethod == 'splitTrainEvaluate')
+    if (is.null(sizeKeepingMethod) || sizeKeepingMethod == 'splitTrainEvaluate' || sizeKeepingMethod == 'penalty')
     {
       W = cbindAggInfo(W, aggInfoType)
     }
     else
     {
-      if (sizeKeepingMethod == 'penalty')
-      {
-        if (dim(W)[2]>2 && aggInfoType=="meanPairwise")
-        {
-          # Add the information defined aggInfoType
-          xx = addAggInfo(W,aggInfoType)
-          yy = addAggInfo(W,'meanAll')
-          yyLastName = names(yy)[dim(yy)[2]]
-          
-          W = cbind(xx,yy[,yyLastName])
-          
-          names(W)[dim(W)[2]] = yyLastName
-        }
-        else
-        {
-          W = addAggInfo(W,'meanAll')
-        }
-      }
-      else
-      {
-        stop('addAggInfo error')
-      }
+      stop('addAggInfo error')
     }
   }
   

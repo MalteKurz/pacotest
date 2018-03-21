@@ -1,7 +1,7 @@
 \name{pacotestset}
 \alias{pacotestset}
 
-\title{Create and alter a pacotest options list}
+\title{Create and Alter a Pacotest Options List}
 
 \description{ The function creates or updates a list object, which is required for applying the \code{\link{pacotest}} function.}
 
@@ -127,6 +127,6 @@ Malte S. Kurz
 }
 
 \references{
-Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
+Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
 }
 

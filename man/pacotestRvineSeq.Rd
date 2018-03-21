@@ -9,7 +9,8 @@ Sequentially Testing the Simplifying Assumption for R-Vine Copulas
 The function can be used to test the simplifying assumption for R-vine copulas in a sequential manner. Each pair-copula from the second tree on is tested to be a (j-1)-th order partial copula. To apply the function one needs to provide the data and a specified/estimated R-vine copula model in form of a \link[VineCopula]{RVineMatrix} from the \link[VineCopula]{VineCopula-package}. Additionally, a pacotest options list, which can be generated with the \code{\link{pacotestset}} function, needs to be provided.
 }
 \usage{
-pacotestRvineSeq(data, RVM, pacotestOptions, level = 0.05, illustration = 2)
+pacotestRvineSeq(data, RVM, pacotestOptions,
+  level = 0.05, illustration = 2, stopIfRejected = TRUE)
 }
 
 \arguments{
@@ -28,6 +29,10 @@ The level of the test.
   \item{illustration}{
 Either 1 or 2. If illustration = 1, the p-value for each test for a (j-1)-th order partial copula is dislayed. If illustration = 2, a progress information is diplayed for each tree. It consists of the individual test level and the number of H0 rejections.
 }
+  \item{stopIfRejected}{
+  A logical variable indicating whether the sequential test procedure should be stopped in the first tree where an H0 for one of the conditional copulas is rejected.
+  }
+
 }
 
 \value{
@@ -37,6 +42,13 @@ A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}
 }
 \item{pValues}{
 A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a p-value corresponding to the test result from a test for a (j-1)-th order partial copula.
+}
+\item{testResultSummary}{
+A data.frame summarizing the test results.
+The first column, \code{Tree}, is the tree number.
+The second column, \code{NumbOfRejections}, is the number of of rejections in the corresponding tree.
+The third column, \code{IndividualTestLevel}, is the level at which each individual test has been performed.
+The fourth column, \code{Interpretation}, provides an interpretation of the test result.
 }
 }
 
@@ -49,9 +61,9 @@ Malte S. Kurz
 }
 
 \references{
-Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
+Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
 
-Spanhel, F. and M. S. Kurz (2015). "Simplified vine copula models: Approximations based on the simplifying assumption". ArXiv e-prints http://arxiv.org/abs/1510.06971.
+Spanhel, F. and M. S. Kurz (2015), " The partial vine copula: A dependence measure and approximation based on the simplifying assumption", ArXiv e-prints \url{https://arxiv.org/abs/1510.06971}.
 }
 
 \examples{

@@ -42,7 +42,7 @@ The p-value of the test.
 The value of the test statistic.
 }
 \item{decisionTree}{
-The decision tree used to partition the support Omega0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
+The decision tree used to partition the support Lmabda0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
 }
 \item{S}{
 The boostrapped values of the test statistic (only for the test type \code{VI}).
@@ -58,9 +58,9 @@ Malte S. Kurz
 }
 
 \references{
-Kurz, M. S. and F. Spanhel (2016), "Testing the simplifying assumption in high-dimensional vine copulas", Unpublished Working Paper.
+Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
 
-Spanhel, F. and M. S. Kurz (2015). Simplified vine copula models: Approximations based on the simplifying assumption. ArXiv e-prints http://arxiv.org/abs/1510.06971.
+Spanhel, F. and M. S. Kurz (2015), " The partial vine copula: A dependence measure and approximation based on the simplifying assumption", ArXiv e-prints \url{https://arxiv.org/abs/1510.06971}.
 }
 
 \examples{
