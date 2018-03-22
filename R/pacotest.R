@@ -44,6 +44,12 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       cPitData = matrix()
     }
     
+    #if (!is.null(pacotestOptions$onlyVar1) && pacotestOptions$onlyVar1 > 0)
+    #{
+    #  W = W[,pacotestOptions$onlyVar1, drop =F]
+    #}
+    
+    
     out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W), dimCondSet,
                       grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
                       as.matrix(data), svcmDataFrame, cPitData,
@@ -100,8 +106,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     
   }
   
-  
-  #partitionPlot(out$decisionTree,W)
+  #if (!is.null(pacotestOptions$onlyVar1) && pacotestOptions$onlyVar1 > 0)
+  #{
+  #  W = cbind(W, W, W)
+  #  names(W) = c("V2", "V3", "Mean(V2, V3)")
+  #}
+  #
+  #out$decisionTree$CentralNode$Threshold = 0.75
+  #partitionPlotWithGroups(out$decisionTree,Udata,W)
   
   
   return(out)

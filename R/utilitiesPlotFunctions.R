@@ -527,6 +527,8 @@ partitionPlot = function(decisionTree, W)
   else
   {
     p2 = ggplot()
+    p2WithKendall = ggplot()
+    p2WithPoints = ggplot()
   }
   
   #   grid.arrange(p1WithPoints, p2WithPoints,
@@ -551,6 +553,77 @@ partitionPlot = function(decisionTree, W)
   dev.off()
 }
 
+
+partitionPlotWithGroups = function(decisionTree, Udata, W)
+{
+  
+  
+  gg = getCondKendallPlotData()
+  
+  
+  points = ggplot() +
+    geom_point(data = W, aes_string(names(W)[1], names(W)[2])) +
+    xlab(names(W)[1]) +
+    ylab(names(W)[2])
+  
+  kendall = ggplot(gg, aes(x, y)) +
+    geom_tile(aes(fill = z)) +
+    scale_fill_gradient(low="gray90", high="gray10") + 
+    labs(fill = expression(paste("Kendall's ", tau))) +
+    xlab(names(W)[1]) +
+    ylab(names(W)[2])
+  
+  
+  
+  
+  cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
+  cbbPalette = c("black", "gray10", "gray70", "gray60", "gray20","gray80","gray40")
+  
+  partitionForPlot = getPartitionForPlot(decisionTree, W)
+  
+  data1 = partitionForPlot[is.element(partitionForPlot$subset, c('l','r')),]
+  PartitionLabeling = c(expression(Lambda["3"]),
+                        expression(Lambda["4"]))
+  partitionBreaks = c('r', 'l')
+  
+  p1WithKendall = kendall +
+    geom_polygon(data=data1, aes(x=x, y=y, group=subset, colour=subset),  fill=NA, size = 4) +
+    scale_colour_manual(values = cbbPalette[2:3], labels=PartitionLabeling, breaks = partitionBreaks) +
+    labs(colour = "Subsets") +
+    coord_fixed() +
+    scale_x_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) + 
+    scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
+    xlab(expression(u["2"])) + 
+    ylab(expression(u["3"])) + 
+    theme_bw(base_size = 30) +
+    theme(legend.spacing = unit(1, "lines"),
+          legend.key.size = unit(1, "cm"),
+          panel.spacing = unit(2.5, "lines"),
+          panel.grid.major = element_line(colour = "grey85", size = .75),
+          panel.grid.minor = element_line(colour = "grey85", size = .75)) + 
+    guides(colour = guide_legend(order = 1))
+  
+  
+  dataLabels = names(Udata)
+  
+  names(Udata) = c("V1", "V2")
+  
+  partIdentifier = c("3", "4")
+  xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels, partIdentifier)
+  
+  
+  gA <- ggplotGrob(p1WithKendall)
+  gB <- ggplotGrob(xx$pL)
+  gC <- ggplotGrob(xx$pR)
+  
+  # Set the widths
+  gB$widths = gA$widths
+  gC$widths = gA$widths
+  
+  grid.arrange(gA, gB, gC, nrow = 1, ncol = 3)
+  
+  
+}
 
 getPartitionForPlot = function(decisionTree, W)
 {
