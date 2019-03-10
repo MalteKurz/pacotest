@@ -191,6 +191,8 @@ test_that("pacotestRvineSeq7", {
     xx = pacotestRvineSeq(data5, rvmHatData5, pacotestOptions[[iTest]], 0.05)$pValues
     resPacotestComputed[iTest,1:3] = c(xx[3,1:2], xx[2,1])
     
+    print(iTest)
+    sprintf("%.16f",resPacotestComputed[iTest,1])
     expect_equal(resPacotestComputed[iTest,1:3], hardCodedResPacotestRvineSeq[iTest,1:3], tolerance = 1e-2)
     
   }

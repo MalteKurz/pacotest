@@ -19,6 +19,8 @@ test_that("pacotestRvineSingleCopula1", {
     set.seed(seedsPerTest[iTest])
     resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
     
+    print(iTest)
+    sprintf("%.16f",resPacotestComputed[iTest,1])
     expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
     
   }
@@ -44,6 +46,8 @@ test_that("pacotestRvineSingleCopula2", {
     set.seed(seedsPerTest[iTest])
     resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
     
+    print(iTest)
+    sprintf("%.16f",resPacotestComputed[iTest,1])
     expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
     
   }
@@ -70,6 +74,8 @@ test_that("pacotestRvineSingleCopula3", {
     set.seed(seedsPerTest[iTest])
     resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
     
+    print(iTest)
+    sprintf("%.16f",resPacotestComputed[iTest,1])
     expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
     
   }
@@ -95,6 +101,8 @@ test_that("pacotestRvineSingleCopula4", {
     set.seed(seedsPerTest[iTest])
     resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
     
+    print(iTest)
+    sprintf("%.16f",resPacotestComputed[iTest,1])
     expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
     
   }
