@@ -151,7 +151,7 @@ hardCodedResults = read.table("hardCodedResEcorr.csv", header = FALSE, sep = ","
 
 if (getRversion() >= "3.6.0")
 {
-  hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula_rversion_gt3_6_0", header = FALSE, sep = ",", na.strings=c("NA"))
+  hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula_rversion_gt3_6_0.csv", header = FALSE, sep = ",", na.strings=c("NA"))
 } else
 {
   hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula.csv", header = FALSE, sep = ",", na.strings=c("NA"))
