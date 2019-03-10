@@ -111,9 +111,10 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   #  W = cbind(W, W, W)
   #  names(W) = c("V2", "V3", "Mean(V2, V3)")
   #}
-  #
-  #out$decisionTree$CentralNode$Threshold = 0.75
+  
+  #out$decisionTree$CentralNode$Threshold = 0.25
   #partitionPlotWithGroups(out$decisionTree,Udata,W)
+  #partitionPlot(out$decisionTree,W)
   
   
   return(out)

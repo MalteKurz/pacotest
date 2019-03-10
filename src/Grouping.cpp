@@ -15,7 +15,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       arma::mat Wsum = sum(Wdata,1);
       
       double b = arma::as_scalar(median(Wsum));
-      //b = 0.75;
+      //b = 0.25;
       
       indXData = arma::find(Wsum < b);
       indYData = arma::find(Wsum >= b );

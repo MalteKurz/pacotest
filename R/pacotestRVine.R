@@ -134,6 +134,15 @@ pacotestRvineSeq <- function(data, RVM, pacotestOptions, level=0.05, illustratio
   return(list(pacotestResultLists = out, pValues = pValues, testResultSummary = testResultSummary))
 }
 
+panel.hist <- function(x, ...)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
 
 pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNumber)
 {
@@ -204,6 +213,8 @@ pacotestRvineSingleCopula <- function(data, RVM, pacotestOptions, tree, copulaNu
   W = subRVM$data[,svcmDataFrame$condset[[copulaInd]], drop=FALSE]
   
   pacotestResultList = pacotest(Udata,W,pacotestOptions, data = subRVM$data, svcmDataFrame = svcmDataFrame, cPitData = cPitData)
+  
+  pairs(Udata, diag.panel = panel.hist)
   
   return(pacotestResultList)
   

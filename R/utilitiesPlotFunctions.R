@@ -401,7 +401,7 @@ partitionPlot = function(decisionTree, W)
   kendall = ggplot(gg, aes(x, y)) +
     geom_tile(aes(fill = z)) +
     scale_fill_gradient(low="gray90", high="gray10") + 
-    labs(fill = expression(paste("Kendall's ", tau))) +
+    labs(fill = expression(paste("Correlation ", r["14|23"]))) +
     xlab(names(W)[1]) +
     ylab(names(W)[2])
   
@@ -549,8 +549,7 @@ partitionPlot = function(decisionTree, W)
   grid.newpage()
   grid.arrange(gA, gB, gC, gD, nrow = 2, ncol = 2)
   
-  dev.copy(pdf,"partitionPlot.pdf", width=30 , height=20)
-  dev.off()
+  dev.copy2pdf(file = paste("./partitionPlot", sep=""), height=13)
 }
 
 
@@ -569,7 +568,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   kendall = ggplot(gg, aes(x, y)) +
     geom_tile(aes(fill = z)) +
     scale_fill_gradient(low="gray90", high="gray10") + 
-    labs(fill = expression(paste("Kendall's ", tau))) +
+    labs(fill = expression(paste("Correlation ", r["14|23"]))) +
     xlab(names(W)[1]) +
     ylab(names(W)[2])
   
@@ -582,8 +581,8 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   partitionForPlot = getPartitionForPlot(decisionTree, W)
   
   data1 = partitionForPlot[is.element(partitionForPlot$subset, c('l','r')),]
-  PartitionLabeling = c(expression(Lambda["3"]),
-                        expression(Lambda["4"]))
+  PartitionLabeling = c(expression(Lambda["1"]),
+                        expression(Lambda["2"]))
   partitionBreaks = c('r', 'l')
   
   p1WithKendall = kendall +
@@ -608,7 +607,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   
   names(Udata) = c("V1", "V2")
   
-  partIdentifier = c("3", "4")
+  partIdentifier = c("1", "2")
   xx = getGroupedPlot(Udata, W, decisionTree$CentralNode$Variable, decisionTree$CentralNode$Threshold, dataLabels, partIdentifier)
   
   
@@ -622,6 +621,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   
   grid.arrange(gA, gB, gC, nrow = 1, ncol = 3)
   
+  dev.copy2pdf(file = paste("./singleVariable.pdf", sep=""), height=15.5)
   
 }
 
@@ -632,7 +632,8 @@ getPartitionForPlot = function(decisionTree, W)
     stop("partitionPlot is only implemented for the two-dimensional conditioning set, where the mean has been added as aggregated information.")
   }
   
-  eps = 0.007
+  #eps = 0.012 # with dec tree
+  eps = 0.02 # simple one variable
   
   if (grepl('^Mean', decisionTree$CentralNode$Variable))
   {

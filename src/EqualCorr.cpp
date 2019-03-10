@@ -127,9 +127,17 @@ void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, in
   }
   
   
+  //arma::vec testStats(3);
+  //testStats(0) = *TestStat;
+  //testStats(1) = testStatWithPenalty;
+  
   int nGroups = indexVectorsGamma0.n_cols;
   double df = nGroups-1;
   *TestStat = max(*TestStat,testStatWithPenalty) - n_double*penaltyLevel/(pow(n_double,penaltyPower));
+  
+  //testStats(2) = *TestStat;
+  
+  //testStats.print();
   
   
   *pValue = 1-Chi2CDF(*TestStat, df);
