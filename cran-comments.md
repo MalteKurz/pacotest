@@ -1,12 +1,12 @@
 ## Submission comments
-This submission includes a number of updates to align the package with the corresponding paper (Kurz and Spanhel (2017) <arXiv:1706.02338>) and several minor improvements and bug fixes.
+This submission fixes unit tests in accordance to the new default method for generating from a discrete uniform distribution changed (R version >=3.6.0).
 
 ## Test environments
 
-* local ubuntu 14.04 install: R 3.4.3
-* ubuntu 14.04 (on travis-ci): R-release (R 3.4.2), R-devel (2018-03-12)
-* macOS Sierra 10.12.6 (on travis-ci): R-release (R 3.4.3)
-* Windows Server 2012 R2 x64 (on appveyor): R-release (R 3.4.4)
+* local ubuntu 14.04 install: R 3.4.4
+* ubuntu 14.04 (on travis-ci): R-release (R 3.5.2), R-devel (2018-03-09)
+* macOS Sierra 10.13.3 (on travis-ci): R-release (R 3.5.2)
+* Windows Server 2012 R2 x64 (on appveyor): R-release (R 3.5.2)
 
 ## R CMD check results
 
