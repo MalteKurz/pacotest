@@ -147,11 +147,18 @@ seedsPerTest = sample(1:2222, 250)
 
 
 ## load hard-coded results
-hardCodedResults = read.table("hardCodedResEcorr.csv", header = FALSE, sep = ",")
 
-hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula.csv", header = FALSE, sep = ",", na.strings=c("NA"))
-
-hardCodedResPacotestRvineSeq = as.matrix(read.table("hardCodedResPacotestRvineSeq.csv", header = FALSE, sep = ",", na.strings=c("NA")))
+if (getRversion() >= "3.6.0")
+{
+  hardCodedResults = read.table("hardCodedResEcorr_rversion_gt3_6_0.csv", header = FALSE, sep = ",")
+  hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula_rversion_gt3_6_0.csv", header = FALSE, sep = ",", na.strings=c("NA"))
+  hardCodedResPacotestRvineSeq = as.matrix(read.table("hardCodedResPacotestRvineSeq_rversion_gt3_6_0.csv", header = FALSE, sep = ",", na.strings=c("NA")))
+} else
+{
+  hardCodedResults = read.table("hardCodedResEcorr.csv", header = FALSE, sep = ",")
+  hardCodedResPacotestRvineSingleCopula = read.table("hardCodedResPacotestRvineSingleCopula.csv", header = FALSE, sep = ",", na.strings=c("NA"))
+  hardCodedResPacotestRvineSeq = as.matrix(read.table("hardCodedResPacotestRvineSeq.csv", header = FALSE, sep = ",", na.strings=c("NA")))
+}
 colnames(hardCodedResPacotestRvineSeq) <- NULL
 ## Simulate sample data
 

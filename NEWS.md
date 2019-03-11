@@ -1,3 +1,7 @@
+# pacotest 0.3.1
+## Updates
+* The default method for generating from a discrete uniform distribution changed (R version >=3.6.0). Regression test results have been adapted accordingly.
+
 # pacotest 0.3
 ## Updates
 * Renaming of `ECORR` test to `CCC` test to be in line with the corresponding paper (Kurz and Spanhel (2017) <https://arxiv.org/abs/1706.02338>)
