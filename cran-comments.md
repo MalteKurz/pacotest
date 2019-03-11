@@ -1,5 +1,5 @@
 ## Submission comments
-This submission fixes unit tests in accordance to the new default method for generating from a discrete uniform distribution changed (R version >=3.6.0).
+This submission fixes unit tests in accordance to the new default method for generating from a discrete uniform distribution (R version >=3.6.0).
 
 ## Test environments
 
