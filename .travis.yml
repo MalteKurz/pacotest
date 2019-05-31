@@ -12,7 +12,7 @@ env:
 addons:
   apt:
     packages:
-      - libgsl0-dev
+      - libgsl-dev
 os:
   - linux
   - osx
@@ -37,6 +37,7 @@ matrix:
 branches:
   only: 
     - master
+    - m-dev
 
 before_script:
   - Rscript -e 'Rcpp::compileAttributes(Sys.getenv("TRAVIS_BUILD_DIR"))'
