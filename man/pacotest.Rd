@@ -66,8 +66,10 @@ Spanhel, F. and M. S. Kurz (2016), "The partial copula: Properties and associate
 \examples{
 #####################
 # Generate an options list, e.g., the constant conditional correlation (CCC)
-# test with default options.
-pacotestOptions=pacotestset(testType='CCC')
+# test with default options. We use known PITs and don't estimate the parameters
+# in the lower trees of the vine copulas and therefore additionally alter the
+# two parameters withEstUncert and estUncertWithRanks to FALSE.
+pacotestOptions=pacotestset(testType='CCC', withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
 #####################
 # Use the specified options to test for the simplifying assumption

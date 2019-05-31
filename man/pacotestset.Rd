@@ -97,7 +97,7 @@ The number of bootstrap replications for computing p-values using the multiplier
 
 \details{
 Calling without any arguments prints all possible options.
-           \preformatted{pacotestset}
+           \preformatted{pacotestset()}
 
 Calling with a string, that specifies the test type, gives back a option list with the default values corresponding to each test.
            \preformatted{pacotestOptions = pacotestset('CCC')}
