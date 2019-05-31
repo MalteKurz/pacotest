@@ -7,12 +7,16 @@
 The function can be used to test for the partial copula and the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test are implemeted. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
 
 \details{
-Applying a test with default options (cf. \code{\link{pacotestset}}).
+Applying a test with default options (cf. \code{\link{pacotestset}}) and with known (i.e., not estimated) PITs (probability integral transforms) in\code{U}.
            \preformatted{out = pacotest(U,W,'CCC')}
            \preformatted{out = pacotest(U,W,'VI')}
 
 Applying a test with options specified in \code{pacotestOptions}
            \preformatted{out = pacotest(U,W,pacotestOptions)}
+
+Note that when calling \code{pacotest(U,W,'CCC')}, the default options for the CCC test are used (cf. \code{\link{pacotestset}}), but the two parameters \code{withEstUncert = FALSE} and \code{estUncertWithRanks = FALSE} are altered. In contrast when calling \code{pacotestOptions = pacotestset('CCC')}, the two parameters are set to \code{withEstUncert = TRUE} and \code{estUncertWithRanks = TRUE}. For the CCC test, under the default setting, it is assumed that estimated PPITs are provided and the test statistic is computed under consideration of estimation uncertainty of the probability integral transforms, i.e., \code{withEstUncert = TRUE} and \code{estUncertWithRanks = TRUE}. To apply \code{pacotest} with \code{withEstUncert = TRUE}, three additional inputs have to be provdided (\code{data}, \code{svcmDataFrame} and \code{cPitData}).
+
+In the vine copula context, PPITs are usually estimated and not known. Therefore, in the vine copula context it is recommended to use the functions \code{\link{pacotestRvineSeq}} or \code{\link{pacotestRvineSingleCopula}} instead of \code{\link{pacotest}}. These functions automatically pass through the additional arguments \code{data}, \code{svcmDataFrame}, \code{cPitData} to the function \code{\link{pacotest}} and the CCC test can be applied in its default setting with consideration of estimation uncertainty of the probability integral transforms, i.e., \code{withEstUncert = TRUE} and \code{estUncertWithRanks = TRUE}.
 }
 
 \arguments{ 
