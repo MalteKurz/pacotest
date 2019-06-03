@@ -13,7 +13,6 @@ addons:
   apt:
     packages:
       - libgsl0-dev
-      - libgsl-dev
 os:
   - linux
   - osx
