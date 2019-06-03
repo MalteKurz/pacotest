@@ -67,7 +67,7 @@ Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximation
 }
 
 \examples{
-# Sample data and R-vine copula selection are taken
+\donttest{# Sample data and R-vine copula selection are taken
 # from the documentation of RVineStructureSelect
 # of the VineCopula package.
 
@@ -94,6 +94,6 @@ pacotestOptions = pacotestset('CCC')
 
 # Test for the simplifying assumption.
 pacotestResultList = pacotestRvineSeq(dataSet, RVM,
-                                      pacotestOptions)
+                                      pacotestOptions)}
 }
 
