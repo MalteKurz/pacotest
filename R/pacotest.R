@@ -1,6 +1,6 @@
 pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
-  if (is.character(pacotestOptions) && (is.element(pacotestOptions$grouping, c('CCC', 'ECORR', 'ECOV'))))
+  if (is.character(pacotestOptions) && (is.element(pacotestOptions, c('CCC', 'ECORR', 'ECOV'))))
   {
     pacotestOptions = pacotestset(testType = pacotestOptions, withEstUncert = FALSE, estUncertWithRanks = FALSE)
   }
