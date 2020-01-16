@@ -7,7 +7,7 @@
 The function can be used to test for the partial copula and the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test are implemented. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
 
 \details{
-Applying a test with default options (cf. \code{\link{pacotestset}}) and with known (i.e., not estimated) PITs (probability integral transforms) in\code{U}.
+Applying a test with default options (cf. \code{\link{pacotestset}}) and with known (i.e., not estimated) PITs (probability integral transforms) in \code{U}.
            \preformatted{out = pacotest(U,W,'CCC')}
            \preformatted{out = pacotest(U,W,'VI')}
 
