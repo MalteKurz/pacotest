@@ -1,11 +1,11 @@
 Package: pacotest
 Type: Package
 Title: Testing for Partial Copulas and the Simplifying Assumption in Vine Copulas
-Version: 0.3.1
-Date: 2019-03-11
-Authors@R: person("Malte S.", "Kurz", email = "malte.kurz@stat.uni-muenchen.de",
+Version: 0.4.0
+Date: 2020-12-15
+Authors@R: person("Malte S.", "Kurz", email = "malte.simon.kurz@uni-hamburg.de",
   role = c("aut", "cre"))
-Maintainer: Malte S. Kurz <malte.kurz@stat.uni-muenchen.de>
+Maintainer: Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>
 Description: Routines for two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test are provided (Kurz and Spanhel (2017) <arXiv:1706.02338>). The tests can be applied to check whether a conditional copula coincides with its partial copula. Functions to test whether a regular vine copula satisfies the so-called simplifying assumption or to test a single copula within a regular vine copula to be a (j-1)-th order partial copula are available. The CCC test comes with a decision tree approach to allow testing in high-dimensional settings.
 License: MIT + file LICENSE
 Imports: Rcpp (>= 0.11.4), VineCopula (>= 2.0.5), numDeriv, ggplot2(>= 2.0.0), gridExtra, methods

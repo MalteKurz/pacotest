@@ -25,7 +25,7 @@ Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-d
 
 Quessy, J.-F. (2010), "Applications and asymptotic power of marginal-free tests of stochastic vectorial independence", Journal of Statistical Planning and Inference 140(11), pp. 3058-3075.
 
-Spanhel, F. and M. S. Kurz (2015), " The partial vine copula: A dependence measure and approximation based on the simplifying assumption", ArXiv e-prints \url{https://arxiv.org/abs/1510.06971}.
+Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), 1254-1291.
 
 Spanhel, F. and M. S. Kurz (2016), "The partial copula: Properties and associated dependence measures", Statistics & Probability Letters 119, pp. 76-83.
 }

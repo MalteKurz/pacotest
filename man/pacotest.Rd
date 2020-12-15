@@ -4,15 +4,19 @@
 \title{Testing for the Partial Copula and the Simplifying Assumption for a Single Bivariate Conditional Copula}
 
 \description{
-The function can be used to test for the partial copula and the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test are implemeted. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
+The function can be used to test for the partial copula and the simplifying assumption for a bivariate conditional copula using different tests. Two different test types, the Constant Conditional Correlation (CCC) test and the Vectorial Independence (VI) test are implemented. For all tests different options can be set by generating a pacotest options list using the \code{\link{pacotestset}} function.}
 
 \details{
-Applying a test with default options (cf. \code{\link{pacotestset}}).
+Applying a test with default options (cf. \code{\link{pacotestset}}) and with known (i.e., not estimated) PITs (probability integral transforms) in \code{U}.
            \preformatted{out = pacotest(U,W,'CCC')}
            \preformatted{out = pacotest(U,W,'VI')}
 
 Applying a test with options specified in \code{pacotestOptions}
            \preformatted{out = pacotest(U,W,pacotestOptions)}
+
+Note that when calling \code{pacotest(U,W,'CCC')}, the default options for the CCC test are used (cf. \code{\link{pacotestset}}), but the two parameters \code{withEstUncert = FALSE} and \code{estUncertWithRanks = FALSE} are altered. In contrast when calling \code{pacotestOptions = pacotestset('CCC')}, the two parameters are set to \code{withEstUncert = TRUE} and \code{estUncertWithRanks = TRUE}. For the CCC test, under the default setting, it is assumed that estimated PPITs are provided and the test statistic is computed under consideration of estimation uncertainty of the probability integral transforms, i.e., \code{withEstUncert = TRUE} and \code{estUncertWithRanks = TRUE}. To apply \code{pacotest} with \code{withEstUncert = TRUE}, three additional inputs have to be provided (\code{data}, \code{svcmDataFrame} and \code{cPitData}).
+
+In the vine copula context, PPITs are usually estimated and not known. Therefore, in the vine copula context it is recommended to use the functions \code{\link{pacotestRvineSeq}} or \code{\link{pacotestRvineSingleCopula}} instead of \code{\link{pacotest}}. These functions automatically pass through the additional arguments \code{data}, \code{svcmDataFrame}, \code{cPitData} to the function \code{\link{pacotest}} and the CCC test can be applied in its default setting with consideration of estimation uncertainty of the probability integral transforms, i.e., \code{withEstUncert = TRUE} and \code{estUncertWithRanks = TRUE}.
 }
 
 \arguments{ 
@@ -38,10 +42,10 @@ The p-value of the test.
 The value of the test statistic.
 }
 \item{decisionTree}{
-The decision tree used to partition the support Lambda0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
+The decision tree used to partition the support Lambda0 of the conditioning variable W. It is provided as a list consisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
 }
 \item{S}{
-The boostrapped values of the test statistic (only for the test type \code{VI}).
+The bootstrapped values of the test statistic (only for the test type \code{VI}).
 }
 }
 
@@ -58,7 +62,7 @@ Malte S. Kurz
 \references{
 Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
 
-Spanhel, F. and M. S. Kurz (2015), " The partial vine copula: A dependence measure and approximation based on the simplifying assumption", ArXiv e-prints \url{https://arxiv.org/abs/1510.06971}.
+Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), 1254-1291.
 
 Spanhel, F. and M. S. Kurz (2016), "The partial copula: Properties and associated dependence measures", Statistics & Probability Letters 119, pp. 76-83.
 }
@@ -66,8 +70,10 @@ Spanhel, F. and M. S. Kurz (2016), "The partial copula: Properties and associate
 \examples{
 #####################
 # Generate an options list, e.g., the constant conditional correlation (CCC)
-# test with default options.
-pacotestOptions=pacotestset(testType='CCC')
+# test with default options. We use known PITs and don't estimate the parameters
+# in the lower trees of the vine copulas and therefore additionally alter the
+# two parameters withEstUncert and estUncertWithRanks to FALSE.
+pacotestOptions=pacotestset(testType='CCC', withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
 #####################
 # Use the specified options to test for the simplifying assumption
@@ -101,7 +107,7 @@ Result$pValue
 
 ##### Example 3: Simplified three-dim. C-Vine #####
 # Simulate from a three-dimensional C-Vine copula with C_12 and C_13
-# being Clayton copulas with prameter theta and C_23|1 being a Clayton copula with
+# being Clayton copulas with parameter theta and C_23|1 being a Clayton copula with
 # functional parameter theta(x_{1}) = theta / (1+theta)
 W = matrix(runif(3*N),N,3)
 X = matrix(NA,N,3)
@@ -113,7 +119,7 @@ theta_23_1 = theta /(1+theta)
 X[,3] = (W[,2]^(-theta_23_1)*(W[,3]^((-theta_23_1)/(1+theta_23_1))-1)+1)^(-1/theta_23_1);
 X[,3] = (W[,1]^(-theta)*(X[,3]^((-theta)/(1+theta))-1)+1)^(-1/theta);
 
-# Get Pseudo-Obs from the conditional copula C_23|1
+# Get pseudo-observations from the conditional copula C_23|1
 U = matrix(NA,N,2)
 U[,1] = (X[,1]^theta*(X[,2]^(-theta)-1)+1)^(-(1+theta)/theta);
 U[,2] = (X[,1]^theta*(X[,3]^(-theta)-1)+1)^(-(1+theta)/theta);

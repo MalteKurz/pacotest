@@ -47,7 +47,7 @@ A logical variable indicating whether the asymptotic-variance covariance matrix 
 \item{estUncertWithRanks}{
 For \code{testType = CCC}:
 
-A logical variable indicating whether the asymptotic-variance covariance matrix of the estimated correlations should be corrected for the estimation uncertainty induced by using a semiparametric estimtor for the vine copula, i.e., empirical cdf's for the univariate margins and parametric copula families as building blocks of the R-vine copula.
+A logical variable indicating whether the asymptotic-variance covariance matrix of the estimated correlations should be corrected for the estimation uncertainty induced by using a semiparametric estimator for the vine copula, i.e., empirical cdf's for the univariate margins and parametric copula families as building blocks of the R-vine copula.
 }
 
 \item{finalComparison}{
@@ -61,7 +61,7 @@ Possible values: \code{pairwiseMax} | \code{all}
 \item{penaltyParams}{
 For \code{testType = CCC} with \code{grouping = TreeCCC | TreeECOV | TreeEC}:
 
-A vector of length two, specifying the functional form of the penalty. The penalty is a function of the sample size n and choosen to be lambda(n) = cn^(-beta). The first entry of the vector is specifying the level c of the penalty and needs to be a positive real number. The second entry of the vector is specifying the power beta of the penalty and needs to be choosen from the interval (0,1).
+A vector of length two, specifying the functional form of the penalty. The penalty is a function of the sample size n and chosen to be lambda(n) = cn^(-beta). The first entry of the vector is specifying the level c of the penalty and needs to be a positive real number. The second entry of the vector is specifying the power beta of the penalty and needs to be chosen from the interval (0,1).
 }
 
 \item{gamma0Partition}{
@@ -97,7 +97,7 @@ The number of bootstrap replications for computing p-values using the multiplier
 
 \details{
 Calling without any arguments prints all possible options.
-           \preformatted{pacotestset}
+           \preformatted{pacotestset()}
 
 Calling with a string, that specifies the test type, gives back a option list with the default values corresponding to each test.
            \preformatted{pacotestOptions = pacotestset('CCC')}

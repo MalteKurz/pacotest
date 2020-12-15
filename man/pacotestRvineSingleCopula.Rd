@@ -17,7 +17,7 @@ pacotestRvineSingleCopula(data, RVM, pacotestOptions, tree, copulaNumber)
 
 \arguments{
   \item{data}{
-  A (n x d) matrix (or data frame) of [0,1] data (i.e. uniform marigns).
+  A (n x d) matrix (or data frame) of [0,1] data (i.e. uniform margins).
   }
   \item{RVM}{
   An \link[VineCopula]{RVineMatrix} object (\link[VineCopula]{VineCopula-package}) which includes the structure, the pair-copula families and parameters of an R-vine copula.
@@ -42,10 +42,10 @@ The p-value of the test.
 The value of the test statistic.
 }
 \item{decisionTree}{
-The decision tree used to partition the support Lmabda0 of the conditioning variable W. It is provided as a list conisisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
+The decision tree used to partition the support Lmabda0 of the conditioning variable W. It is provided as a list consisting of three nodes (\code{CentralNode}, \code{LeftNode} and \code{RightNode}) represented as lists and the variable \code{LeavesForFinalComparison}. Each node consists of the \code{Variable} used to perform the split, the corresponding \code{Quantile} and \code{Threshold}.
 }
 \item{S}{
-The boostrapped values of the test statistic (only for the test type \code{VI}).
+The bootstrapped values of the test statistic (only for the test type \code{VI}).
 }
 }
 
@@ -60,11 +60,11 @@ Malte S. Kurz
 \references{
 Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
 
-Spanhel, F. and M. S. Kurz (2015), " The partial vine copula: A dependence measure and approximation based on the simplifying assumption", ArXiv e-prints \url{https://arxiv.org/abs/1510.06971}.
+Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), 1254-1291.
 }
 
 \examples{
-# Sample data and R-vine copula selection are taken
+\donttest{# Sample data and R-vine copula selection are taken
 # from the documentation of RVineStructureSelect
 # of the VineCopula package.
 
@@ -99,6 +99,6 @@ tree = 3
 copulaNumber = 1
 
 pacotestResultList = pacotestRvineSingleCopula(dataSet, RVM,
-                                                pacotestOptions, tree, copulaNumber)
+                                                pacotestOptions, tree, copulaNumber)}
 }
 

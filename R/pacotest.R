@@ -1,6 +1,13 @@
 pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
-  pacotestOptions = pacotestset(pacotestOptions)
+  if (is.character(pacotestOptions) && (is.element(pacotestOptions, c('CCC', 'ECORR', 'ECOV'))))
+  {
+    pacotestOptions = pacotestset(testType = pacotestOptions, withEstUncert = FALSE, estUncertWithRanks = FALSE)
+  }
+  else
+  {
+    pacotestOptions = pacotestset(pacotestOptions)
+  }
   
   if (!is.data.frame(Udata))
   {
@@ -42,6 +49,29 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       data = matrix()
       svcmDataFrame = data.frame()
       cPitData = matrix()
+    }
+    else
+    {
+      if (is.null(data) && is.null(svcmDataFrame) && is.null(cPitData))
+      {
+        warning(paste('pacotest called with option pacotestOptions$withEstUncert = TRUE but the three inputs data, svcmDataFrame and cPitData are NULL. ',
+                      'To apply pacotest with known PITs (without consideration of estimation uncertainty) set pacotestOptions$withEstUncert = FALSE and pacotestOptions$estUncertWithRanks = FALSE ',
+                      'In the context of vine copulas, the functions pacotestRvineSeq and pacotestRvineSingleCopula are recommended and provide the missing inputs ',
+                      'for the pacotest function automatically.\n',
+                      'Due to the missing inputs for consideration of estimation uncertainty pacotest with known PITs is applied, i.e., pacotestOptions$withEstUncert = FALSE and pacotestOptions$estUncertWithRanks = FALSE are being set.',
+                      sep=''))
+        pacotestOptions$withEstUncert = FALSE
+        pacotestOptions$estUncertWithRanks = FALSE
+        data = matrix()
+        svcmDataFrame = data.frame()
+        cPitData = matrix()
+      } else if (is.null(data) || is.null(svcmDataFrame) || is.null(cPitData))
+      {
+        stop(paste('pacotest called with option pacotestOptions$withEstUncert = TRUE but at least one of the three inputs data, svcmDataFrame or cPitData is NULL. ',
+                   'To apply pacotest with known PITs (without consideration of estimation uncertainty) set pacotestOptions$withEstUncert = FALSE and pacotestOptions$estUncertWithRanks = FALSE. ',
+                   'In the context of vine copulas, the functions pacotestRvineSeq and pacotestRvineSingleCopula are recommended and provide the missing inputs ',
+                   'for the pacotest function automatically.', sep=''))
+      }
     }
     
     out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W), dimCondSet,

@@ -1,22 +1,33 @@
 ## Submission comments
-This submission fixes unit tests in accordance to the new default method for generating from a discrete uniform distribution (R version >=3.6.0).
+This submission updates default settings in alignment with the main reference (Kurz and Spanhel (2017) <arXiv:1706.02338>). Furthermore, due to a new affiliation the maintainer e-mail was updated. Besides that a couple of typos in the documentation have been fixed.
 
 ## Test environments
 
-* local ubuntu 14.04 install: R 3.4.4
-* ubuntu 14.04 (on travis-ci): R-release (R 3.5.2), R-devel (2018-03-09)
-* macOS Sierra 10.13.3 (on travis-ci): R-release (R 3.5.2)
-* Windows Server 2012 R2 x64 (on appveyor): R-release (R 3.5.2)
+* ubuntu 20.04 (on github-actions): R-release (R 4.0.3), R-devel (2020-12-12 r79619)
+* local ubuntu 20.04 install: R 3.6.3
+* Mac OS X 10.15.7 (on github-actions): R-release (R 4.0.3)
+* Microsoft Windows Server 2019 (on github-actions): R-release (R 4.0.3)
 
 ## R CMD check results
 
-0 ERRORs | 0 WARNING | 1 NOTE
+0 ERRORs | 0 WARNING | 2 NOTEs
+
+```
+checking CRAN incoming feasibility ... NOTE
+Maintainer: ‘Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>’
+
+New maintainer:
+  Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>
+Old maintainer(s):
+  Malte S. Kurz <malte.kurz@stat.uni-muenchen.de>
+```
+--> Due to a new affiliation the maintainer e-mail was updated.
 
 ```
 checking installed package size ... NOTE
-  installed size is  6.9Mb
+  installed size is 11.8Mb
   sub-directories of 1Mb or more:
-    libs   6.7Mb
+    libs  11.5Mb
 ```
 -> This is all compiled code in the libs/ directory.
 
