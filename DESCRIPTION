@@ -1,8 +1,8 @@
 Package: pacotest
 Type: Package
 Title: Testing for Partial Copulas and the Simplifying Assumption in Vine Copulas
-Version: 0.3.1.9000
-Date: 2019-05-31
+Version: 0.4.0
+Date: 2020-12-15
 Authors@R: person("Malte S.", "Kurz", email = "malte.simon.kurz@uni-hamburg.de",
   role = c("aut", "cre"))
 Maintainer: Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>

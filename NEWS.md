@@ -1,3 +1,15 @@
+# pacotest 0.4.0
+## Updates
+* Change of default parameters! By default the CCC test is now being computed under consideration of estimation uncertainty of the probability integral transforms, i.e., with options `withEstUncert = TRUE` and `estUncertWithRanks = TRUE`. Before, up to version 0.3.1, both parameters defaulted to `FALSE`.
+* Note that when calling `pacotest(U,W,'CCC')`, the default options for the CCC test are used (cf. `pacotestset`), but the two parameters `withEstUncert = FALSE` and `estUncertWithRanks = FALSE` are altered. In contrast when calling `pacotestOptions = pacotestset('CCC')`, the two parameters are set to `withEstUncert = TRUE` and `estUncertWithRanks = TRUE`. For the CCC test, under the default setting, it is assumed that estimated PPITs are provided and the test statistic is computed under consideration of estimation uncertainty of the probability integral transforms, i.e., `withEstUncert = TRUE` and `estUncertWithRanks = TRUE`. To apply `pacotest` with `withEstUncert = TRUE`, three additional inputs have to be provided (`data`, `svcmDataFrame` and `cPitData`).
+* In the vine copula context, PPITs are usually estimated and not known. Therefore, in the vine copula context it is recommended to use the functions `pacotestRvineSeq` or `pacotestRvineSingleCopula` instead of `pacotest`. These functions automatically pass through the additional arguments `data`, `svcmDataFrame` and `cPitData` to the function `pacotest` and the CCC test can be applied in its default setting with consideration of estimation uncertainty of the probability integral transforms, i.e., `withEstUncert = TRUE` and `estUncertWithRanks = TRUE`.
+* Continuous integration is now done with github actions (https://github.com/MalteKurz/pacotest/actions) instead of travis and appveyor.
+
+
+## Minor improvements and bug fixes
+* Fixed a couple of typos in the documentation.
+* Updated the reference to Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), 1254-1291.
+
 # pacotest 0.3.1
 ## Updates
 * The default method for generating from a discrete uniform distribution changed (R version >=3.6.0). Regression test results have been adapted accordingly.
