@@ -1,5 +1,5 @@
 ## pacotest
-[![Travis-CI Build Status](https://travis-ci.org/MalteKurz/pacotest.svg?branch=master)](https://travis-ci.org/MalteKurz/pacotest) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/MalteKurz/pacotest?branch=master&svg=true)](https://ci.appveyor.com/project/MalteKurz/pacotest) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/pacotest)](https://cran.r-project.org/package=pacotest) [![Coverage Status](https://img.shields.io/codecov/c/github/MalteKurz/pacotest/master.svg)](https://codecov.io/github/MalteKurz/pacotest?branch=master)
+![build](https://github.com/MalteKurz/pacotest/workflows/build/badge.svg) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/pacotest)](https://cran.r-project.org/package=pacotest) [![Coverage Status](https://img.shields.io/codecov/c/github/MalteKurz/pacotest/master.svg)](https://codecov.io/github/MalteKurz/pacotest?branch=master)
 
 ### You can install:
 -   the latest released version from CRAN with
