@@ -10,7 +10,18 @@ This submission updates default settings in alignment with the main reference (K
 
 ## R CMD check results
 
-0 ERRORs | 0 WARNING | 1 NOTE
+0 ERRORs | 0 WARNING | 2 NOTEs
+
+```
+checking CRAN incoming feasibility ... NOTE
+Maintainer: ‘Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>’
+
+New maintainer:
+  Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>
+Old maintainer(s):
+  Malte S. Kurz <malte.kurz@stat.uni-muenchen.de>
+```
+--> Due to a new affiliation the maintainer e-mail was updated.
 
 ```
 checking installed package size ... NOTE
