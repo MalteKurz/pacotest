@@ -304,6 +304,7 @@ test_that("pacotestRvineSingleCopula12", {
 context("unit tests for pacotest with options:
         testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE, estUncertWithRanks = TRUE")
 test_that("pacotestRvineSingleCopula13", {
+  testthat::skip_on_cran()
   
   properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
   values = c('CCC', 'TreeCCC', 'all', 'penalty', 'TRUE', 'TRUE')
