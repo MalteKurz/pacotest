@@ -88,7 +88,7 @@ decTreeFromFixedGrouping = function(grouping, W)
     
     if (dim(W)[2] > 1)
     {
-      varName = paste("Sum(", paste(names(W),collapse=", "), ")", sep="")
+      varName = paste("Mean(", paste(names(W),collapse=", "), ")", sep="")
       
       xx = as.data.frame(rowMeans(W))
       names(xx) = varName

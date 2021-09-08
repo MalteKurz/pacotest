@@ -106,6 +106,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       out$decisionTree = ExtractDecisionTree(condSetNames, out$SplitVariable, out$SplitQuantile, out$SplitThreshold, pacotestOptions$finalComparison)
       out[c("SplitVariable", "SplitQuantile", "SplitThreshold")] = NULL
       
+      if (pacotestOptions$sizeKeepingMethod == 'penalty') {
+        if (out$gamma0IsMax == 1) {
+          xx = decTreeFromFixedGrouping(pacotestOptions$gamma0Partition, W[1:dimCondSet])
+          out$decisionTree = xx$decisionTree
+        }
+        out["gamma0IsMax"] = NULL
+      }
+      
     }
     else
     {

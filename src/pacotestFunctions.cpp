@@ -97,17 +97,18 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
       SplitVariable.zeros();
       SplitQuantile.zeros();
       SplitThreshold.zeros();
+      double gamma0IsMax;
       
       if (arma::is_finite(penaltyLevel) && arma::is_finite(penaltyPower) && arma::is_finite(Gamma0Partition))
       {
         gamma0Partition = (int) Gamma0Partition;
         if (testTypeNumber == 1)
         {
-          EqualCovTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCovTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, &gamma0IsMax, data, svcmDataFrame, cPitData);
         }
         else
         {
-          EqualCorrTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
+          EqualCorrTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, &gamma0IsMax, data, svcmDataFrame, cPitData);
         }
         
       }
@@ -124,7 +125,7 @@ Rcpp::List ecorrOrEcov(double TestTypeNumber, arma::mat Udata, arma::mat Wdata, 
         
       }
       
-      out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+      out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold,Rcpp::Named("gamma0IsMax")=gamma0IsMax);
     }
     else
     {

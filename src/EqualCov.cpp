@@ -113,7 +113,7 @@ void EqualCovTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMe
     
 }
 
-void EqualCovTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int dimCondSet, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCovTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int dimCondSet, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, double *gamma0IsMax, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
   unsigned int n=Udata.n_rows;
@@ -163,6 +163,13 @@ void EqualCovTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int
   double df = nGroups-1;
   *TestStat = max(*TestStat,testStatWithPenalty) - n_double*penaltyLevel/(pow(n_double,penaltyPower));
   
+  if (*TestStat > testStatWithPenalty) {
+    *gamma0IsMax = 0.0;
+  }
+  else
+  {
+    *gamma0IsMax = 1.0;
+  }
   
   *pValue = 1-Chi2CDF(*TestStat, df);
 }
