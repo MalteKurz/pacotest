@@ -81,7 +81,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
     
 }
 
-void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int dimCondSet, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int dimCondSet, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::vec &TestStatsGamma0GammaMax, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
   unsigned int n=Udata.n_rows;
@@ -126,6 +126,9 @@ void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, in
     *TestStat = EqualCorrChi2TestStat(Udata, indexVectors, nObsPerVector);
   }
   
+  
+  TestStatsGamma0GammaMax(0) = testStatWithPenalty - n_double*penaltyLevel/(pow(n_double,penaltyPower));
+  TestStatsGamma0GammaMax(1) = *TestStat;
   
   int nGroups = indexVectorsGamma0.n_cols;
   double df = nGroups-1;
