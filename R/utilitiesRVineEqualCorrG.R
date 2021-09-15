@@ -221,7 +221,8 @@ getGinvD = function(data, svcmDataFrame, includeLastCopula = FALSE)
     cPit2 = data[,svcmDataFrame$var2[jCopula]]
     dInvUpperLeft[svcmDataFrame$parInd[[jCopula]],
                   svcmDataFrame$parInd[[jCopula]]] = 
-      1/hessianLike(parameters$parCopula,cPit1,cPit2,svcmDataFrame$family[jCopula])
+      solve(hessianLike(parameters$parCopula,cPit1,cPit2,svcmDataFrame$family[jCopula]))
+    #  1/hessianLike(parameters$parCopula,cPit1,cPit2,svcmDataFrame$family[jCopula])
     }
     
   }
