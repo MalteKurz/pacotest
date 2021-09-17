@@ -7,13 +7,13 @@ library("methods")
 ## Define all scenarios of pacotest that should be unit tested
 pacotestOptions = list()
 # Define the test types
-pacotestOptions[[1]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[1]] = list(testType='deactivated_test')
 
-pacotestOptions[[2]] = pacotestset(testType='CCC', grouping = 'TreeCCC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[2]] = list(testType='deactivated_test')
 
-pacotestOptions[[3]] = pacotestset(testType='CCC', grouping = 'TreeCCC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[3]] = list(testType='deactivated_test')
 
-pacotestOptions[[4]] = pacotestset(testType='CCC', grouping = 'TreeCCC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[4]] = list(testType='deactivated_test')
 
 pacotestOptions[[5]] = pacotestset(testType='CCC',grouping = "SumMedian", withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
@@ -21,30 +21,30 @@ pacotestOptions[[6]] = pacotestset(testType='CCC',grouping = "ProdThirdsII", wit
 
 pacotestOptions[[7]] = pacotestset(testType='CCC',grouping = "SumThirdsIII", withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[8]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[8]] = list(testType='deactivated_test')
 
-pacotestOptions[[9]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[9]] = list(testType='deactivated_test')
 
-pacotestOptions[[10]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[10]] = list(testType='deactivated_test')
 
-pacotestOptions[[11]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[11]] = list(testType='deactivated_test')
 
 
-pacotestOptions[[12]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[12]] = list(testType='deactivated_test')
 
-pacotestOptions[[13]] = pacotestset(testType='CCC', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[13]] = list(testType='deactivated_test')
 
-pacotestOptions[[14]] = pacotestset(testType='CCC', grouping = 'TreeEC',trainingDataFraction=0.34, finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[14]] = list(testType='deactivated_test')
 
-pacotestOptions[[15]] = pacotestset(testType='CCC', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[15]] = list(testType='deactivated_test')
 
-pacotestOptions[[16]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[16]] = list(testType='deactivated_test')
 
-pacotestOptions[[17]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[17]] = list(testType='deactivated_test')
 
-pacotestOptions[[18]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',trainingDataFraction=0.34, expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[18]] = list(testType='deactivated_test')
 
-pacotestOptions[[19]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "splitTrainEvaluate", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[19]] = list(testType='deactivated_test')
 
 
 pacotestOptions[[20]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
@@ -85,13 +85,17 @@ pacotestOptions[[35]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalCo
 
 for (indPacotest in 1:35)
 {
+  if (!(pacotestOptions[[indPacotest]]$testType == 'deactivated_test')) {
   if (any(indPacotest == c(1:4, 8:19)))
   {
-    pacotestOptions[[indPacotest + 35]] = pacotestset(pacotestOptions[[indPacotest]], withEstUncert = TRUE, aggPvalsNumbRep = 1)
+    pacotestOptions[[indPacotest + 35]] = pacotestset(pacotestOptions[[indPacotest]], withEstUncert = TRUE)
   }
   else
   {
     pacotestOptions[[indPacotest + 35]] = pacotestset(pacotestOptions[[indPacotest]], withEstUncert = TRUE)
+  }
+  } else {
+    pacotestOptions[[indPacotest + 35]] = list(testType='deactivated_test')
   }
 }
 
@@ -112,7 +116,11 @@ for (iTest in c(75:94))
 
 for (indPacotest in 1:8)
 {
+  if (!(pacotestOptions[[indPacotest+19]]$testType == 'deactivated_test')) {
   pacotestOptions[[indPacotest + 95]] = pacotestset(pacotestOptions[[indPacotest+19]], withEstUncert = TRUE, estUncertWithRanks = TRUE)
+  } else {
+    pacotestOptions[[indPacotest + 95]] = list(testType='deactivated_test')
+  }
 }
 
 

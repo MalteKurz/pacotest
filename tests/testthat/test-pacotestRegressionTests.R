@@ -1,63 +1,6 @@
 context("Regression tests for pacotest")
 
 context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
-test_that("CCC1", {
-  testthat::skip_on_cran()
-  
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
-  
-  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
-  
-  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
-  
-})
-  
-context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
-test_that("CCC2", {
-  testthat::skip_on_cran()
-  
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeCCC', 'all', 'splitTrainEvaluate', 'FALSE')
-  
-  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
-  
-  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
-  
-})
-  
-
-context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = splitTrainEvaluate")
-test_that("CCC3", {
-  testthat::skip_on_cran()
-  
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeEC', 'pairwiseMax', 'splitTrainEvaluate', 'FALSE')
-  
-  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
-  
-  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
-  
-})
-
-context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = splitTrainEvaluate")
-test_that("CCC4", {
-  testthat::skip_on_cran()
-  
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeEC', 'all', 'splitTrainEvaluate', 'FALSE')
-  
-  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
-  
-  unitTestKernel(data, pacotestOptions, hardCodedResults, seedsPerTest, thisTestsInd)
-  
-})
-
-context("unit tests for pacotest with options:
 testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
 test_that("CCC5", {
   
