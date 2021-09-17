@@ -1,5 +1,37 @@
 #include <pacotest_header.h>
 
+void getMatrixForPairwiseComparison(int nGroups, arma::mat &A)
+{
+  
+  switch ( nGroups )
+  {
+    
+  case 2 : 
+    A.set_size(1,2);
+    
+    A(0,0) = 1; A(0,1) = -1;
+    break;
+    
+  case 3 : 
+    A.set_size(2,3);
+    A.zeros();
+    
+    A(0,0) = 1; A(0,1) = -1;
+    A(1,1) = 1; A(1,2) = -1;
+    break;
+    
+  default : 
+    A.set_size(3,4);
+  A.zeros();
+  
+  A(0,0) = 1; A(0,1) = -1;
+  A(1,1) = 1; A(1,2) = -1;
+  A(2,2) = 1; A(2,3) = -1;
+  
+  }
+  return;
+}
+
 void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   

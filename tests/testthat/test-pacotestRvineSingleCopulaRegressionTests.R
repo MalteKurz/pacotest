@@ -377,31 +377,3 @@ test_that("pacotestRvineSingleCopula15", {
   
 })
 
-context("unit tests for pacotest with options:
-testType=ECOV")
-test_that("pacotestRvineSingleCopula16", {
-  testthat::skip_on_cran()
-  
-  properties = c('testType')
-  values = c('ECOV')
-  
-  thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
-  
-  
-  maxNTests = length(pacotestOptions)
-  
-  resPacotestComputed = matrix(NA, maxNTests, 1)
-  
-  for (iTest in thisTestsInd)
-  {
-    set.seed(seedsPerTest[iTest])
-    resPacotestComputed[iTest,1] = pacotestRvineSingleCopula(data5, rvmHatData5, pacotestOptions[[iTest]], 3, 1)$pValue
-    
-    expect_equal(resPacotestComputed[iTest,1],hardCodedResPacotestRvineSingleCopula[iTest,1], tolerance = 1e-2)
-    
-  }
-  
-})
-
-
-

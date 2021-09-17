@@ -1,6 +1,6 @@
 pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, cPitData = NULL){
   
-  if (is.character(pacotestOptions) && (is.element(pacotestOptions, c('CCC', 'ECORR', 'ECOV'))))
+  if (is.character(pacotestOptions) && (is.element(pacotestOptions, c('CCC', 'ECORR'))))
   {
     pacotestOptions = pacotestset(testType = pacotestOptions, withEstUncert = FALSE, estUncertWithRanks = FALSE)
   }
@@ -22,14 +22,13 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   dimCondSet = dim(W)[2]
   
   # Prepare variables to be transfered to C++
-  if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='CCC' || pacotestOptions$testType=='EC')
+  if (pacotestOptions$testType=='CCC' || pacotestOptions$testType=='EC')
   {
     # Add aggregated information to the conditioning vector
     W = addAggInfo(W,pacotestOptions$aggInfo, pacotestOptions$sizeKeepingMethod)
     
     # Transfer (character) variables to numbers
     grouping = partitionToNumber(pacotestOptions$grouping)
-    testTypeNumber = testTypeToNumber(pacotestOptions$testType)
     
     finalComparison = finalComparisonToNumber(pacotestOptions$finalComparison)
     gamma0Partition = partitionToNumber(pacotestOptions$gamma0Partition)
@@ -41,7 +40,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     
   }
   
-  if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='CCC')
+  if (pacotestOptions$testType=='CCC')
   {
     
     if (!(pacotestOptions$withEstUncert))
@@ -74,11 +73,11 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
       }
     }
     
-    out = ecorrOrEcov(testTypeNumber, as.matrix(Udata), as.matrix(W), dimCondSet,
-                      grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
-                      as.matrix(data), svcmDataFrame, cPitData,
-                      aggPvalsNumbRep, expMinSampleSize, trainingDataFraction,
-                      penaltyParams[1], penaltyParams[2], gamma0Partition)
+    out = CCC(as.matrix(Udata), as.matrix(W), dimCondSet,
+              grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
+              as.matrix(data), svcmDataFrame, cPitData,
+              aggPvalsNumbRep, expMinSampleSize, trainingDataFraction,
+              penaltyParams[1], penaltyParams[2], gamma0Partition)
     
   }
   else if (pacotestOptions$testType=='EC')
@@ -97,7 +96,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   }
   
   # Export/generate the decision tree and the illustrative plots
-  if (pacotestOptions$testType=='ECOV' || pacotestOptions$testType=='CCC' || pacotestOptions$testType=='EC')
+  if (pacotestOptions$testType=='CCC' || pacotestOptions$testType=='EC')
   {
     # Extract decision tree(s)
     if (grouping<=3)
@@ -148,13 +147,6 @@ partitionToNumber = function(partitionIdentifier)
   }
   
   return(partitionNumber)
-}
-
-testTypeToNumber = function(partitionIdentifier)
-{
-  testTypeNumber = which(partitionIdentifier==c('ECOV', 'CCC', 'VI', 'EC'),arr.ind=TRUE)
-  
-  return(testTypeNumber)
 }
 
 finalComparisonToNumber = function(finalComparisonIdentifier = NULL)

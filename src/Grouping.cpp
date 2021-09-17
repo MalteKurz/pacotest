@@ -205,12 +205,15 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
 {
   
   switch(GroupingMethod){
-    case 1: // TreeECOV
     case 2: // TreeCCC
     case 3: // TreeEC
     {
       TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
       break;
+    }
+    case 1: // TreeECOV
+    {
+      throw std::runtime_error("Invalid pacotest options");
     }
     default:
     {
@@ -225,7 +228,6 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
 {
   
   switch(GroupingMethod){
-    case 1: // TreeECOV
     case 2: // TreeCCC
     case 3: // TreeEC
     {
@@ -233,6 +235,10 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
       int withTraining = 0;
       TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, withTraining);
       break;
+    }
+    case 1: // TreeECOV
+    {
+      throw std::runtime_error("Invalid pacotest options");
     }
     default:
     {
@@ -252,7 +258,7 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   
   if (splitTestType == 1 )
   {
-    testStat = EqualCovChi2TestStat(Udata, ind, nObsPerGroup);
+    throw std::runtime_error("Invalid pacotest options");
   }
   else if (splitTestType == 2 )
   {

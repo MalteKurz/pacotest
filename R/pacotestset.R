@@ -5,7 +5,7 @@ pacotestset = function(pacotestOptions=list(testType = 'CCC', grouping = 'TreeCC
   if(Nargs==0){
     cat('                   testType: [ CCC | VI ]\n\n')
     cat(' Options for testType = [ CCC ]:\n')
-    cat('                   grouping: [ TreeCCC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles | TreeECOV | TreeEC ]\n')
+    cat('                   grouping: [ TreeCCC | SumMedian | SumThirdsI | SumThirdsII | SumThirdsIII | SumQuartiles | ProdMedian | ProdThirdsI | ProdThirdsII | ProdThirdsIII | ProdQuartiles | TreeEC ]\n')
     cat('           expMinSampleSize: [ positive scalar ]\n')
     cat('                    aggInfo: [ none | meanAll | meanPairwise ]\n')
     cat('              withEstUncert: [ logical | 0 | 1 ]\n')
@@ -82,9 +82,9 @@ pacotestset = function(pacotestOptions=list(testType = 'CCC', grouping = 'TreeCC
 
 checkAndAssignOptions = function(testType, pacotestOptions, argList)
 {
-  if (pacotestOptions$testType=="ECOV" || pacotestOptions$testType=="CCC")
+  if (pacotestOptions$testType=="CCC")
   {
-    pacotestOptions = checkAndAssignOptionsEcorrOrEcov(pacotestOptions, argList)
+    pacotestOptions = checkAndAssignOptionsCCC(pacotestOptions, argList)
     
   }
   else if (pacotestOptions$testType=="EC")
@@ -106,7 +106,7 @@ checkAndAssignOptions = function(testType, pacotestOptions, argList)
 }
 
 
-checkAndAssignOptionsEcorrOrEcov = function(pacotestOptions, argList)
+checkAndAssignOptionsCCC = function(pacotestOptions, argList)
 {
   
   if (exists('sizeKeepingMethod', argList))
@@ -327,13 +327,13 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
   
   testType = renameEcorrIntoCcc(testType)
   
-  if (is.element(testType, c("CCC","ECOV")))
+  if (is.element(testType, c("CCC")))
   {
     defaultTreeGrouping = paste('Tree', testType, sep = "")
     
     if (is.null(sizeKeepingMethod) || is.na(sizeKeepingMethod) || sizeKeepingMethod == 'penalty')
     {
-      if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
+      if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeEC')))
       {
         pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, aggInfo = "meanAll", withEstUncert = TRUE, estUncertWithRanks = TRUE, finalComparison = 'all', sizeKeepingMethod = 'penalty', penaltyParams = c(1,0.5), gamma0Partition = "SumMedian")
       }
@@ -344,7 +344,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
     }
     else if (sizeKeepingMethod == 'splitTrainEvaluate')
     {
-      if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
+      if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeEC')))
       {
         pacotestOptions = list(testType = testType, grouping = defaultTreeGrouping, aggPvalsNumbRep = 100, groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 100, trainingDataFraction = 0.5, aggInfo = "meanAll", withEstUncert = TRUE, estUncertWithRanks = TRUE, finalComparison = 'all', sizeKeepingMethod = 'splitTrainEvaluate')
       }
@@ -356,7 +356,7 @@ getDefaultPacotestOptions = function(testType, grouping = NA_character_, sizeKee
   }
   else if (testType=="EC")
   {
-    if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeECOV','TreeEC')))
+    if (is.na(grouping) || is.element(grouping, c('TreeCCC', 'TreeEC')))
     {
       pacotestOptions = list(testType = testType, numbBoot = 1000, grouping = 'TreeCCC', groupedScatterplots = FALSE, decisionTreePlot = FALSE, expMinSampleSize = 50, trainingDataFraction = 0.5, aggInfo = "meanAll")
     }
@@ -418,9 +418,9 @@ CheckGrouping = function(Value,Fieldname)
     Value = "TreeCCC"
   }
   
-  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeECOV', 'TreeCCC'))))
+  if (!(is.element(Value, c('SumMedian', 'SumThirdsI', 'SumThirdsII', 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsIII', 'ProdQuartiles', 'TreeEC', 'TreeCCC'))))
   {
-    stop(paste("The option grouping must be 'TreeEC', 'TreeECOV', 'TreeCCC', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
+    stop(paste("The option grouping must be 'TreeEC', 'TreeCCC', 'SumMedian', 'SumThirdsI', 'SumThirdsII' , 'SumThirdsIII', 'SumQuartiles', 'ProdMedian', 'ProdThirdsI', 'ProdThirdsII', 'ProdThirdsII' or 'ProdQuartiles'"))
   }
   return(Value)
 }
@@ -494,10 +494,10 @@ CheckpacotestOptions = function(pacotestOptions)
   pacotestOptions$testType = renameEcorrIntoCcc(pacotestOptions$testType)
   
   
-  if (is.element(pacotestOptions$testType, c("ECOV", "CCC")))
+  if (is.element(pacotestOptions$testType, c("CCC")))
   {
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeCCC", "TreeEC")))
+    if (is.element(pacotestOptions$grouping, c("TreeCCC", "TreeEC")))
     {
       if (pacotestOptions$sizeKeepingMethod=="splitTrainEvaluate")
       {
@@ -592,7 +592,7 @@ CheckpacotestOptions = function(pacotestOptions)
         warning('The field gamma0Partition is set to NULL')
       }
     }
-    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeCCC", "TreeEC")))
+    if (is.element(pacotestOptions$grouping, c("TreeCCC", "TreeEC")))
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {
@@ -642,7 +642,7 @@ CheckpacotestOptions = function(pacotestOptions)
   {
     CheckPosScalar(pacotestOptions$numbBoot,"numbBoot")
     CheckGrouping(pacotestOptions$grouping,"grouping")
-    if (is.element(pacotestOptions$grouping, c("TreeECOV", "TreeCCC", "TreeEC" )))
+    if (is.element(pacotestOptions$grouping, c("TreeCCC", "TreeEC" )))
     {
       if (exists('expMinSampleSize', where=pacotestOptions))
       {

@@ -104,34 +104,9 @@ pacotestOptions[[73]] = pacotestset(testType='EC',grouping = "ProdThirdsIII")
 
 pacotestOptions[[74]] = pacotestset(testType='EC',grouping = "SumThirdsII")
 
-pacotestOptions[[75]] = pacotestset(testType='ECOV',grouping = "ProdQuartiles", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[76]] = pacotestset(testType='ECOV',grouping = "ProdThirdsI", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[77]] = pacotestset(testType='ECOV',grouping = "SumThirdsI", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[78]] = pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[79]] = pacotestset(testType='ECOV', grouping = 'TreeECOV',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[80]] = pacotestset(testType='ECOV', grouping = 'TreeECOV',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[81]] = pacotestset(testType='ECOV', grouping = 'TreeECOV',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[82]] = pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[83]] = pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[84]] = pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-pacotestOptions[[85]] = pacotestset(testType='ECOV', grouping = 'TreeECOV', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
-
-
-indThres = 1
-for (iTest in c(75:78, 80:85))
+for (iTest in c(75:94))
 {
-  pacotestOptions[[85 + indThres]] = pacotestset(pacotestOptions[[iTest]], withEstUncert = TRUE)
-  indThres = indThres + 1
+  pacotestOptions[[iTest]] = list(testType='deactivated_test')
 }
 
 
