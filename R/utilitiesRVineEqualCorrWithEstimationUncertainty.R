@@ -11,17 +11,6 @@ covOfCorrelationsWithEstimation = function(data, svcmDataFrame, indList, cPitDat
   return(varMat)
 }
 
-covOfCovariancesWithEstimation = function(data, svcmDataFrame, indList, cPitData, theta, estUncertWithRanks = FALSE)
-{
-  
-  gInv = gInvRvineCov(data, svcmDataFrame, indList, cPitData, theta)
-  omega = omegaRvineCov(data, svcmDataFrame, indList, cPitData, theta, estUncertWithRanks)
-  
-  varMat = gInv %*% omega %*% t(gInv)
-  
-  return(varMat)
-}
-
 
 testStatEqualCorrWithEstimation = function(data, svcmDataFrame, ind)
 {

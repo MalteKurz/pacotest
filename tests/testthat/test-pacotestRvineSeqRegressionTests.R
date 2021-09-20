@@ -1,11 +1,11 @@
 context("Regression tests for pacotestRvineSeq")
 
 context("unit tests for pacotest with options:
-        testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = TRUE")
+        testType=CCC, grouping = TreeCCC, finalComparison = all, withEstUncert = TRUE")
 test_that("pacotestRvineSeq1", {
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('CCC', 'TreeCCC', 'all', 'penalty', 'TRUE', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert', 'estUncertWithRanks')
+  values = c('CCC', 'TreeCCC', 'all', 'TRUE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -27,12 +27,12 @@ test_that("pacotestRvineSeq1", {
 
 
 context("unit tests for pacotest with options:
-        testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty, withEstUncert = FALSE")
+        testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, withEstUncert = FALSE")
 test_that("pacotestRvineSeq2", {
   testthat::skip_on_cran()
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('CCC', 'TreeEC', 'pairwiseMax', 'penalty', 'FALSE', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert', 'estUncertWithRanks')
+  values = c('CCC', 'TreeEC', 'pairwiseMax', 'FALSE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -56,12 +56,12 @@ test_that("pacotestRvineSeq2", {
 })
 
 context("unit tests for pacotest with options:
-        testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty, withEstUncert = FALSE")
+        testType=CCC, grouping = TreeEC, finalComparison = all, withEstUncert = FALSE")
 test_that("pacotestRvineSeq3", {
   testthat::skip_on_cran()
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert', 'estUncertWithRanks')
-  values = c('CCC', 'TreeEC', 'all', 'penalty', 'FALSE', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert', 'estUncertWithRanks')
+  values = c('CCC', 'TreeEC', 'all', 'FALSE', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   

@@ -906,7 +906,7 @@ double TwoCopTest(double *X, double *Y, double *Xi, double *Eta, int n1, int n2,
     return hh*(A/hh1-2.0*B/hh3+C/hh2);
 }
 
-void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int GroupingMethod, int finalComparisonMethod, double *TestStat, double *pValue, arma::mat &S, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
     arma::mat Xdata;
     arma::mat Ydata;
@@ -918,7 +918,7 @@ void EqualCopTest(const arma::mat &Udata, const arma::mat &Wdata, int N, int Gro
     vector<double> DD(N);
     vector<double> CD(N);
     
-    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+    Grouping(Udata, Wdata, Xdata, Ydata, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
     
     // Figure out dimensions
     n1 = (int) Xdata.n_rows;
