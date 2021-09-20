@@ -25,7 +25,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
   if (pacotestOptions$testType=='CCC' || pacotestOptions$testType=='EC')
   {
     # Add aggregated information to the conditioning vector
-    W = addAggInfo(W,pacotestOptions$aggInfo, pacotestOptions$sizeKeepingMethod)
+    W = addAggInfo(W,pacotestOptions$aggInfo)
     
     # Transfer (character) variables to numbers
     grouping = partitionToNumber(pacotestOptions$grouping)
