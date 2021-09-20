@@ -1,11 +1,11 @@
 context("Regression tests for pacotest")
 
 context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
+testType=CCC, grouping = TreeCCC, finalComparison = pairwiseMax")
 test_that("CCC5", {
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'penalty', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert')
+  values = c('CCC', 'TreeCCC', 'pairwiseMax', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -14,11 +14,11 @@ test_that("CCC5", {
 })
 
 context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeCCC, finalComparison = all, sizeKeepingMethod = penalty")
+testType=CCC, grouping = TreeCCC, finalComparison = all")
 test_that("CCC6", {
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeCCC', 'all', 'penalty', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert')
+  values = c('CCC', 'TreeCCC', 'all', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -28,11 +28,11 @@ test_that("CCC6", {
 
 
 context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax, sizeKeepingMethod = penalty")
+testType=CCC, grouping = TreeEC, finalComparison = pairwiseMax")
 test_that("CCC7", {
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeEC', 'pairwiseMax', 'penalty', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert')
+  values = c('CCC', 'TreeEC', 'pairwiseMax', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   
@@ -41,11 +41,11 @@ test_that("CCC7", {
 })
 
 context("unit tests for pacotest with options:
-testType=CCC, grouping = TreeEC, finalComparison = all, sizeKeepingMethod = penalty")
+testType=CCC, grouping = TreeEC, finalComparison = all")
 test_that("CCC8", {
   
-  properties = c('testType', 'grouping', 'finalComparison', 'sizeKeepingMethod', 'withEstUncert')
-  values = c('CCC', 'TreeEC', 'all', 'penalty', 'FALSE')
+  properties = c('testType', 'grouping', 'finalComparison', 'withEstUncert')
+  values = c('CCC', 'TreeEC', 'all', 'FALSE')
   
   thisTestsInd = filterPacotestOptionLists(pacotestOptions, properties, values)
   

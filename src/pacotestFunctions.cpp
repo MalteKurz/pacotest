@@ -32,7 +32,7 @@ Rcpp::List VI(arma::mat Udata, arma::mat Wdata, double NumbBoot) {
 
 
 // [[Rcpp::export]]
-Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double finalComparison, double ExpMinSampleSize = 50, double TrainingDataFraction = 0.5) {
+Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping, double finalComparison, double ExpMinSampleSize = 50) {
   
   // initialize output variable
   Rcpp::List out;
@@ -54,7 +54,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
     SplitThreshold.zeros();
     
     
-    EqualCopTest(Udata, Wdata, N, grouping, finalComparison, &testStat, &pValue, S, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+    EqualCopTest(Udata, Wdata, N, grouping, finalComparison, &testStat, &pValue, S, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
     
     out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("S")=S,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
   }
@@ -71,7 +71,7 @@ Rcpp::List EC(arma::mat Udata, arma::mat Wdata, double NumbBoot, double Grouping
 
 
 // [[Rcpp::export]]
-Rcpp::List CCC(arma::mat Udata, arma::mat Wdata, double doubleDimCondSet, double Grouping, double doubleWithEstUncert, double doubleEstUncertWithRanks, double finalComparison, arma::mat & data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double AggPvalsNumbRep = NA_REAL, double ExpMinSampleSize = NA_REAL, double TrainingDataFraction = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
+Rcpp::List CCC(arma::mat Udata, arma::mat Wdata, double doubleDimCondSet, double Grouping, double doubleWithEstUncert, double doubleEstUncertWithRanks, double finalComparison, arma::mat & data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData, double ExpMinSampleSize = NA_REAL, double penaltyLevel = NA_REAL, double penaltyPower = NA_REAL, double Gamma0Partition = NA_REAL) {
   
   // initialize output variable
   Rcpp::List out;
@@ -87,42 +87,25 @@ Rcpp::List CCC(arma::mat Udata, arma::mat Wdata, double doubleDimCondSet, double
     // Associate outputs
     double pValue;
     
-    if ((!arma::is_finite(AggPvalsNumbRep) && !arma::is_finite(TrainingDataFraction)) || AggPvalsNumbRep == 0)
+    double testStat;
+    arma::uvec SplitVariable(4);
+    arma::uvec SplitQuantile(4);
+    arma::vec SplitThreshold(3);
+    SplitVariable.zeros();
+    SplitQuantile.zeros();
+    SplitThreshold.zeros();
+      
+    if (arma::is_finite(penaltyLevel) && arma::is_finite(penaltyPower) && arma::is_finite(Gamma0Partition))
     {
-      double testStat;
-      arma::uvec SplitVariable(4);
-      arma::uvec SplitQuantile(4);
-      arma::vec SplitThreshold(3);
-      SplitVariable.zeros();
-      SplitQuantile.zeros();
-      SplitThreshold.zeros();
-      
-      if (arma::is_finite(penaltyLevel) && arma::is_finite(penaltyPower) && arma::is_finite(Gamma0Partition))
-      {
-        gamma0Partition = (int) Gamma0Partition;
-        EqualCorrTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
-      }
-      else
-      {
-        EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
-      }
-      
-      out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+      gamma0Partition = (int) Gamma0Partition;
+      EqualCorrTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
     }
     else
     {
-      arma::mat pValues(AggPvalsNumbRep,1);
-      arma::umat SplitVariable(4,AggPvalsNumbRep);
-      arma::umat SplitQuantile(4,AggPvalsNumbRep);
-      arma::mat SplitThreshold(3,AggPvalsNumbRep);
-      SplitVariable.zeros();
-      SplitQuantile.zeros();
-      SplitThreshold.zeros();
-      
-      EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, pValues, &pValue, AggPvalsNumbRep, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
-      
-      out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("pValues")=pValues,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+      EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
     }
+      
+    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );

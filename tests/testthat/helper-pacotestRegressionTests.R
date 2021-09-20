@@ -47,38 +47,38 @@ pacotestOptions[[18]] = list(testType='deactivated_test')
 pacotestOptions[[19]] = list(testType='deactivated_test')
 
 
-pacotestOptions[[20]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[20]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[21]] = pacotestset(testType='CCC', grouping = 'TreeCCC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[21]] = pacotestset(testType='CCC', grouping = 'TreeCCC',expMinSampleSize=56, finalComparison = 'pairwiseMax', withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[22]] = pacotestset(testType='CCC', grouping = 'TreeCCC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[22]] = pacotestset(testType='CCC', grouping = 'TreeCCC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[23]] = pacotestset(testType='CCC', grouping = 'TreeCCC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[23]] = pacotestset(testType='CCC', grouping = 'TreeCCC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[24]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[24]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[25]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[25]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',expMinSampleSize=56, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[26]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[26]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[27]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[27]] = pacotestset(testType='CCC', grouping = 'TreeCCC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
 
-pacotestOptions[[28]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[28]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'pairwiseMax', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[29]] = pacotestset(testType='CCC', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[29]] = pacotestset(testType='CCC', grouping = 'TreeEC',expMinSampleSize=56, finalComparison = 'pairwiseMax', withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[30]] = pacotestset(testType='CCC', grouping = 'TreeEC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[30]] = pacotestset(testType='CCC', grouping = 'TreeEC',gamma0Partition='SumQuartiles', finalComparison = 'pairwiseMax', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[31]] = pacotestset(testType='CCC', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[31]] = pacotestset(testType='CCC', grouping = 'TreeEC',aggInfo="meanPairwise", finalComparison = 'pairwiseMax', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[32]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[32]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[33]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[33]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',expMinSampleSize=56, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[34]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[34]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',gamma0Partition='SumQuartiles', expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
-pacotestOptions[[35]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, sizeKeepingMethod = "penalty", withEstUncert = FALSE, estUncertWithRanks = FALSE)
+pacotestOptions[[35]] = pacotestset(testType='CCC', grouping = 'TreeEC', finalComparison = 'all',aggInfo="meanPairwise", expMinSampleSize = 100, withEstUncert = FALSE, estUncertWithRanks = FALSE)
 
 
 
@@ -257,8 +257,8 @@ unitTestKernel <- function(data, pacotestOptions, hardCodedResults, seedsPerTest
   {
     set.seed(seedsPerTest[iTest])
     
-    optionValues = paste(pacotestOptions[[1]],';', sep='')
-    optionNames = paste(names(pacotestOptions[[1]]),':', sep='')
+    optionValues = paste(pacotestOptions[[iTest]],';', sep='')
+    optionNames = paste(names(pacotestOptions[[iTest]]),':', sep='')
     optionString = paste(c(rbind(optionNames,optionValues)), collapse=" ")
     
     

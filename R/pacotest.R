@@ -33,9 +33,7 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     finalComparison = finalComparisonToNumber(pacotestOptions$finalComparison)
     gamma0Partition = partitionToNumber(pacotestOptions$gamma0Partition)
     
-    aggPvalsNumbRep = aggPvalsNumbRepToNumber(pacotestOptions$aggPvalsNumbRep)
     expMinSampleSize = expMinSampleSizeToNumber(pacotestOptions$expMinSampleSize)
-    trainingDataFraction = trainingDataFractionToNumber(pacotestOptions$trainingDataFraction)
     penaltyParams = penaltyParamsToVector(pacotestOptions$penaltyParams)
     
   }
@@ -76,14 +74,14 @@ pacotest = function(Udata,W,pacotestOptions, data = NULL, svcmDataFrame = NULL, 
     out = CCC(as.matrix(Udata), as.matrix(W), dimCondSet,
               grouping, pacotestOptions$withEstUncert, pacotestOptions$estUncertWithRanks, finalComparison,
               as.matrix(data), svcmDataFrame, cPitData,
-              aggPvalsNumbRep, expMinSampleSize, trainingDataFraction,
+              expMinSampleSize,
               penaltyParams[1], penaltyParams[2], gamma0Partition)
     
   }
   else if (pacotestOptions$testType=='EC')
   {
     out = EC(as.matrix(Udata), as.matrix(W), pacotestOptions$numbBoot,
-           grouping, finalComparison, expMinSampleSize, trainingDataFraction)
+           grouping, finalComparison, expMinSampleSize)
     
   }
   else if (pacotestOptions$testType=='VI')
@@ -164,17 +162,6 @@ finalComparisonToNumber = function(finalComparisonIdentifier = NULL)
 }
 
 
-aggPvalsNumbRepToNumber = function(aggPvalsNumbRep = NULL)
-{
-  if (is.null(aggPvalsNumbRep) || aggPvalsNumbRep == 1)
-  {
-    aggPvalsNumbRep = 0
-  }
-  
-  return(aggPvalsNumbRep)
-}
-
-
 expMinSampleSizeToNumber = function(expMinSampleSize = NULL)
 {
   if (is.null(expMinSampleSize))
@@ -183,17 +170,6 @@ expMinSampleSizeToNumber = function(expMinSampleSize = NULL)
   }
   
   return(expMinSampleSize)
-}
-
-
-trainingDataFractionToNumber = function(trainingDataFraction = NULL)
-{
-  if (is.null(trainingDataFraction))
-  {
-    trainingDataFraction = NA_real_
-  }
-  
-  return(trainingDataFraction)
 }
 
 
