@@ -108,7 +108,7 @@ pacotestOptions[[73]] = pacotestset(testType='EC',grouping = "ProdThirdsIII")
 
 pacotestOptions[[74]] = pacotestset(testType='EC',grouping = "SumThirdsII")
 
-for (iTest in c(75:94))
+for (iTest in c(75:95))
 {
   pacotestOptions[[iTest]] = list(testType='deactivated_test')
 }
