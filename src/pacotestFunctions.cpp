@@ -107,7 +107,7 @@ Rcpp::List CCC(arma::mat Udata, arma::mat Wdata, double doubleDimCondSet, double
       EqualCorrTest(Udata, Wdata, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
     }
       
-    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold);
+    out = Rcpp::List::create(Rcpp::Named("pValue")=pValue,Rcpp::Named("testStat")=testStat,Rcpp::Named("SplitVariable")=SplitVariable,Rcpp::Named("SplitQuantile")=SplitQuantile,Rcpp::Named("SplitThreshold")=SplitThreshold,Rcpp::Named("TestStatsGamma0GammaMax")=TestStatsGamma0GammaMax);
   }
   catch( std::exception& __ex__ ) {
     forward_exception_to_r( __ex__ );
