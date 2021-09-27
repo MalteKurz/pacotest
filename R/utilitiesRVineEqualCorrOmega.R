@@ -255,7 +255,7 @@ bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula 
       {
         parVector2 = svcmDataFrame$par[[lCopula]]
         
-        bSsp[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] =
+        bSsp[svcmDataFrame$parInd[[lCopula]], svcmDataFrame$parInd[[jCopula]]] =
           deriv2LikeMultWithRanks(parVector1,jCopula,
                                   parVector2,lCopula,
                                   data, svcmDataFrame, cPitData)
@@ -267,6 +267,9 @@ bSspForCovWithRanks = function(data, svcmDataFrame, cPitData, includeLastCopula 
     }
     
   }
+  
+  xx = t(bSsp)
+  bSsp[lower.tri(bSsp)] = xx[lower.tri(xx)]
   
   return(bSsp)
   
@@ -326,12 +329,15 @@ getOmegaWithLikesD = function(data, svcmDataFrame, cPitData, includeLastCopula =
             cPit2_2 = getCpit2(cPitData, svcmDataFrame, lCopula)
           }
           
-          D[svcmDataFrame$parInd[[jCopula]],svcmDataFrame$parInd[[lCopula]]] = deriv2LikeMult(par_1,cPit1_1,cPit2_1,family_1,
+          D[svcmDataFrame$parInd[[lCopula]],svcmDataFrame$parInd[[jCopula]]] = deriv2LikeMult(par_1,cPit1_1,cPit2_1,family_1,
                                                                                               par_2,cPit1_2,cPit2_2,family_2)
         }
       }
     }
   }
+  
+  xx = t(D)
+  D[lower.tri(D)] = xx[lower.tri(xx)]
   
   return(D)  
   
