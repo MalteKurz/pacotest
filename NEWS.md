@@ -1,3 +1,9 @@
+# pacotest 0.4.1
+## Updates, refactoring and bug fixes
+* Major cleanup and refactoring of functionality without user interface [#38](https://github.com/MalteKurz/pacotest/pull/38)
+* pacotest is now also listed on r-universe (https://maltekurz.r-universe.dev/ui#builds)
+* Fix bugs in the computation of the Ginv and Omega matrix [#37](https://github.com/MalteKurz/pacotest/pull/37) & [#39](https://github.com/MalteKurz/pacotest/pull/39)
+
 # pacotest 0.4.0
 ## Updates
 * Change of default parameters! By default the CCC test is now being computed under consideration of estimation uncertainty of the probability integral transforms, i.e., with options `withEstUncert = TRUE` and `estUncertWithRanks = TRUE`. Before, up to version 0.3.1, both parameters defaulted to `FALSE`.
