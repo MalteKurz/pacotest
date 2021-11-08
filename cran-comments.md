@@ -1,33 +1,22 @@
 ## Submission comments
-This submission updates default settings in alignment with the main reference (Kurz and Spanhel (2017) <arXiv:1706.02338>). Furthermore, due to a new affiliation the maintainer e-mail was updated. Besides that a couple of typos in the documentation have been fixed.
+This submission contains an update with some bug fixes for the package pacotest.
 
 ## Test environments
 
-* ubuntu 20.04 (on github-actions): R-release (R 4.0.3), R-devel (2020-12-12 r79619)
-* local ubuntu 20.04 install: R 3.6.3
-* Mac OS X 10.15.7 (on github-actions): R-release (R 4.0.3)
-* Microsoft Windows Server 2019 (on github-actions): R-release (R 4.0.3)
+* ubuntu 20.04 (on github-actions): R-release (R 4.1.2), R-devel (2021-11-06 r81149), R-oldrel (R 3.5.3)
+* local ubuntu 20.04 install: R 4.0.4
+* Mac OS X 10.15.7 (on github-actions): R-release (R 4.1.2)
+* Microsoft Windows Server 2019 (on github-actions): R-release (R 4.1.2)
 
 ## R CMD check results
 
-0 ERRORs | 0 WARNING | 2 NOTEs
+0 ERRORs | 0 WARNING | 1 NOTE
 
 ```
-checking CRAN incoming feasibility ... NOTE
-Maintainer: ‘Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>’
-
-New maintainer:
-  Malte S. Kurz <malte.simon.kurz@uni-hamburg.de>
-Old maintainer(s):
-  Malte S. Kurz <malte.kurz@stat.uni-muenchen.de>
-```
---> Due to a new affiliation the maintainer e-mail was updated.
-
-```
-checking installed package size ... NOTE
-  installed size is 11.8Mb
-  sub-directories of 1Mb or more:
-    libs  11.5Mb
+> checking installed package size ... NOTE
+    installed size is 10.0Mb
+    sub-directories of 1Mb or more:
+      libs   9.7Mb
 ```
 -> This is all compiled code in the libs/ directory.
 
