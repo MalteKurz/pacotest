@@ -9,7 +9,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   rho = momentBasedCorr(Udata)
   titleStrElements = list()
   titleStrElements$partIdentifier = "0"
-  titleStrElements$corrInGroup = format(rho,dig=3)
+  titleStrElements$corrInGroup = format(rho,dig=2, nsmall = 2)
   titleStr = bquote(Lambda[.(titleStrElements$partIdentifier)] ~ ":" ~
                       hat(r) ~ "=" ~ .(titleStrElements$corrInGroup))
   
@@ -23,7 +23,7 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     xlab(expression(u["4|23"]^{"PVC"})) + 
     ylab(expression(u["1|23"]^{"PVC"})) + 
     coord_fixed() +
-    theme_bw(base_size = 30) + 
+    theme_bw(base_size = 35) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
           axis.title = element_text(size = rel(0.75)),
           panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -118,14 +118,14 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   
   #grid.rect(gp=gpar(fill="black", alpha=0.1))
   
-  grid.lines(x=c(0.881,0.921),y=c(0.9175,0.91), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
-  grid.lines(x=c(0.881,0.841),y=c(0.9175,0.91), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.881,0.921),y=c(0.9175,0.905), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.881,0.841),y=c(0.9175,0.905), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
   
-  grid.lines(x=c(0.8185,0.8085),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
-  grid.lines(x=c(0.8185,0.8285),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.8185,0.8085),y=c(0.835,0.822), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.8185,0.8285),y=c(0.835,0.822), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
   
-  grid.lines(x=c(0.9435,0.9335),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
-  grid.lines(x=c(0.9435,0.9535),y=c(0.835,0.825), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.9435,0.9335),y=c(0.835,0.822), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
+  grid.lines(x=c(0.9435,0.9535),y=c(0.835,0.822), vp =vp, arrow = arrow(type="closed", length=unit(5,"mm")))
   
   popViewport()
   
@@ -160,7 +160,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
   #grid.newpage()
   #grid.draw(p)
   
-  dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20)
+  dev.copy(pdf,"groupedPlot.pdf", width=30 , height=20,
+           family="CMU Serif")
   dev.off()
   
   return(p)
@@ -183,8 +184,8 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels, partIdentif
   
   titleStrElements = list()
   titleStrElements$partIdentifier = partIdentifier[1]
-  titleStrElements$threshold = format(threshold,dig=3)
-  titleStrElements$corrInGroup = format(rho,dig=3)
+  titleStrElements$threshold = format(threshold,dig=2, nsmall = 2)
+  titleStrElements$corrInGroup = format(rho,dig=2, nsmall = 2)
   xx = getIndicesFromVariable(variable)
   if (xx$barForU)
   {
@@ -206,8 +207,8 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels, partIdentif
   
   titleStrElements = list()
   titleStrElements$partIdentifier = partIdentifier[2]
-  titleStrElements$threshold = format(threshold,dig=3)
-  titleStrElements$corrInGroup = format(rho,dig=3)
+  titleStrElements$threshold = format(threshold,dig=2, nsmall = 2)
+  titleStrElements$corrInGroup = format(rho,dig=2, nsmall = 2)
   xx = getIndicesFromVariable(variable)
   if (xx$barForU)
   {
@@ -237,7 +238,7 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels, partIdentif
     xlab(expression(u["4|23"]^{"PVC"})) + 
     ylab(expression(u["1|23"]^{"PVC"})) + 
     coord_fixed() +
-    theme_bw(base_size = 30) + 
+    theme_bw(base_size = 40) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
           axis.title = element_text(size = rel(0.75)),
           panel.grid.major = element_line(colour = "grey85", size = .75),
@@ -401,7 +402,7 @@ partitionPlot = function(decisionTree, W)
   kendall = ggplot(gg, aes(x, y)) +
     geom_tile(aes(fill = z)) +
     scale_fill_gradient(low="gray90", high="gray10") + 
-    labs(fill = expression(paste("Correlation ", r["14|23"]))) +
+    labs(fill = expression(r["14|23"])) +
     xlab(names(W)[1]) +
     ylab(names(W)[2])
   
@@ -427,7 +428,7 @@ partitionPlot = function(decisionTree, W)
     scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab(expression(u["2"])) + 
     ylab(expression(u["3"])) + 
-    theme_bw(base_size = 30) +
+    theme_bw(base_size = 35) +
     theme(legend.spacing = unit(1, "lines"),
         legend.key.size = unit(1, "cm"),
         panel.spacing = unit(2.5, "lines"),
@@ -443,7 +444,7 @@ partitionPlot = function(decisionTree, W)
     scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab(expression(u["2"])) + 
     ylab(expression(u["3"])) + 
-    theme_bw(base_size = 30) +
+    theme_bw(base_size = 35) +
     theme(legend.spacing = unit(1, "lines"),
           legend.key.size = unit(1, "cm"),
           panel.spacing = unit(2.5, "lines"),
@@ -500,7 +501,7 @@ partitionPlot = function(decisionTree, W)
       scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
       xlab(expression(u["2"])) + 
       ylab(expression(u["3"])) + 
-      theme_bw(base_size = 30) +
+      theme_bw(base_size = 35) +
       theme(legend.spacing = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
             panel.spacing = unit(2.5, "lines"),
@@ -516,7 +517,7 @@ partitionPlot = function(decisionTree, W)
       scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
       xlab(expression(u["2"])) + 
       ylab(expression(u["3"])) + 
-      theme_bw(base_size = 30) +
+      theme_bw(base_size = 35) +
       theme(legend.spacing = unit(1, "lines"),
             legend.key.size = unit(1, "cm"),
             panel.spacing = unit(2.5, "lines"),
@@ -549,7 +550,8 @@ partitionPlot = function(decisionTree, W)
   grid.newpage()
   grid.arrange(gA, gB, gC, gD, nrow = 2, ncol = 2)
   
-  dev.copy2pdf(file = paste("./partitionPlot", sep=""), height=13)
+  dev.copy2pdf(file = paste("./partitionPlot", sep=""), height=13,
+               family="CMU Serif")
 }
 
 
@@ -568,7 +570,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   kendall = ggplot(gg, aes(x, y)) +
     geom_tile(aes(fill = z)) +
     scale_fill_gradient(low="gray90", high="gray10") + 
-    labs(fill = expression(paste("Correlation ", r["14|23"]))) +
+    labs(fill = expression(r["14|23"])) +
     xlab(names(W)[1]) +
     ylab(names(W)[2])
   
@@ -594,7 +596,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
     scale_y_continuous(expand=c(0.01,0.01), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     xlab(expression(u["2"])) + 
     ylab(expression(u["3"])) + 
-    theme_bw(base_size = 30) +
+    theme_bw(base_size = 35) +
     theme(legend.spacing = unit(1, "lines"),
           legend.key.size = unit(1, "cm"),
           panel.spacing = unit(2.5, "lines"),
@@ -621,7 +623,8 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   
   grid.arrange(gA, gB, gC, nrow = 1, ncol = 3)
   
-  dev.copy2pdf(file = paste("./singleVariable.pdf", sep=""), height=15.5)
+  dev.copy2pdf(file = paste("./singleVariable.pdf", sep=""), height=15.5,
+               family="CMU Serif")
   
 }
 
