@@ -1,16 +1,9 @@
 
-addAggInfo = function(W, aggInfoType=NULL, sizeKeepingMethod=NULL)
+addAggInfo = function(W, aggInfoType=NULL)
 {
   if (!is.null(aggInfoType))
   {
-    if (is.null(sizeKeepingMethod) || sizeKeepingMethod == 'splitTrainEvaluate' || sizeKeepingMethod == 'penalty')
-    {
-      W = cbindAggInfo(W, aggInfoType)
-    }
-    else
-    {
-      stop('addAggInfo error')
-    }
+    W = cbindAggInfo(W, aggInfoType)
   }
   
   return(W)

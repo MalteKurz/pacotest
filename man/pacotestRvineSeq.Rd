@@ -15,7 +15,7 @@ pacotestRvineSeq(data, RVM, pacotestOptions,
 
 \arguments{
   \item{data}{
-  A (n x d) matrix (or data frame) of [0,1] data (i.e. uniform marigns).
+  A (n x d) matrix (or data frame) of [0,1] data (i.e. uniform margins).
   }
   \item{RVM}{
   An \link[VineCopula]{RVineMatrix} object (\link[VineCopula]{VineCopula-package}) which includes the structure, the pair-copula families and parameters of an R-vine copula.
@@ -27,7 +27,7 @@ pacotestRvineSeq(data, RVM, pacotestOptions,
 The level of the test.
 }
   \item{illustration}{
-Either 1 or 2. If illustration = 1, the p-value for each test for a (j-1)-th order partial copula is dislayed. If illustration = 2, a progress information is diplayed for each tree. It consists of the individual test level and the number of H0 rejections.
+Either 1 or 2. If illustration = 1, the p-value for each test for a (j-1)-th order partial copula is displayed. If illustration = 2, a progress information is displayed for each tree. It consists of the individual test level and the number of H0 rejections.
 }
   \item{stopIfRejected}{
   A logical variable indicating whether the sequential test procedure should be stopped in the first tree where an H0 for one of the conditional copulas is rejected.
@@ -38,7 +38,7 @@ Either 1 or 2. If illustration = 1, the p-value for each test for a (j-1)-th ord
 \value{
 A list consisting of the following elements:
 \item{pacotestResultLists}{
-A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a list containing the test result from a test for a (j-1)-th order partial copula obtained from a call to \code{\link{pacotest}}. Depending on the choosen test, it could consist of different elements. A documentation of the \code{pacotestResultLists} can be found in the documentation of \code{\link{pacotest}}.
+A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a list containing the test result from a test for a (j-1)-th order partial copula obtained from a call to \code{\link{pacotest}}. Depending on the chosen test, it could consist of different elements. A documentation of the \code{pacotestResultLists} can be found in the documentation of \code{\link{pacotest}}.
 }
 \item{pValues}{
 A matrix in the same structure like the \code{Matrix}, \code{family}, \code{par}, etc. entries in the \link[VineCopula]{RVineMatrix} object from the \link[VineCopula]{VineCopula-package}. Each entry of the matrix is a p-value corresponding to the test result from a test for a (j-1)-th order partial copula.
@@ -63,11 +63,11 @@ Malte S. Kurz
 \references{
 Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
 
-Spanhel, F. and M. S. Kurz (2015), " The partial vine copula: A dependence measure and approximation based on the simplifying assumption", ArXiv e-prints \url{https://arxiv.org/abs/1510.06971}.
+Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), 1254-1291.
 }
 
 \examples{
-# Sample data and R-vine copula selection are taken
+\donttest{# Sample data and R-vine copula selection are taken
 # from the documentation of RVineStructureSelect
 # of the VineCopula package.
 
@@ -94,6 +94,6 @@ pacotestOptions = pacotestset('CCC')
 
 # Test for the simplifying assumption.
 pacotestResultList = pacotestRvineSeq(dataSet, RVM,
-                                      pacotestOptions)
+                                      pacotestOptions)}
 }
 

@@ -26,10 +26,3 @@ void NormalRand(arma::mat &X)
     }
   }
 }
- 
- void RandPerm(arma::uvec &X)
- {
-   int N = X.n_elem;
-   X = arma::linspace<arma::uvec>(0,N-1,N);
-   X = Rcpp::RcppArmadillo::sample(X,N,FALSE);
- }

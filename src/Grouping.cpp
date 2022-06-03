@@ -179,7 +179,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexV
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, arma::mat &Ydata, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   arma::uvec Cols(2);
   
@@ -192,7 +192,7 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
   indexVectors.zeros();
   nObsPerVector.zeros();
   
-  Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+  Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
   
   Xdata = Udata.submat(indexVectors.submat(0,0,nObsPerVector(0)-1,0), Cols);
   Ydata = Udata.submat(indexVectors.submat(0,1,nObsPerVector(1)-1,1), Cols);
@@ -202,38 +202,19 @@ void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::mat &Xdata, 
 }
 
 
-void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
-{
-  
-  switch(GroupingMethod){
-    case 1: // TreeECOV
-    case 2: // TreeCCC
-    case 3: // TreeEC
-    {
-      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
-      break;
-    }
-    default:
-    {
-      Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod);
-      break;
-    }
-    
-  }
-}
-
 void Grouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int GroupingMethod, int finalComparisonMethod, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
   
   switch(GroupingMethod){
-    case 1: // TreeECOV
     case 2: // TreeCCC
     case 3: // TreeEC
     {
-      double TrainingDataFraction = 1;
-      int withTraining = 0;
-      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, withTraining);
+      TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
       break;
+    }
+    case 1: // TreeECOV
+    {
+      throw std::runtime_error("Invalid pacotest options");
     }
     default:
     {
@@ -253,7 +234,7 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   
   if (splitTestType == 1 )
   {
-    testStat = EqualCovChi2TestStat(Udata, ind, nObsPerGroup);
+    throw std::runtime_error("Invalid pacotest options");
   }
   else if (splitTestType == 2 )
   {
@@ -272,25 +253,8 @@ double splitTestStat(const arma::mat &Udata, int splitTestType, arma::umat &ind,
   
 }
 
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int splitTestType, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
+void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int splitTestType, int finalComparisonMethod, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold)
 {
-  int withTraining = 1;
-  TreeGrouping(Udata, Wdata, indexVectors, nObsPerVector, splitTestType, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold, withTraining);
-}
-
-void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &indexVectors, arma::uvec &nObsPerVector, int splitTestType, int finalComparisonMethod, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, int withTraining)
-{
-  double EvaluationDataFraction;
-  
-  
-  if (withTraining == 1)
-  {
-    EvaluationDataFraction = 1-TrainingDataFraction;
-  }
-  else
-  {
-    EvaluationDataFraction = 1;
-  }
   
   unsigned int m;
   
@@ -307,33 +271,11 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   ind.fill(UINT_MAX);
   nObsPerGroup.zeros();
   
-  // Split the dataset randomly into two pices
   arma::uvec R(n);
   R = arma::linspace<arma::uvec>(0,n-1,n);
-  RandPerm(R); // RandPerm is defined in a way that it doesn't matter how it is initialized
   
   unsigned int n0;
-  arma::uvec R1;
-  arma::uvec R2;
-  
-  if (withTraining == 1)
-  {
-    n0 = floor(n*TrainingDataFraction);
-    // Training data
-    R1 = R.subvec(0,n0-1);
-    
-    // Evaluation data
-    R2 = R.subvec(n0,n-1);
-  }
-  else
-  {
-    n0 = n;
-    // Training data
-    R1 = R;
-    
-    // Evaluation data
-    R2 = R;
-  }
+  n0 = n;
   
   double n0Double = (double) n0;
   
@@ -356,8 +298,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   for (j=0;j<m;j++)
   {
     colIndex(0) = j;
-    X = sort_index(Wdata.submat(R1,colIndex));
-    I.col(j) = R1(X);
+    X = sort_index(Wdata.cols(colIndex));
+    I.col(j) = R(X);
   }
   
   
@@ -369,7 +311,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   unsigned int iStart;
   unsigned int iEnd;
   
-  if (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction) // Use the 0.25 and 0.75 quantile only for more than 8*ExpMinSampleSize observations
+  if (nDouble>=ExpMinSampleSize*4) // Use the 0.25 and 0.75 quantile only for more than 8*ExpMinSampleSize observations
   {
     iStart = 0;
     iEnd = 3;
@@ -415,7 +357,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   Cols(1) =1;
   
   
-  if (nDouble>=ExpMinSampleSize*4/EvaluationDataFraction) // Check whether a second split should be done
+  if (nDouble>=ExpMinSampleSize*4) // Check whether a second split should be done
   {
     unsigned int n1 = J(SplitQuantile(0)+1,0)+1;
     unsigned int n2 = n0 - n1;
@@ -423,23 +365,23 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
     double n1Double = (double) n1;
     double n2Double = (double) n2;
     
-    arma::uvec R1_1(n1);
-    arma::uvec R1_2(n2);
+    arma::uvec R_1(n1);
+    arma::uvec R_2(n2);
     
     // Get the index sets for both groups (formed by the first split)
-    R1_1 = I.submat(0,SplitVariable(0),n1-1,SplitVariable(0));
-    R1_2 = I.submat(n1,SplitVariable(0),n0-1,SplitVariable(0));
+    R_1 = I.submat(0,SplitVariable(0),n1-1,SplitVariable(0));
+    R_2 = I.submat(n1,SplitVariable(0),n0-1,SplitVariable(0));
     
     // Declare some variables
     arma::umat I1(n1,m);
     arma::umat J1(4,1);
-    arma::uvec R1_1_1;
-    arma::uvec R1_1_2;
+    arma::uvec R_1_1;
+    arma::uvec R_1_2;
     
     // Prepare the (left) data sets for the second split
-    if (!(SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
+    if (!(SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*8))
     {
-      if ((SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==2 && (nDouble< ExpMinSampleSize*16/3/EvaluationDataFraction)))
+      if ((SplitQuantile(0)==0 && nDouble<ExpMinSampleSize*16) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8) || (SplitQuantile(0)==2 && (nDouble< ExpMinSampleSize*16/3)))
       {
         iStart = 1;
         iEnd = 2;
@@ -464,8 +406,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       for (j=0;j<m;j++)
       {
         colIndex(0) = j;
-        X1 = sort_index(Wdata.submat(R1_1,colIndex));
-        I1.col(j) = R1_1(X1);
+        X1 = sort_index(Wdata.submat(R_1,colIndex));
+        I1.col(j) = R_1(X1);
       }
       
       for (j=0;j<m;j++)
@@ -493,21 +435,21 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       // Get the (pseudo-)observations for both groups
       unsigned int n3 = J1(SplitQuantile(1)+1,0)+1;
       
-      R1_1_1 = I1.submat(0,SplitVariable(1),n3-1,SplitVariable(1));
-      R1_1_2 = I1.submat(n3,SplitVariable(1),n1-1,SplitVariable(1));
+      R_1_1 = I1.submat(0,SplitVariable(1),n3-1,SplitVariable(1));
+      R_1_2 = I1.submat(n3,SplitVariable(1),n1-1,SplitVariable(1));
       
     }
     
     // Declare some variables
     arma::umat I2(n2,m);
     arma::umat J2(4,1);
-    arma::uvec R1_2_1;
-    arma::uvec R1_2_2;
+    arma::uvec R_2_1;
+    arma::uvec R_2_2;
     
     // Prepare the (right) data sets for the second split
-    if (!(SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction))
+    if (!(SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*8))
     {
-      if ((SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*16/EvaluationDataFraction) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8/EvaluationDataFraction) || (SplitQuantile(0)==0 && (nDouble<ExpMinSampleSize*16/3/EvaluationDataFraction)))
+      if ((SplitQuantile(0)==2 && nDouble<ExpMinSampleSize*16) || (SplitQuantile(0)==1 && nDouble<ExpMinSampleSize*8) || (SplitQuantile(0)==0 && (nDouble<ExpMinSampleSize*16/3)))
       {
         iStart = 1;
         iEnd = 2;
@@ -531,8 +473,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       for (j=0;j<m;j++)
       {
         colIndex(0) = j;
-        X2 = sort_index(Wdata.submat(R1_2,colIndex));
-        I2.col(j) = R1_2(X2);
+        X2 = sort_index(Wdata.submat(R_2,colIndex));
+        I2.col(j) = R_2(X2);
       }
       
       for (j=0;j<m;j++)
@@ -560,8 +502,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       // Get the (pseudo-)observations for both groups
       unsigned int n4 = J2(SplitQuantile(2)+1,0)+1;
       
-      R1_2_1 = I2.submat(0,SplitVariable(2),n4-1,SplitVariable(2));
-      R1_2_2 = I2.submat(n4,SplitVariable(2),n2-1,SplitVariable(2));
+      R_2_1 = I2.submat(0,SplitVariable(2),n4-1,SplitVariable(2));
+      R_2_2 = I2.submat(n4,SplitVariable(2),n2-1,SplitVariable(2));
       
     }
     
@@ -572,32 +514,32 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       arma::mat b(6,1);
       b.zeros();
       
-      if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
+      if (!(R_1_1.is_empty() || R_1_2.is_empty() || R_2_1.is_empty() || R_2_2.is_empty()))
       {
-        nObsPerGroup(0) = R1_1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_1;
-        nObsPerGroup(1) = R1_1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_1_2;
+        nObsPerGroup(0) = R_1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_1_1;
+        nObsPerGroup(1) = R_1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_1_2;
         b(0,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
         ind.col(1).fill(UINT_MAX);
         
-        nObsPerGroup(1) = R1_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_1;
+        nObsPerGroup(1) = R_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2_1;
         b(1,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
         ind.col(1).fill(UINT_MAX);
         
-        nObsPerGroup(1) = R1_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_2;
+        nObsPerGroup(1) = R_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2_2;
         b(2,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
         ind.fill(UINT_MAX);
         
         
-        nObsPerGroup(0) = R1_1_2.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_2;
-        nObsPerGroup(1) = R1_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_1;
+        nObsPerGroup(0) = R_1_2.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_1_2;
+        nObsPerGroup(1) = R_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2_1;
         b(3,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
         ind.col(1).fill(UINT_MAX);
         
-        nObsPerGroup(1) = R1_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_2;
+        nObsPerGroup(1) = R_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2_2;
         b(4,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
         ind.col(0).fill(UINT_MAX);
         
-        nObsPerGroup(0) = R1_2_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_2_1;
+        nObsPerGroup(0) = R_2_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_2_1;
         b(5,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
         ind.fill(UINT_MAX);
         
@@ -607,34 +549,34 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       }
       else
       {
-        if (R1_1_1.is_empty() && R1_1_2.is_empty())
+        if (R_1_1.is_empty() && R_1_2.is_empty())
         {
-          nObsPerGroup(0) = R1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1;
-          nObsPerGroup(1) = R1_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_1;
+          nObsPerGroup(0) = R_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_1;
+          nObsPerGroup(1) = R_2_1.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2_1;
           b(3,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
           ind.col(1).fill(UINT_MAX);
           
-          nObsPerGroup(1) = R1_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2_2;
+          nObsPerGroup(1) = R_2_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2_2;
           b(4,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
           ind.col(0).fill(UINT_MAX);
           
-          nObsPerGroup(0) = R1_2_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_2_1;
+          nObsPerGroup(0) = R_2_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_2_1;
           b(5,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
           ind.fill(UINT_MAX);
         }
         
-        if (R1_2_1.is_empty() && R1_2_2.is_empty())
+        if (R_2_1.is_empty() && R_2_2.is_empty())
         {
-          nObsPerGroup(0) = R1_1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_1;
-          nObsPerGroup(1) = R1_1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_1_2;
+          nObsPerGroup(0) = R_1_1.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_1_1;
+          nObsPerGroup(1) = R_1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_1_2;
           b(0,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
           ind.col(1).fill(UINT_MAX);
           
-          nObsPerGroup(1) = R1_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R1_2;
+          nObsPerGroup(1) = R_2.n_elem; ind.submat(0,1,nObsPerGroup(1)-1,1) =  R_2;
           b(1,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
           ind.col(0).fill(UINT_MAX);
           
-          nObsPerGroup(0) = R1_1_2.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R1_1_2;
+          nObsPerGroup(0) = R_1_2.n_elem; ind.submat(0,0,nObsPerGroup(0)-1,0) =  R_1_2;
           b(2,0) = splitTestStat(Udata, splitTestType, ind, nObsPerGroup);
           ind.fill(UINT_MAX);
         }
@@ -648,85 +590,85 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       switch(SplitVariable(3)){
         case 0:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
           
           break;
         }
         case 1:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
           
           break;
         }
         case 2:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
           
           break;
         }
         case 3:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
           
           break;
         }
         case 4:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
           
           break;
         }
         case 5:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
           
           break;
         }
         case 13:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
           
           break;
         }
         case 14:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
           
           break;
         }
         case 15:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
           
           break;
         }
         case 10:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
           
           break;
         }
         case 11:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0));
           
           break;
         }
         case 12:
         {
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0));
           
           break;
         }
@@ -736,13 +678,13 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
     {
       // Needs to be implemented after allowing for more than two groups as output from the decision tree based gourping
       
-      if (!(R1_1_1.is_empty() || R1_1_2.is_empty() || R1_2_1.is_empty() || R1_2_2.is_empty()))
+      if (!(R_1_1.is_empty() || R_1_2.is_empty() || R_2_1.is_empty() || R_2_2.is_empty()))
       {
         // The four group case
-        B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-        B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
-        B3 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
-        B4 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+        B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+        B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+        B3 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+        B4 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
         if (B3.n_elem<2 || B4.n_elem<2)
         {
           throw std::runtime_error("Empty sets after applying tree grouping. It is not recommended to use the tree grouping approach with a low number of observations");
@@ -755,12 +697,12 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       }
       else
       {
-        if (R1_1_1.is_empty() && R1_1_2.is_empty())
+        if (R_1_1.is_empty() && R_1_2.is_empty())
         {
           // The three group case with a split on the right
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
-          B3 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(2,2)) > SplitThreshold(2) );
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) <= SplitThreshold(2) );
+          B3 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(2,2)) > SplitThreshold(2) );
           if (B3.n_elem<2)
           {
             throw std::runtime_error("Empty sets after applying tree grouping. It is not recommended to use the tree grouping approach with a low number of observations");
@@ -772,12 +714,12 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
           SplitVariable(3) = 13;
         }
         
-        if (R1_2_1.is_empty() && R1_2_2.is_empty())
+        if (R_2_1.is_empty() && R_2_2.is_empty())
         {
           // The three group case with a split on the left
-          B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
-          B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.submat(R2,SplitVariable.subvec(1,1)) > SplitThreshold(1) );
-          B3 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+          B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) <= SplitThreshold(1) );
+          B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0) && Wdata.cols(SplitVariable.subvec(1,1)) > SplitThreshold(1) );
+          B3 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0));
           if (B3.n_elem<2)
           {
             throw std::runtime_error("Empty sets after applying tree grouping. It is not recommended to use the tree grouping approach with a low number of observations");
@@ -796,8 +738,8 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   else
   {
     
-    B1 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) <= SplitThreshold(0));
-    B2 = arma::find(Wdata.submat(R2,SplitVariable.subvec(0,0)) > SplitThreshold(0));
+    B1 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) <= SplitThreshold(0));
+    B2 = arma::find(Wdata.cols(SplitVariable.subvec(0,0)) > SplitThreshold(0));
     SplitVariable(3) = 6;
   }
   
@@ -810,21 +752,21 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   {
     
     nObsPerVector(0) = B1.n_elem;
-    indexVectors.submat(0,0,nObsPerVector(0)-1,0) = R2.elem(B1);
+    indexVectors.submat(0,0,nObsPerVector(0)-1,0) = R.elem(B1);
     
     nObsPerVector(1) = B2.n_elem;
-    indexVectors.submat(0,1,nObsPerVector(1)-1,1) = R2.elem(B2);
+    indexVectors.submat(0,1,nObsPerVector(1)-1,1) = R.elem(B2);
     
     if (B3.n_elem>1)
     {
       nObsPerVector(2) = B3.n_elem;
-      indexVectors.submat(0,2,nObsPerVector(2)-1,2) = R2.elem(B3);
+      indexVectors.submat(0,2,nObsPerVector(2)-1,2) = R.elem(B3);
     }
     
     if (B4.n_elem>1)
     {
       nObsPerVector(3) = B4.n_elem;
-      indexVectors.submat(0,3,nObsPerVector(3)-1,3) = R2.elem(B4);
+      indexVectors.submat(0,3,nObsPerVector(3)-1,3) = R.elem(B4);
     }
   }
   

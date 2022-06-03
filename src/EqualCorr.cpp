@@ -1,6 +1,38 @@
 #include <pacotest_header.h>
 
-void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double TrainingDataFraction, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
+void getMatrixForPairwiseComparison(int nGroups, arma::mat &A)
+{
+  
+  switch ( nGroups )
+  {
+    
+  case 2 : 
+    A.set_size(1,2);
+    
+    A(0,0) = 1; A(0,1) = -1;
+    break;
+    
+  case 3 : 
+    A.set_size(2,3);
+    A.zeros();
+    
+    A(0,0) = 1; A(0,1) = -1;
+    A(1,1) = 1; A(1,2) = -1;
+    break;
+    
+  default : 
+    A.set_size(3,4);
+  A.zeros();
+  
+  A(0,0) = 1; A(0,1) = -1;
+  A(1,1) = 1; A(1,2) = -1;
+  A(2,2) = 1; A(2,3) = -1;
+  
+  }
+  return;
+}
+
+void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
 {
   
   unsigned int n=Udata.n_rows;
@@ -9,7 +41,7 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
   indexVectors.zeros();
   nObsPerVector.zeros();
   
-  Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, SplitVariable, SplitQuantile, SplitThreshold);
+  Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, SplitVariable, SplitQuantile, SplitThreshold);
   
   if (withEstUncert)
   {
@@ -25,60 +57,6 @@ void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingM
   double df = nGroups-1;
   
   *pValue = 1-Chi2CDF(*TestStat, df);
-}
-
-
-void EqualCorrTest(const arma::mat &Udata, const arma::mat &Wdata, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, arma::mat &pValues, double *pValue, int AggPvalsNumbRep, double ExpMinSampleSize, double TrainingDataFraction, arma::umat &SplitVariable, arma::umat &SplitQuantile, arma::mat &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)
-{
-    double S;
-    int i;
-    
-    arma::uvec splitVariable(4);
-    arma::uvec splitQuantile(4);
-    arma::vec splitThreshold(3);
-    
-    splitVariable.zeros();
-    splitQuantile.zeros();
-    splitThreshold.zeros();
-    
-    unsigned int n=Udata.n_rows;
-    arma::umat indexVectors(n,2);
-    arma::uvec nObsPerVector(2);
-    indexVectors.zeros();
-    nObsPerVector.zeros();
-    int nGroups;
-    double df;
-    
-    for (i=0;i<AggPvalsNumbRep;i++)
-    {
-        Grouping(Udata, Wdata, indexVectors, nObsPerVector, GroupingMethod, finalComparisonMethod, ExpMinSampleSize, TrainingDataFraction, splitVariable, splitQuantile, splitThreshold);
-        
-        SplitVariable.col(i) = splitVariable;
-        SplitQuantile.col(i) = splitQuantile;
-        SplitThreshold.col(i) = splitThreshold;
-        
-        if (withEstUncert)
-        {
-          S = EqualCorrChi2WithEstimationTestStat(Udata, indexVectors, nObsPerVector, data, svcmDataFrame, cPitData, intEstUncertWithRanks);
-        }
-        else
-        {
-          S = EqualCorrChi2TestStat(Udata, indexVectors, nObsPerVector);
-        }
-        
-        nGroups = indexVectors.n_cols;
-        df = nGroups-1;
-        pValues(i,0) = 1-Chi2CDF(S, df);
-        
-        
-        indexVectors.set_size(n,2);
-        nObsPerVector.set_size(2);
-        indexVectors.zeros();
-        nObsPerVector.zeros();
-    }
-    
-    *pValue = (double) arma::as_scalar(arma::median(pValues,0));
-    
 }
 
 void EqualCorrTestWithPenalty(const arma::mat &Udata, const arma::mat &Wdata, int dimCondSet, int GroupingMethod, int withEstUncert, int intEstUncertWithRanks, int finalComparisonMethod, double *TestStat, double *pValue, double ExpMinSampleSize, double penaltyLevel, double penaltyPower, int gamma0Partition, arma::uvec &SplitVariable, arma::uvec &SplitQuantile, arma::vec &SplitThreshold, arma::mat &data, Rcpp::DataFrame svcmDataFrame, Rcpp::List cPitData)

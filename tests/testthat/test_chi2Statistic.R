@@ -46,8 +46,8 @@ test_that("CCC chi2 test statistic regression tests", {
   expect_equal(res$testStat,0.83383352525331200233, tolerance = 1e-4)
   expect_equal(res$pValue,0.36116636240337429697, tolerance = 1e-4)
   
-  expect_equal(resWithEstimation$testStat,0.84785692959644609612, tolerance = 1e-4)
-  expect_equal(resWithEstimation$pValue,0.35715930974148979438, tolerance = 1e-4)
+  expect_equal(resWithEstimation$testStat,0.83806639986719244639, tolerance = 1e-4)
+  expect_equal(resWithEstimation$pValue,0.35995036758727094739, tolerance = 1e-4)
   
   
   ind = matrix(NA,N,3)
@@ -62,8 +62,8 @@ test_that("CCC chi2 test statistic regression tests", {
   expect_equal(res$testStat,2.454766624833430555, tolerance = 1e-4)
   expect_equal(res$pValue,0.29305841758446760092, tolerance = 1e-4)
   
-  expect_equal(resWithEstimation$testStat,2.7602023114432685524, tolerance = 1e-4)
-  expect_equal(resWithEstimation$pValue,0.25155310573676692432, tolerance = 1e-4)
+  expect_equal(resWithEstimation$testStat,2.4885575465500195946, tolerance = 1e-4)
+  expect_equal(resWithEstimation$pValue,0.28814865371576092734, tolerance = 1e-4)
   
   
   ind = matrix(NA,N,4)
@@ -79,8 +79,8 @@ test_that("CCC chi2 test statistic regression tests", {
   expect_equal(res$testStat,2.7721624555651458444, tolerance = 1e-4)
   expect_equal(res$pValue,0.42810299746943947241, tolerance = 1e-4)
   
-  expect_equal(resWithEstimation$testStat,2.9912498147485870881, tolerance = 1e-4)
-  expect_equal(resWithEstimation$pValue,0.39297625116189294214, tolerance = 1e-4)
+  expect_equal(resWithEstimation$testStat,2.7923075161895125618, tolerance = 1e-4)
+  expect_equal(resWithEstimation$pValue,0.42476780288929938401, tolerance = 1e-4)
   
   
   
@@ -125,8 +125,8 @@ test_that("CCC chi2 test statistic regression tests", {
   expect_equal(res2$testStat,1.1630787964924615974, tolerance = 1e-4)
   expect_equal(res2$pValue,0.28082793910460845943, tolerance = 1e-4)
   
-  expect_equal(resWithEstimation2$testStat,1.1486998581351295368, tolerance = 1e-4)
-  expect_equal(resWithEstimation2$pValue,0.28382148028243781024, tolerance = 1e-4)
+  expect_equal(resWithEstimation2$testStat,1.1624376678721606293, tolerance = 1e-4)
+  expect_equal(resWithEstimation2$pValue,0.28096056269652236459, tolerance = 1e-4)
   
   
   ind = matrix(NA,N,3)
@@ -141,8 +141,8 @@ test_that("CCC chi2 test statistic regression tests", {
   expect_equal(res2$testStat,1.8312662134969845962, tolerance = 1e-4)
   expect_equal(res2$pValue,0.40026313656338963209, tolerance = 1e-4)
   
-  expect_equal(resWithEstimation2$testStat,1.8236835598401168745, tolerance = 1e-4)
-  expect_equal(resWithEstimation2$pValue,0.40178354529346393953, tolerance = 1e-4)
+  expect_equal(resWithEstimation2$testStat,1.8292571074745975768, tolerance = 1e-4)
+  expect_equal(resWithEstimation2$pValue,0.40066542412825645325, tolerance = 1e-4)
   
   
   ind = matrix(NA,N,4)
@@ -158,8 +158,8 @@ test_that("CCC chi2 test statistic regression tests", {
   expect_equal(res2$testStat,2.704885100069900794, tolerance = 1e-4)
   expect_equal(res2$pValue,0.43939776104000616286, tolerance = 1e-4)
   
-  expect_equal(resWithEstimation2$testStat,2.9090013927664419846, tolerance = 1e-4)
-  expect_equal(resWithEstimation2$pValue,0.40586921002370979217, tolerance = 1e-4)
+  expect_equal(resWithEstimation2$testStat,2.708403331235642586, tolerance = 1e-4)
+  expect_equal(resWithEstimation2$pValue,0.43880112469349530357, tolerance = 1e-4)
   
 })
 

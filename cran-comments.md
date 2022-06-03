@@ -1,22 +1,22 @@
 ## Submission comments
-This submission includes a number of updates to align the package with the corresponding paper (Kurz and Spanhel (2017) <arXiv:1706.02338>) and several minor improvements and bug fixes.
+This submission contains an update with some bug fixes for the package pacotest.
 
 ## Test environments
 
-* local ubuntu 14.04 install: R 3.4.3
-* ubuntu 14.04 (on travis-ci): R-release (R 3.4.2), R-devel (2018-03-12)
-* macOS Sierra 10.12.6 (on travis-ci): R-release (R 3.4.3)
-* Windows Server 2012 R2 x64 (on appveyor): R-release (R 3.4.4)
+* ubuntu 20.04 (on github-actions): R-release (R 4.1.2), R-devel (2021-11-06 r81149), R-oldrel (R 3.5.3)
+* local ubuntu 20.04 install: R 4.0.4
+* Mac OS X 10.15.7 (on github-actions): R-release (R 4.1.2)
+* Microsoft Windows Server 2019 (on github-actions): R-release (R 4.1.2)
 
 ## R CMD check results
 
 0 ERRORs | 0 WARNING | 1 NOTE
 
 ```
-checking installed package size ... NOTE
-  installed size is  6.9Mb
-  sub-directories of 1Mb or more:
-    libs   6.7Mb
+> checking installed package size ... NOTE
+    installed size is 10.0Mb
+    sub-directories of 1Mb or more:
+      libs   9.7Mb
 ```
 -> This is all compiled code in the libs/ directory.
 
