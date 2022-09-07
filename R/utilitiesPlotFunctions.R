@@ -1,6 +1,7 @@
 GroupedScatterplot = function(Udata, W, decisionTree)
 {
   
+  Udata = Udata[, c(2,1)]
   dataLabels = names(Udata)
   
   names(Udata) = c("V1", "V2")
@@ -20,8 +21,8 @@ GroupedScatterplot = function(Udata, W, decisionTree)
     ggtitle(titleStr) + 
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(expression(u["4|23"]^{"PVC"})) + 
-    ylab(expression(u["1|23"]^{"PVC"})) + 
+    xlab(expression(u["1|23"]^{"PVC"})) + 
+    ylab(expression(u["4|23"]^{"PVC"})) + 
     coord_fixed() +
     theme_bw(base_size = 35) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
@@ -235,8 +236,8 @@ getGroupedPlot = function(Udata, W, variable, threshold, dataLabels, partIdentif
     coord_equal() +
     scale_y_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
     scale_x_continuous(expand = c(0,0), limits=c(0,1), labels = c(0,0.25,0.5,0.75,1)) +
-    xlab(expression(u["4|23"]^{"PVC"})) + 
-    ylab(expression(u["1|23"]^{"PVC"})) + 
+    xlab(expression(u["1|23"]^{"PVC"})) + 
+    ylab(expression(u["4|23"]^{"PVC"})) + 
     coord_fixed() +
     theme_bw(base_size = 40) + 
     theme(plot.title = element_text(size = rel(0.75), hjust = 0.5),
@@ -605,6 +606,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
     guides(colour = guide_legend(order = 1))
   
   
+  Udata = Udata[, c(2,1)]
   dataLabels = names(Udata)
   
   names(Udata) = c("V1", "V2")
@@ -623,7 +625,7 @@ partitionPlotWithGroups = function(decisionTree, Udata, W)
   
   grid.arrange(gA, gB, gC, nrow = 1, ncol = 3)
   
-  dev.copy2pdf(file = paste("./singleVariable.pdf", sep=""), height=15.5,
+  dev.copy2pdf(file = paste("./singleVariable.pdf", sep=""), height=15.5, width=28,
                family="CMU Serif")
   
 }
