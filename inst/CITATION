@@ -12,12 +12,16 @@ citEntry(entry = "manual",
   textVersion = paste('Malte S. Kurz (', year, '). pacotest: ', meta$Title, '. ', vers, '.', sep = '')
 )
 
-citEntry(entry = "unpublished",
+citEntry(entry = "article",
   author = c(person("Malte S.", "Kurz"), person("Fabian", "Spanhel")),
   title = "Testing the simplifying assumption in high-dimensional vine copulas",
-  note = "ArXiv e-prints https://arxiv.org/abs/1706.02338",
-  year = "2017",
-  textVersion = "Kurz, M. S. and F. Spanhel (2017), \"Testing the simplifying assumption in high-dimensional vine copulas\", ArXiv e-prints https://arxiv.org/abs/1706.02338."
+  volume = "16",
+  journal = "Electronic Journal of Statistics",
+  number = "2",
+  publisher = "Institute of Mathematical Statistics and Bernoulli Society",
+  pages = "5226--5276",
+  year = "2022",
+  textVersion = "Kurz, M. S. and F. Spanhel (2022), \"Testing the simplifying assumption in high-dimensional vine copulas\", Electronic Journal of Statistics 16 (2) 5226-5276."
 )
 
 citFooter("A BibTeX entry for LaTeX users can be obtained by calling: toBibtex(citation(\"pacotest\"))")
