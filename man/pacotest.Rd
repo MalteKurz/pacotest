@@ -60,9 +60,9 @@ Malte S. Kurz
 
 
 \references{
-Kurz, M. S. and F. Spanhel (2017), "Testing the simplifying assumption in high-dimensional vine copulas", ArXiv e-prints \url{https://arxiv.org/abs/1706.02338}.
+Kurz, M. S. and F. Spanhel (2022), "Testing the simplifying assumption in high-dimensional vine copulas", Electronic Journal of Statistics 16 (2), pp. 5226-5276.
 
-Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), 1254-1291.
+Spanhel, F. and M. S. Kurz (2019), "Simplified vine copula models: Approximations based on the simplifying assumption", Electronic Journal of Statistics 13 (1), pp. 1254-1291.
 
 Spanhel, F. and M. S. Kurz (2016), "The partial copula: Properties and associated dependence measures", Statistics & Probability Letters 119, pp. 76-83.
 }
