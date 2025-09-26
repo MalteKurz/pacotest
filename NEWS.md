@@ -1,4 +1,8 @@
-# pacotest 0.4.1
+# pacotest 0.4.3
+## Maintenance
+* This release addresses deprecation warnings of RcppArmadillo
+
+# pacotest 0.4.2
 ## Updates and maintenance
 * The main reference was published in the Electronic Journal of Statistics
 * Change maintainer mail address

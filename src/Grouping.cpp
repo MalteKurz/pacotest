@@ -288,6 +288,7 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   arma::umat J(4,1);
   arma::mat a(m,3);
   a.zeros();
+  arma::uvec tmp_ind;
   arma::umat I(n0,m);
   arma::uvec firstGroupInd;
   arma::uvec secondGroupInd;
@@ -340,7 +341,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
   
   // Split at variable SplitVariable(0) and quantile SplitQuantile(0)
   a = abs(a);
-  a.max(SplitVariable(0),SplitQuantile(0));
+  tmp_ind = ind2sub(size(a), a.index_max());
+  SplitVariable(0) = tmp_ind(0);
+  SplitQuantile(0) = tmp_ind(1);
   
   // Obtain the corresponding split threshold
   SplitThreshold(0) = arma::as_scalar(Wdata(I(J(SplitQuantile(0)+1),SplitVariable(0)),SplitVariable(0)));
@@ -426,7 +429,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       
       // Split at variable SplitVariable(1) and quantile SplitQuantile(1)
       a1 = abs(a1);
-      a1.max(SplitVariable(1),SplitQuantile(1));
+      tmp_ind = ind2sub(size(a1), a1.index_max());
+      SplitVariable(1) = tmp_ind(0);
+      SplitQuantile(1) = tmp_ind(1);
       
       // Obtain the corresponding split threshold
       SplitThreshold(1) = arma::as_scalar(Wdata(I1(J1(SplitQuantile(1)+1),SplitVariable(1)),SplitVariable(1)));
@@ -493,7 +498,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
       
       // Split at variable SplitVariable(2) and quantile SplitQuantile(2)
       a2 = abs(a2);
-      a2.max(SplitVariable(2),SplitQuantile(2));
+      tmp_ind = ind2sub(size(a2), a2.index_max());
+      SplitVariable(2) = tmp_ind(0);
+      SplitQuantile(2) = tmp_ind(1);
       
       // Obtain the corresponding split threshold
       SplitThreshold(2) = arma::as_scalar(Wdata(I2(J2(SplitQuantile(2)+1),SplitVariable(2)),SplitVariable(2)));
@@ -543,7 +550,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
         ind.fill(UINT_MAX);
         
         b = abs(b);
-        b.max(SplitVariable(3),SplitQuantile(3));
+        tmp_ind = ind2sub(size(b), b.index_max());
+        SplitVariable(3) = tmp_ind(0);
+        SplitQuantile(3) = tmp_ind(1);
         
       }
       else
@@ -581,7 +590,9 @@ void TreeGrouping(const arma::mat &Udata, const arma::mat &Wdata, arma::umat &in
         }
         
         b = abs(b);
-        b.max(SplitVariable(3),SplitQuantile(3));
+        tmp_ind = ind2sub(size(b), b.index_max());
+        SplitVariable(3) = tmp_ind(0);
+        SplitQuantile(3) = tmp_ind(1);
         SplitVariable(3) = SplitVariable(3) +10;
         
       }
