@@ -52,11 +52,7 @@ jobs:
 
       - name: Cache R packages
         if: runner.os != 'Windows'
-<<<<<<< HEAD
         uses: actions/cache@v4
-=======
-        uses: actions/cache@v3
->>>>>>> origin/main
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
