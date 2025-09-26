@@ -95,7 +95,7 @@ Rcpp::List CCC(arma::mat Udata, arma::mat Wdata, double doubleDimCondSet, double
     SplitQuantile.zeros();
     SplitThreshold.zeros();
       
-    if (arma::is_finite(penaltyLevel) && arma::is_finite(penaltyPower) && arma::is_finite(Gamma0Partition))
+    if (std::isfinite(penaltyLevel) && std::isfinite(penaltyPower) && std::isfinite(Gamma0Partition))
     {
       gamma0Partition = (int) Gamma0Partition;
       EqualCorrTestWithPenalty(Udata, Wdata, dimCondSet, grouping, intWithEstUncert, intEstUncertWithRanks, finalComparison, &testStat, &pValue, ExpMinSampleSize, penaltyLevel, penaltyPower, gamma0Partition, SplitVariable, SplitQuantile, SplitThreshold, data, svcmDataFrame, cPitData);
