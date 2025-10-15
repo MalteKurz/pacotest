@@ -1,5 +1,5 @@
 ## pacotest
-![build](https://github.com/MalteKurz/pacotest/workflows/build/badge.svg) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/pacotest)](https://cran.r-project.org/package=pacotest) [![Coverage Status](https://img.shields.io/codecov/c/github/MalteKurz/pacotest/main.svg)](https://codecov.io/github/MalteKurz/pacotest?branch=main)
+![build](https://github.com/MalteKurz/pacotest/workflows/build/badge.svg) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/pacotest)](https://cran.r-project.org/package=pacotest) [![Coverage Status](https://img.shields.io/codecov/c/github/MalteKurz/pacotest/main.svg)](https://app.codecov.io/github/MalteKurz/pacotest?branch=main)
 
 ### You can install:
 -   the latest released version from CRAN with
